@@ -1,5 +1,6 @@
-import express from "express";
+import express from "express"; // Express is installed using npm
 import USER_API from "./routes/usersRoute.mjs"; // This is where we have defined the API for working with users.
+import gameRouter from "./routes/gameRoute.mjs";
 
 // Creating an instance of the server
 const server = express();
@@ -10,8 +11,9 @@ server.set("port", port);
 // Defining a folder that will contain static files.
 server.use(express.static("public"));
 
-// Telling the server to use the USER_API
+// Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)
 server.use("/user", USER_API);
+// server.use("/game", gameRouter);
 
 // A get request handler example)
 server.get("/", (req, res, next) => {
@@ -24,4 +26,8 @@ server.get("/", (req, res, next) => {
 // Start the server
 server.listen(server.get("port"), function () {
   console.log("server running", server.get("port"));
+});
+
+server.on("error", (err) => {
+  console.error("Server error:", err);
 });

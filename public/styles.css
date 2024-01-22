@@ -1,0 +1,189 @@
+#containerBackgroundOuter > div {
+  width: 1920px;
+  height: 1080px;
+  background: #49494a;
+  position: absolute;
+}
+
+#containerBackgroundInner > div {
+  top: 30px;
+  left: 30px;
+  width: 1860px;
+  height: 1020px;
+  background: #59368d;
+  position: absolute;
+}
+
+#containerGameplayZone > div {
+  top: 100px;
+  left: 10px;
+  width: 1550px;
+  height: 910px;
+  background: #39738f;
+  position: absolute;
+}
+
+/* Category buttons */
+#battleButton {
+  top: 130px;
+  left: 1615px;
+  width: 250px;
+  height: 120px;
+  text-align: center;
+  border-radius: 50% / 50%;
+  cursor: pointer;
+  border-color: black;
+  background-color: #e72257;
+  background-position: 75px 0px;
+  background-image: url("./asset/SpriteSheet.png");
+  position: absolute;
+}
+#inventoryButton {
+  top: 280px;
+  left: 1615px;
+  width: 250px;
+  height: 120px;
+  text-align: center;
+  border-radius: 50% / 50%;
+  cursor: pointer;
+  border-color: black;
+  background-color: #1e682e;
+  background-position: -110px 0px;
+  background-image: url("./asset/SpriteSheet.png");
+  position: absolute;
+}
+#shopButton {
+  top: 430px;
+  left: 1615px;
+  width: 250px;
+  height: 120px;
+  text-align: center;
+  border-radius: 50% / 50%;
+  cursor: pointer;
+  border-color: black;
+  background-color: #3b4e9c;
+  background-position: -310px -10px;
+  background-image: url("./asset/SpriteSheet.png");
+  position: absolute;
+}
+#idleButton {
+  top: 580px;
+  left: 1615px;
+  width: 250px;
+  height: 120px;
+  text-align: center;
+  border-radius: 50% / 50%;
+  cursor: pointer;
+  border-color: black;
+  background-color: #f59f13;
+  background-position: -500px -10px;
+  background-image: url("./asset/SpriteSheet.png");
+  position: absolute;
+}
+#settingsButton {
+  top: 900px;
+  left: 1615px;
+  width: 250px;
+  height: 120px;
+  text-align: center;
+  border-radius: 50% / 50%;
+  cursor: pointer;
+  border-color: black;
+  background-color: #757576;
+  background-position: -110px -10px;
+  /* background-image: url("./asset/SpriteSheet.png"); */
+  position: absolute;
+}
+
+/* Idle UI */
+#idleTopDiv {
+  position: absolute;
+  /* width: 775px;
+  height: 910px; */
+  width: 1550px;
+  height: 550px;
+  background-color: white;
+}
+#idleTopLeftDiv {
+  position: absolute;
+  width: 600px;
+  height: 550px;
+  background-color: #1e682e;
+}
+#idleTopRightDiv {
+  position: absolute;
+  width: 950px;
+  height: 550px;
+  left: 600px;
+  background-color: #e6832e;
+}
+#idleBottomDiv {
+  position: absolute;
+  width: 1550px;
+  height: 360px;
+  top: 550px;
+  background-color: #e72257;
+}
+#progressOuterBarDiv {
+  position: absolute;
+  width: 300px;
+  height: 30px;
+  left: 325px;
+  top: 10px;
+  background-color: blue;
+}
+#progressInnerBarDiv {
+  position: absolute;
+  /* width: 285px;
+  height: 15px;
+  margin: 7.5px; */
+  width: 300px;
+  height: 30px;
+  background-color: black;
+  animation: progress-animation 5s linear infinite;
+}
+@keyframes progress-animation {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Skill buttons */
+#woodCuttingButton {
+  width: 125px;
+  height: 100px;
+  cursor: pointer;
+}
+#miningButton {
+  width: 125px;
+  height: 100px;
+  cursor: pointer;
+}
+#fishingButton {
+  width: 125px;
+  height: 100px;
+  cursor: pointer;
+}
+#cookingButton {
+  width: 125px;
+  height: 100px;
+  cursor: pointer;
+}
+
+/* Inventory UI */
+#inventoryLeftDiv {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  background-color: antiquewhite;
+}
+#inventoryRightDiv {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  left: 775px;
+  background-color: aqua;
+}
