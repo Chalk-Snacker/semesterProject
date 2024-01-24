@@ -1,8 +1,30 @@
 "use strict";
 
 import { initIdle, initBattle, initInventory, initShop, initSettings } from "./gameUi.mjs";
+
 // main function
+const testPlayer = {
+  playerEmail: "testMail",
+  playerPsw: "testPassWrD21132",
+  playerNick: "testPlayer",
+};
+const testPlayerUpdated = {
+  playerEmail: "testMailTest",
+  playerPsw: "testPassWrD21132Test",
+  playerNick: "Player1",
+};
+
+// const testPlayer2 = {
+//   playerEmail: "testMail2",
+//   playerPsw: "testPassWrD21132",
+//   playerNick: "testPlayer2",
+// };
 export function loadGame() {
+  testCreateUser(testPlayer);
+  // editUser(testPlayerUpdated);
+  // testCreateUsers(testPlayer2);
+  // deleteCreateUsers("testPlayer");
+
   let containerOuter = document.getElementById("containerBackgroundOuter");
   let containerInner = document.getElementById("containerBackgroundInner");
   let containerGameplay = document.getElementById("containerGameplayZone");
@@ -58,6 +80,77 @@ export function loadGame() {
   console.log(document.getElementsByTagName("*").length);
 }
 
+// USER FUNCTIONS
+async function testCreateUser() {
+  let requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(testPlayer),
+  };
+  try {
+    let response = await fetch("http://localhost:8080/user", requestOptions);
+    if (response.status != 201) {
+      console.log(response.status);
+      console.log("Error creating user");
+      throw new Error("Server error: " + response.status);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// TESTING STATIC OBJECT
+// async function testCreateUser(aPlayer) {
+//   let requestOptions = {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(aPlayer),
+//   };
+//   try {
+//     let response = await fetch("http://localhost:8080/user", requestOptions);
+//     if (response.status != 201) {
+//       console.log(response.status);
+//       console.log("Error creating user");
+//       throw new Error("Server error: " + response.status);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+async function deleteUser(playerName) {
+  let requestOptions = {
+    method: "DELETE",
+  };
+  try {
+    let response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
+    if (response.status != 200) {
+      console.log("Error deleting user");
+      throw new Error("Server error: " + response.status);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function editUser(playerName) {
+  let requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(testPlayerUpdated),
+  };
+  try {
+    let response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
+    if (response.status != 200) {
+      console.log("Error editing user");
+      throw new Error("Server error: " + response.status);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+// ----------------------------------------------------------------------------------------------------
+
 // BUTTON FUNCTIONS:
 
 function battle() {
@@ -109,6 +202,18 @@ function settings() {
   // css hidden toggle ting her
 }
 
+// UI for pålogging:
+// kjør dette aller først:
+// formData = customerForm
+// let customerForm = document.createElement("form");
+// let playerEmail = document.createElement("input");
+// let playerPsw = document.createElement("input");
+// let playerNick = document.createElement("input");
+
+// customerForm.appendChild("");
+
+// bruk disse for testing før du har innlogging html del:
+
 /*
 --------------------------------------- TO DO: ---------------------------------------
 1. lag liste for stats i idle
@@ -117,7 +222,7 @@ function settings() {
 */
 
 /*
---------------------------------------- Fix: ---------------------------------------
+--------------------------------------- Game fixes: ---------------------------------------
 1. fix the idle and inventory functions, they are a mess with variables that have horrible names, aka fix 
   the css hidden toggle stuff so its not ass
 2. fix bug med at hvis du holder på å lvl et skill og trykker på samme knapp så skjer det ting. 
@@ -128,4 +233,6 @@ function settings() {
 5. make the layout responsive
 6. trenger kanskje ikke å starte siden med idle delen, kanskje noe annet skal være der?
 7. kan kanskje lage noen av div og knapper med for loop heller 
+8. hvis du begynner å farme eks. woodcutting og går til inventory farmer den fortsatt // lag en egen funksjon for å stoppe farming
+   så du ikke trenger å ha 100 linjer hvergang det må stoppes, og kall på den når du bytter skill å grinde eller vindu
 */

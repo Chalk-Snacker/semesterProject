@@ -1,8 +1,8 @@
 class User {
   constructor() {
-    this.email;
-    this.pswHash;
-    this.nick;
+    this.email = "";
+    this.pswHash = "";
+    this.nick = "";
   }
 }
 

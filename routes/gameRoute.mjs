@@ -1,8 +1,8 @@
-import express from "express";
-import gameInitRouter from "./gameInitRoute.mjs";
+// import express from "express";
+// import gameInitRouter from "./gameInitRoute.mjs";
 
-const gameRouter = express.Router();
+// const gameRouter = express.Router();
 
-gameRouter.use("/initialize-game", gameInitRouter);
+// gameRouter.use("/initialize-game", gameInitRouter);
 
-export default gameRouter;
+// export default gameRouter;
