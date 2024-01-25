@@ -3,27 +3,79 @@ let woodcuttingInterval,
   miningInterval,
   fishingInterval,
   cookingInterval,
-  progressOuterBarDiv,
   progressInnerBarDiv = null;
 
 // let skills ={
 //   woodcutting:1,
 // }
 
-let skills = ["woodcutting", "mining", "fishing", "cooking"];
+const skills = ["woodcutting", "mining", "fishing", "cooking"];
 //sett en random value nå, og når det er mulig å sende/ hente verdier fra serveren, endre variabel verdien til hva som hentes fra server
 let testVar = 1;
 
-export function initIdle(aContainer) {
+export function loadGame() {
+  const containerOuter = document.getElementById("containerBackgroundOuter");
+  const containerInner = document.getElementById("containerBackgroundInner");
+  const containerGameplay = document.getElementById("containerGameplayZone");
+
+  const div = document.createElement("div");
+  containerOuter.appendChild(div);
+  containerInner.appendChild(div);
+  containerGameplay.appendChild(div);
+
+  // -------- Main Buttons on side --------
+
+  // battle button
+  const battleButton = document.createElement("button");
+  battleButton.id = "battleButton";
+  battleButton.addEventListener("click", function () {});
+  containerInner.appendChild(battleButton);
+
+  // inventory button
+  const InventoryButton = document.createElement("button");
+  InventoryButton.id = "inventoryButton";
+  InventoryButton.addEventListener("click", inventory);
+
+  containerInner.appendChild(InventoryButton);
+
+  // shop button
+  const shopButton = document.createElement("button");
+  shopButton.id = "shopButton";
+  shopButton.addEventListener("click", shop);
+
+  containerInner.appendChild(shopButton);
+
+  // idle button
+  const idleButton = document.createElement("button");
+  idleButton.id = "idleButton";
+  idleButton.addEventListener("click", idle);
+  containerInner.appendChild(idleButton);
+
+  // settings button
+  const settingsButton = document.createElement("button");
+  settingsButton.innerText = "settings";
+  settingsButton.id = "settingsButton";
+  settingsButton.addEventListener("click", settings);
+  containerInner.appendChild(settingsButton);
+  // ------------ End of Buttons ---------
+
+  initBattle(div);
+  initInventory(div);
+  initShop(div);
+  initIdle(div);
+  initSettings(div);
+}
+
+function initIdle(aContainer) {
   // Creates idle UI:
-  let idleTopDiv = document.createElement("div");
-  let idleTopLeftDiv = document.createElement("div");
-  let idleTopRightDiv = document.createElement("div");
+  const idleTopDiv = document.createElement("div");
+  const idleTopLeftDiv = document.createElement("div");
+  const idleTopRightDiv = document.createElement("div");
   idleTopDiv.id = "idleTopDiv";
   idleTopLeftDiv.id = "idleTopLeftDiv";
   idleTopRightDiv.id = "idleTopRightDiv";
 
-  let idleBottomDiv = document.createElement("div");
+  const idleBottomDiv = document.createElement("div");
   idleBottomDiv.id = "idleBottomDiv";
   aContainer.appendChild(idleTopDiv);
   aContainer.appendChild(idleBottomDiv);
@@ -31,8 +83,8 @@ export function initIdle(aContainer) {
   idleTopDiv.appendChild(idleTopRightDiv);
 
   // Progressbar
-  let progressOuterBarDiv = document.createElement("div");
-  let progressInnerBarDiv = document.createElement("div");
+  const progressOuterBarDiv = document.createElement("div");
+  const progressInnerBarDiv = document.createElement("div");
   progressOuterBarDiv.id = "progressOuterBarDiv";
   progressInnerBarDiv.id = "progressInnerBarDiv";
   idleTopRightDiv.appendChild(progressOuterBarDiv);
@@ -58,25 +110,25 @@ export function initIdle(aContainer) {
   // --- Buttons ---
 
   // Woodcutting button
-  let woodcuttingButton = document.createElement("button");
+  const woodcuttingButton = document.createElement("button");
   woodcuttingButton.id = "woodCuttingButton";
   woodcuttingButton.addEventListener("click", woodcutting);
   idleBottomDiv.appendChild(woodcuttingButton);
 
   // Mining button
-  let miningButton = document.createElement("button");
+  const miningButton = document.createElement("button");
   miningButton.id = "miningButton";
   miningButton.addEventListener("click", mining);
   idleBottomDiv.appendChild(miningButton);
 
   // Fishing button
-  let fishingButton = document.createElement("button");
+  const fishingButton = document.createElement("button");
   fishingButton.id = "fishingButton";
   fishingButton.addEventListener("click", fishing);
   idleBottomDiv.appendChild(fishingButton);
 
   // Cooking button
-  let cookingButton = document.createElement("button");
+  const cookingButton = document.createElement("button");
   cookingButton.id = "cookingButton";
   cookingButton.addEventListener("click", cooking);
   idleBottomDiv.appendChild(cookingButton);
@@ -90,13 +142,13 @@ export function initIdle(aContainer) {
   // push in a background or random image for rightside
 }
 
-export function initBattle() {
+function initBattle() {
   // asdf
 }
 
-export function initInventory(aContainer) {
-  let inventoryLeftDiv = document.createElement("div");
-  let inventoryRightDiv = document.createElement("div");
+function initInventory(aContainer) {
+  const inventoryLeftDiv = document.createElement("div");
+  const inventoryRightDiv = document.createElement("div");
   inventoryLeftDiv.id = "inventoryLeftDiv";
   inventoryRightDiv.id = "inventoryRightDiv";
 
@@ -106,18 +158,18 @@ export function initInventory(aContainer) {
   // create the rest of inventory system
 }
 
-export function initShop() {
+function initShop() {
   // asdf
 }
 
-export function initSettings() {
+function initSettings() {
   // asdf
 }
 
 // ---------------- Skill functions ----------------------
 
 function woodcutting() {
-  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(miningInterval);
@@ -136,7 +188,7 @@ function woodcutting() {
 }
 
 function mining() {
-  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(woodcuttingInterval);
@@ -150,7 +202,7 @@ function mining() {
 }
 
 function fishing() {
-  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(woodcuttingInterval);
@@ -164,7 +216,7 @@ function fishing() {
 }
 
 function cooking() {
-  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(woodcuttingInterval);
@@ -178,6 +230,8 @@ function cooking() {
 }
 
 function showAnimationBar() {
+  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+
   progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
   progressInnerBarDiv.style.animation = "none";
@@ -188,4 +242,55 @@ function showAnimationBar() {
   progressInnerBarDiv.style.animation = "progress-animation 5s linear infinite";
   progressOuterBarDiv.style.display = "block";
   progressOuterBarDiv.style.visibility = "visible";
+}
+
+// ---------------- Button functions ----------------------
+
+function battle() {
+  // css hidden toggle ting her
+}
+function inventory() {
+  console.log(progressOuterBarDiv);
+  // hides the progressbar so that it doesnt automatically runs when going back to idle
+  progressOuterBarDiv.style.visibility = "hidden";
+  progressOuterBarDiv.style.display = "none";
+
+  // rest of function
+  const test1 = document.getElementById("idleTopDiv");
+  const test2 = document.getElementById("idleBottomDiv");
+  test1.style.display = "none";
+  test1.style.visibility = "hidden";
+  test2.style.display = "none";
+  test2.style.visibility = "hidden";
+
+  const test3 = document.getElementById("inventoryLeftDiv");
+  const test4 = document.getElementById("inventoryRightDiv");
+  test3.style.display = "block";
+  test3.style.visibility = "visible";
+  test4.style.display = "block";
+  test4.style.visibility = "visible";
+}
+function shop() {
+  // css hidden toggle ting her
+}
+function idle() {
+  // css hidden toggle ting her
+  const test1 = document.getElementById("inventoryLeftDiv");
+  const test2 = document.getElementById("inventoryRightDiv");
+  test1.style.display = "none";
+  test1.style.visibility = "hidden";
+  test2.style.display = "none";
+  test2.style.visibility = "hidden";
+
+  const test3 = document.getElementById("idleTopDiv");
+  const test4 = document.getElementById("idleBottomDiv");
+  test3.style.display = "block";
+  test3.style.visibility = "visible";
+  test4.style.display = "block";
+  test4.style.visibility = "visible";
+
+  // husk å gjøre inventory visible igjen (gjelder alle kategorier)
+}
+function settings() {
+  // css hidden toggle ting her
 }
