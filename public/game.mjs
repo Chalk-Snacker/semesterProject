@@ -93,19 +93,41 @@ function initIdle(aContainer) {
   progressOuterBarDiv.style.display = "none";
 
   // Skill list
-  // lag så mange div du trenger for hvert skill med for loop senere
-  // lagre antall skills på serveren slik som i planteoppgaven?
   // skriv det heller om senere, bare kod slik at du har spillet "ferdig" og kan heller oppdatere det senere for server
-
-  /*
-  se over koden under, siste som ble gjort og er ikke testet
-  let skillListDiv = document.createElement("div");
   for (let i = 0; i < skills.length; i++) {
-    skillListDiv.id = "skillListDiv";
+    const skillListDiv = document.createElement("div");
+    skillListDiv.classList.add("skillListDiv");
+    skillListDiv.id = "skillListDiv_" + skills[i];
+    // name of skill
+    const skillName = document.createElement("h1");
+    skillName.classList.add("skillName"); // style general for all
+    skillName.innerText = skills[i];
+    // xp and lvl tracking
+    const lvlXpContainer = document.createElement("div");
+    const skillXpBarOuterDiv = document.createElement("div");
+    const skillXpBarInnerDiv = document.createElement("div");
+    skillXpBarOuterDiv.id = "skillXpBarOuterDiv";
+    skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + skills[i];
+    // skill lvl
+    const skillLvl = document.createElement("h3");
+    skillLvl.classList.add("skillLvl");
+    skillLvl.innerText = "lvl " + "insertlvl";
+    //skill icon
+    const img = document.createElement("img");
+    img.id = "skillIcon";
+    img.src = "./asset/skillsTest.jpg";
+
+    skillListDiv.appendChild(skillName); // skill name
+    lvlXpContainer.appendChild(skillLvl);
+    lvlXpContainer.append(skillXpBarOuterDiv);
+
+    // skillListDiv.appendChild(skillXpBarOuterDiv); // skillXpBarOuter
+    skillXpBarOuterDiv.appendChild(skillXpBarInnerDiv); // skillXpBarInner
+    skillListDiv.appendChild(lvlXpContainer);
+    // skillListDiv.appendChild(skillLvl); //  skill lvl
+    skillListDiv.appendChild(img); // skill icon
     idleTopLeftDiv.appendChild(skillListDiv);
   }
-
-  */
 
   // --- Buttons ---
 
@@ -133,13 +155,15 @@ function initIdle(aContainer) {
   cookingButton.addEventListener("click", cooking);
   idleBottomDiv.appendChild(cookingButton);
   // ---- END OF IDLE UI ----
+}
 
-  // Creates idle gameplay
-
-  // create a list to showcase all the stats (woodcutting, mining ...)
-  // push in a list tracking stats, all should be lvl 1 deafault
-  // push in idle icons in bottom part
-  // push in a background or random image for rightside
+function updateSkillLvlXpBar(skillName, xpValue) {
+  const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
+  // width is not set, so i set it to be 0 if we have 0 xp on the bar
+  let currentWidth = parseFloat(innerBar.style.width) || 0;
+  currentWidth += parseFloat(xpValue);
+  innerBar.style.width = currentWidth + "px";
+  innerBar.offsetWidth; // Force repaint
 }
 
 function initBattle() {
@@ -175,7 +199,7 @@ function woodcutting() {
   clearInterval(miningInterval);
   clearInterval(fishingInterval);
   clearInterval(cookingInterval);
-  clearInterval(woodcuttingInterval); // denne er temp, siden det er mulig å klikke på den foreløpig mens et interval allerede kjører, lage det ekstra interval pr klikk
+  clearInterval(woodcuttingInterval);
 
   showAnimationBar();
 
@@ -184,6 +208,7 @@ function woodcutting() {
 
     testVar++;
     console.log("amount of wood: " + testVar);
+    updateSkillLvlXpBar(skills[0], "10px");
   }, 5000);
 }
 
@@ -194,10 +219,13 @@ function mining() {
   clearInterval(woodcuttingInterval);
   clearInterval(fishingInterval);
   clearInterval(cookingInterval);
+  clearInterval(miningInterval);
+
   showAnimationBar();
 
   miningInterval = setInterval(function () {
     console.log("mining test");
+    updateSkillLvlXpBar(skills[1], "10px");
   }, 5000);
 }
 
@@ -208,10 +236,13 @@ function fishing() {
   clearInterval(woodcuttingInterval);
   clearInterval(miningInterval);
   clearInterval(cookingInterval);
+  clearInterval(fishingInterval);
+
   showAnimationBar();
 
   fishingInterval = setInterval(function () {
     console.log("fishing test");
+    updateSkillLvlXpBar(skills[2], "10px");
   }, 5000);
 }
 
@@ -222,17 +253,20 @@ function cooking() {
   clearInterval(woodcuttingInterval);
   clearInterval(fishingInterval);
   clearInterval(miningInterval);
+  clearInterval(cookingInterval);
+
   showAnimationBar();
 
   cookingInterval = setInterval(function () {
     console.log("cooking test");
+    updateSkillLvlXpBar(skills[3], "10px");
   }, 5000);
 }
 
 function showAnimationBar() {
   let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
 
-  progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  // progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
   progressInnerBarDiv.style.animation = "none";
 
@@ -250,7 +284,6 @@ function battle() {
   // css hidden toggle ting her
 }
 function inventory() {
-  console.log(progressOuterBarDiv);
   // hides the progressbar so that it doesnt automatically runs when going back to idle
   progressOuterBarDiv.style.visibility = "hidden";
   progressOuterBarDiv.style.display = "none";

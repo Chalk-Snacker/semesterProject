@@ -124,6 +124,71 @@
   height: 550px;
   background-color: #1e682e;
 }
+.skillListDiv {
+  border: 3px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+/* ----- SKILL XP BARS */
+
+#skillXpBarOuterDiv {
+  position: absolute;
+  width: 150px;
+  height: 10px;
+  /* left: 325px; */
+  background-color: blue;
+}
+#skillXpBarInnerDiv_woodcutting {
+  position: absolute;
+  height: 10px;
+
+  background-color: black;
+  display: flex;
+
+  /* linke width til å være en int verdi */
+}
+#skillXpBarInnerDiv_mining {
+  position: absolute;
+  /* width: 150px; */
+  height: 10px;
+  background-color: black;
+  /* linke width til å være en int verdi */
+}
+#skillXpBarInnerDiv_fishing {
+  position: absolute;
+  /* width: 150px; */
+  height: 10px;
+  background-color: black;
+  /* linke width til å være en int verdi */
+}
+#skillXpBarInnerDiv_cooking {
+  position: absolute;
+  /* width: 150px; */
+  height: 10px;
+  background-color: black;
+  /* linke width til å være en int verdi */
+}
+
+#skillListDiv_woodcutting > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+
+#skillListDiv_mining > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+#skillListDiv_fishing > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+#skillListDiv_cooking > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+
 #idleTopRightDiv {
   position: absolute;
   width: 950px;
@@ -170,21 +235,33 @@
   width: 125px;
   height: 100px;
   cursor: pointer;
+  background-size: 1600px;
+  background-position: 0px -106px;
+  background-image: url("./asset/SpriteSheet.png");
 }
 #miningButton {
   width: 125px;
   height: 100px;
   cursor: pointer;
+  background-size: 1600px;
+  background-position: -130px -106px;
+  background-image: url("./asset/SpriteSheet.png");
 }
 #fishingButton {
   width: 125px;
   height: 100px;
   cursor: pointer;
+  background-size: 1500px;
+  background-position: -270px -106px;
+  background-image: url("./asset/SpriteSheet.png");
 }
 #cookingButton {
   width: 125px;
   height: 100px;
   cursor: pointer;
+  background-size: 1650px;
+  background-position: -475px -120px;
+  background-image: url("./asset/SpriteSheet.png");
 }
 
 /* Inventory UI */

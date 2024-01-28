@@ -55,7 +55,6 @@ function loginUser() {
   const loginButton = document.createElement("button");
   loginButton.innerText = "Login";
   loginButton.addEventListener("click", function (event) {
-    console.log("loginButton clicked");
     loadGame();
     /* run createUser function here, but change the function so that 
        the createUser takes the information from the input fields.
@@ -66,7 +65,6 @@ function loginUser() {
   const createNewUserButton = document.createElement("button");
   createNewUserButton.innerText = "Create new user";
   createNewUserButton.addEventListener("click", function (event) {
-    console.log("createNewUserButton clicked");
     createUserUi();
 
     // lag og kjør funksjon for å gjemme css for login
@@ -217,7 +215,6 @@ async function createUser() {
   } catch (error) {
     console.log(error);
   }
-  console.log(user);
 }
 
 async function deleteUser(playerName) {
