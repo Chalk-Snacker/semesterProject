@@ -5,15 +5,19 @@ let woodcuttingInterval,
   cookingInterval,
   progressInnerBarDiv = null;
 
-// let skills ={
-//   woodcutting:1,
-// }
+const userDataValues = await userData();
+console.log(userDataValues);
+const listOfSkills = Object.keys(userDataValues[0].skills);
+// console.log(listOfSkills[1]);
+console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
 
-const skills = ["woodcutting", "mining", "fishing", "cooking"];
-//sett en random value nå, og når det er mulig å sende/ hente verdier fra serveren, endre variabel verdien til hva som hentes fra server
 let testVar = 1;
 
 export function loadGame() {
+  // hent informasjon om brukeren fra serveren og erstatt statiske verdier under (brukt for testing) med dem
+  // sjekk for om brukernavn og passord er riktig, gjøres ikke i loadGame, men i gameLogon.mjs
+  // når loadGame kjøres, hentes alle stats, xp, items i inventory, penger og spillernavn fra serveren utifra brukeren
+  // hvis du er på en gjestbruker, vil du starte med et fastoppsett som alle nye brukere starter med, men vil ikke få mulighet til å lagre dataen
   const containerOuter = document.getElementById("containerBackgroundOuter");
   const containerInner = document.getElementById("containerBackgroundInner");
   const containerGameplay = document.getElementById("containerGameplayZone");
@@ -94,24 +98,27 @@ function initIdle(aContainer) {
 
   // Skill list
   // skriv det heller om senere, bare kod slik at du har spillet "ferdig" og kan heller oppdatere det senere for server
-  for (let i = 0; i < skills.length; i++) {
+  for (let i = 0; i < listOfSkills.length; i++) {
+    // console.log(userDataValues[0].skills[listOfSkills[i]]);
     const skillListDiv = document.createElement("div");
     skillListDiv.classList.add("skillListDiv");
-    skillListDiv.id = "skillListDiv_" + skills[i];
+    skillListDiv.id = "skillListDiv_" + listOfSkills[i];
     // name of skill
     const skillName = document.createElement("h1");
     skillName.classList.add("skillName"); // style general for all
-    skillName.innerText = skills[i];
+    skillName.innerText = userDataValues[0].skills[listOfSkills[i]].skillName;
+
     // xp and lvl tracking
     const lvlXpContainer = document.createElement("div");
     const skillXpBarOuterDiv = document.createElement("div");
     const skillXpBarInnerDiv = document.createElement("div");
     skillXpBarOuterDiv.id = "skillXpBarOuterDiv";
-    skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + skills[i];
+    skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + listOfSkills[i];
     // skill lvl
     const skillLvl = document.createElement("h3");
     skillLvl.classList.add("skillLvl");
-    skillLvl.innerText = "lvl " + "insertlvl";
+    // skillLvl.id = `skillLvl_${listOfSkills[i]}`;
+    skillLvl.innerText = "lvl " + userDataValues[0].skills[listOfSkills[i]].lvl;
     //skill icon
     const img = document.createElement("img");
     img.id = "skillIcon";
@@ -156,7 +163,6 @@ function initIdle(aContainer) {
   idleBottomDiv.appendChild(cookingButton);
   // ---- END OF IDLE UI ----
 }
-
 function updateSkillLvlXpBar(skillName, xpValue) {
   const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
   // width is not set, so i set it to be 0 if we have 0 xp on the bar
@@ -200,16 +206,54 @@ function woodcutting() {
   clearInterval(fishingInterval);
   clearInterval(cookingInterval);
   clearInterval(woodcuttingInterval);
-
   showAnimationBar();
 
+  // hvordan få hentet ut ny verdi/ oppdatert verdi hvergang du kjører denne funksjonen??
+  let currentLvl = userDataValues[0].skills[listOfSkills[0]].lvl; // bytt ut denne med en async func som henter verdien fra serveren
+  currentLvl++;
+
+  updateLvl("woodcutting", currentLvl);
+  console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
   woodcuttingInterval = setInterval(function () {
     // oppdater verdier her med sjekker og alt annet ig orker ikke mer nå...
 
     testVar++;
     console.log("amount of wood: " + testVar);
-    updateSkillLvlXpBar(skills[0], "10px");
+    updateSkillLvlXpBar(listOfSkills[0], "10px");
+    // userDataValues[0].skills[listOfSkills[0]].lvl++;
+    // gjør request på sereren om å oppdatere verdien
+    // userDataValues[0].skills[listOfSkills[0]].lvl++;
+
+    // skillIncrease(skillLvl_woodcutting);
   }, 5000);
+}
+
+async function updateLvl(skillName, newLvl) {
+  // for newLvl, hent ferdi fra server, lagre den i variabel og bruk den ++ for å øke lvl
+  // siks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
+  const updatedSkill = {
+    [skillName]: {
+      lvl: newLvl,
+    },
+  };
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedSkill),
+  };
+  try {
+    const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/game/mining`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/game/`, requestOptions);
+
+    if (response.status !== 200) {
+      console.log("Error editing user");
+      throw new Error("Server error: " + response.status);
+    }
+    const data = await response.json();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function mining() {
@@ -225,7 +269,7 @@ function mining() {
 
   miningInterval = setInterval(function () {
     console.log("mining test");
-    updateSkillLvlXpBar(skills[1], "10px");
+    updateSkillLvlXpBar(listOfSkills[1], "10px");
   }, 5000);
 }
 
@@ -242,7 +286,7 @@ function fishing() {
 
   fishingInterval = setInterval(function () {
     console.log("fishing test");
-    updateSkillLvlXpBar(skills[2], "10px");
+    updateSkillLvlXpBar(listOfSkills[2], "10px");
   }, 5000);
 }
 
@@ -259,7 +303,7 @@ function cooking() {
 
   cookingInterval = setInterval(function () {
     console.log("cooking test");
-    updateSkillLvlXpBar(skills[3], "10px");
+    updateSkillLvlXpBar(listOfSkills[3], "10px");
   }, 5000);
 }
 
@@ -278,7 +322,7 @@ function showAnimationBar() {
   progressOuterBarDiv.style.visibility = "visible";
 }
 
-// ---------------- Button functions ----------------------
+// ---------------- Button functions for toggling css----------------------
 
 function battle() {
   // css hidden toggle ting her
@@ -327,3 +371,78 @@ function idle() {
 function settings() {
   // css hidden toggle ting her
 }
+
+async function userData() {
+  let requestOptions = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    // body: JSON.stringify(user),
+  };
+  try {
+    let response = await fetch("http://localhost:8080/game/", requestOptions);
+    if (response.status != 200) {
+      console.log("Error getting stuff!");
+      throw new Error("Server error: " + response.status);
+    }
+    let data = await response.json();
+    // console.log("ka e detta? ", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// lage en funksjon som oppdaterer xp, og hvis xp er max så med en if check så øke lvl, eller ha 2 separerte funksjoner?
+// function updateSkillLvl(aSkill, ha et parameter til? isåfall newLevel){
+//   skillLvl.innerText = "lvl " + userDataValues[0].skills[listOfSkills[i]].lvl;
+//     skillLvl.id = `skillLvl_${listOfSkills[i]}`;
+// }
+
+/* 
+få updateXp og updateLvl til å kunne oppdatere verdier på serveren
+kjør den i hvert intervall på skills, så når den er ferdig med å eks. fiske en fisk så kjører denne funksjonen
+async function skillIncrase() {
+  async function updateXp() {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      // body: JSON.stringify(testPlayerUpdated), // testPlayerUpdated er/ var et object
+    };
+    try {
+      const response = await fetch(`http://localhost:8080/game/${playerName}`, requestOptions);
+      if (response.status != 200) {
+        console.log("Error editing user");
+        throw new Error("Server error: " + response.status);
+      }
+      const data = await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function updateLvl() {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      // body: JSON.stringify(testPlayerUpdated), // testPlayerUpdated er/ var et object
+    };
+    try {
+      const response = await fetch(`http://localhost:8080/game/${playerName}`, requestOptions);
+      if (response.status != 200) {
+        console.log("Error editing user");
+        throw new Error("Server error: " + response.status);
+      }
+      const data = await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  try {
+    const updateXp = await updateXp();
+    if (xp >= max xp needed to lvl up) {
+      const updateLvl = await updateLvl();
+    }
+  } catch (error) {
+    console.log("error idk");
+  }
+}
+*/

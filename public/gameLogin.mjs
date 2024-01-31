@@ -28,7 +28,7 @@ export function main() {
 
 function loginUser() {
   // UI for pålogging:
-  // lage all ui her og bruke css funksjoner for å toggle mellom login page og create user?
+  // bruk html templates
 
   // login:
   const formContainer = document.getElementById("containerGameplayZone");
@@ -56,9 +56,6 @@ function loginUser() {
   loginButton.innerText = "Login";
   loginButton.addEventListener("click", function (event) {
     loadGame();
-    /* run createUser function here, but change the function so that 
-       the createUser takes the information from the input fields.
-    */
     event.preventDefault();
   });
 
@@ -66,17 +63,8 @@ function loginUser() {
   createNewUserButton.innerText = "Create new user";
   createNewUserButton.addEventListener("click", function (event) {
     createUserUi();
-
-    // lag og kjør funksjon for å gjemme css for login
-
-    /* run createUser function here, but change the function so that 
-       the createUser takes the information from the input fields.
-    */
     event.preventDefault();
   });
-
-  // const formData = new FormData(userForm);
-  // const register = await createUser();
 
   userForm.appendChild(usernameLabel);
   userForm.appendChild(username);
@@ -154,16 +142,8 @@ function createUserUi() {
 
   formContainer.appendChild(userForm);
 
-  // kjør dette aller først:
-  // formData = customerForm
-  // let customerForm = document.createElement("form");
-  // let playerEmail = document.createElement("input");
-  // let playerPsw = document.createElement("input");
-  // let playerNick = document.createElement("input");
-  // customerForm.appendChild("");
-  // lag knapp for createUser her og legg på en eventlistener som kjører create user knapp
-  /* run createUser function here, but change the function so that 
-     the createUser takes the information from the input fields.
+  /* change the createUser function so that 
+     the it takes the information from the input fields.
   */
 
   // const formData = new FormData(userForm);
@@ -251,24 +231,18 @@ async function editUser(playerName) {
 
 /*
 --------------------------------------- TO DO: ---------------------------------------
-1. lag liste for stats i idle
-2. oppdater stats med if tester e.l. når du skal lvl opp... må vel da lage et xp system...
-3. sett inn spillernavn + lvl
-4. bytte "game" i filnavn til hva du skal kalle spillet
-*/
+1. oppdater stats med if tester e.l. når du skal lvl opp... må vel da lage et xp system...
+2. sett inn spillernavn + lvl
+3. bytte "game" i filnavn til hva du skal kalle spillet
 
-/*
+
 --------------------------------------- Game fixes: ---------------------------------------
 1. fix the idle and inventory functions, they are a mess with variables that have horrible names, aka fix 
   the css hidden toggle stuff so its not ass
-2. fix bug med at hvis du holder på å lvl et skill og trykker på samme knapp så skjer det ting. 
-  Det skal ikke gå ann å trykke på knappen av samme skill mens man lvler det.
-  evt så kan du cleare intervalle av samme skill (cleare alle 4 istedenfor 3)?
 3. husk å gjøre alt til const, og heller let om du får feilmelding
 4. make the category buttons smaller and the gameplay area bigger
 5. make the layout responsive
-6. trenger kanskje ikke å starte siden med idle delen, kanskje noe annet skal være der?
-7. kan kanskje lage noen av div og knapper med for loop heller 
-8. hvis du begynner å farme eks. woodcutting og går til inventory farmer den fortsatt // lag en egen funksjon for å stoppe farming
+6. hvis du begynner å farme eks. woodcutting og går til inventory farmer den fortsatt // lag en egen funksjon for å stoppe farming
    så du ikke trenger å ha 100 linjer hvergang det må stoppes, og kall på den når du bytter skill å grinde eller vindu
+7. gjør sjekk på xp bar at den blir 0px når width er like lang som outerbar, og så increase lvl med 1
 */

@@ -3,7 +3,11 @@ import User from "../modules/user.mjs";
 
 const USER_API = express.Router();
 
-const users = [];
+export const users = [];
+// a default user that doesnt save progress
+const guestUser = new User();
+guestUser.nick = "Guest";
+users.push(guestUser);
 
 USER_API.get("/:id", (req, res) => {
   // Return user object
@@ -13,11 +17,10 @@ USER_API.get("/:id", (req, res) => {
 USER_API.post("/", (req, res) => {
   // create user
   // give the user an id?
+  // TO DO:
+  // check if username etc is already taken
+  // dont store password
   try {
-    // TO DO:
-    // check if username etc is already taken
-    // dont store password
-
     const userData = req.body;
     const user = new User();
     user.email = userData.playerEmail;
