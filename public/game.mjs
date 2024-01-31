@@ -5,7 +5,7 @@ let woodcuttingInterval,
   cookingInterval,
   progressInnerBarDiv = null;
 
-const userDataValues = await userData();
+let userDataValues = await userData();
 console.log(userDataValues);
 const listOfSkills = Object.keys(userDataValues[0].skills);
 // console.log(listOfSkills[1]);
@@ -197,8 +197,8 @@ function initSettings() {
 }
 
 // ---------------- Skill functions ----------------------
-
-function woodcutting() {
+let newLvl = null;
+async function woodcutting() {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
@@ -208,11 +208,11 @@ function woodcutting() {
   clearInterval(woodcuttingInterval);
   showAnimationBar();
 
-  // hvordan få hentet ut ny verdi/ oppdatert verdi hvergang du kjører denne funksjonen??
-  let currentLvl = userDataValues[0].skills[listOfSkills[0]].lvl; // bytt ut denne med en async func som henter verdien fra serveren
-  currentLvl++;
+  newLvl = await userData();
+  newLvl = newLvl[0].skills[listOfSkills[0]].lvl;
+  newLvl++;
 
-  updateLvl("woodcutting", currentLvl);
+  updateLvl("woodcutting", newLvl);
   console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
   woodcuttingInterval = setInterval(function () {
     // oppdater verdier her med sjekker og alt annet ig orker ikke mer nå...
@@ -229,8 +229,7 @@ function woodcutting() {
 }
 
 async function updateLvl(skillName, newLvl) {
-  // for newLvl, hent ferdi fra server, lagre den i variabel og bruk den ++ for å øke lvl
-  // siks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
+  // fiks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
   const updatedSkill = {
     [skillName]: {
       lvl: newLvl,
