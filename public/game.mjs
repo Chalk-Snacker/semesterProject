@@ -198,7 +198,7 @@ function initSettings() {
 
 // ---------------- Skill functions ----------------------
 let newLvl = null;
-async function woodcutting() {
+function woodcutting() {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
@@ -208,51 +208,21 @@ async function woodcutting() {
   clearInterval(woodcuttingInterval);
   showAnimationBar();
 
-  newLvl = await userData();
-  newLvl = newLvl[0].skills[listOfSkills[0]].lvl;
-  newLvl++;
-
-  updateLvl("woodcutting", newLvl);
-  console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
-  woodcuttingInterval = setInterval(function () {
+  woodcuttingInterval = setInterval(async function () {
     // oppdater verdier her med sjekker og alt annet ig orker ikke mer nå...
 
     testVar++;
     console.log("amount of wood: " + testVar);
     updateSkillLvlXpBar(listOfSkills[0], "10px");
-    // userDataValues[0].skills[listOfSkills[0]].lvl++;
-    // gjør request på sereren om å oppdatere verdien
-    // userDataValues[0].skills[listOfSkills[0]].lvl++;
+    newLvl = await userData();
+    newLvl = newLvl[0].skills[listOfSkills[0]].lvl;
+    newLvl++;
+
+    updateLvl("woodcutting", newLvl);
+    // console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
 
     // skillIncrease(skillLvl_woodcutting);
   }, 5000);
-}
-
-async function updateLvl(skillName, newLvl) {
-  // fiks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
-  const updatedSkill = {
-    [skillName]: {
-      lvl: newLvl,
-    },
-  };
-  const requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedSkill),
-  };
-  try {
-    const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
-    // const response = await fetch(`http://localhost:8080/game/mining`, requestOptions);
-    // const response = await fetch(`http://localhost:8080/game/`, requestOptions);
-
-    if (response.status !== 200) {
-      console.log("Error editing user");
-      throw new Error("Server error: " + response.status);
-    }
-    const data = await response.json();
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 function mining() {
@@ -386,6 +356,33 @@ async function userData() {
     let data = await response.json();
     // console.log("ka e detta? ", data);
     return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function updateLvl(skillName, newLvl) {
+  // fiks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
+  const updatedSkill = {
+    [skillName]: {
+      lvl: newLvl,
+    },
+  };
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedSkill),
+  };
+  try {
+    const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/game/mining`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/game/`, requestOptions);
+
+    if (response.status !== 200) {
+      console.log("Error editing user");
+      throw new Error("Server error: " + response.status);
+    }
+    const data = await response.json();
   } catch (error) {
     console.log(error);
   }
