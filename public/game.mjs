@@ -3,10 +3,11 @@ let woodcuttingInterval,
   miningInterval,
   fishingInterval,
   cookingInterval,
-  progressInnerBarDiv = null;
+  progressInnerBarDiv,
+  newLvl = null;
 
 let userDataValues = await userData();
-console.log(userDataValues);
+// console.log(userDataValues);
 const listOfSkills = Object.keys(userDataValues[0].skills);
 // console.log(listOfSkills[1]);
 console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
@@ -117,7 +118,7 @@ function initIdle(aContainer) {
     // skill lvl
     const skillLvl = document.createElement("h3");
     skillLvl.classList.add("skillLvl");
-    // skillLvl.id = `skillLvl_${listOfSkills[i]}`;
+    skillLvl.id = `skillLvl_${listOfSkills[i]}`;
     skillLvl.innerText = "lvl " + userDataValues[0].skills[listOfSkills[i]].lvl;
     //skill icon
     const img = document.createElement("img");
@@ -197,7 +198,7 @@ function initSettings() {
 }
 
 // ---------------- Skill functions ----------------------
-let newLvl = null;
+
 function woodcutting() {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
@@ -214,10 +215,12 @@ function woodcutting() {
     testVar++;
     console.log("amount of wood: " + testVar);
     updateSkillLvlXpBar(listOfSkills[0], "10px");
+
+    let skillLvl = document.getElementById("skillLvl_woodcutting");
     newLvl = await userData();
     newLvl = newLvl[0].skills[listOfSkills[0]].lvl;
     newLvl++;
-
+    skillLvl.innerText = "lvl " + newLvl;
     updateLvl("woodcutting", newLvl);
     // console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
 
@@ -236,9 +239,16 @@ function mining() {
 
   showAnimationBar();
 
-  miningInterval = setInterval(function () {
+  miningInterval = setInterval(async function () {
     console.log("mining test");
     updateSkillLvlXpBar(listOfSkills[1], "10px");
+    let skillLvl = document.getElementById("skillLvl_mining");
+    newLvl = await userData();
+    newLvl = newLvl[0].skills[listOfSkills[1]].lvl;
+    newLvl++;
+    skillLvl.innerText = "lvl " + newLvl;
+
+    updateLvl("mining", newLvl);
   }, 5000);
 }
 
@@ -253,9 +263,14 @@ function fishing() {
 
   showAnimationBar();
 
-  fishingInterval = setInterval(function () {
-    console.log("fishing test");
+  fishingInterval = setInterval(async function () {
     updateSkillLvlXpBar(listOfSkills[2], "10px");
+    let skillLvl = document.getElementById("skillLvl_fishing");
+    newLvl = await userData();
+    newLvl = newLvl[0].skills[listOfSkills[2]].lvl;
+    newLvl++;
+    skillLvl.innerText = "lvl " + newLvl;
+    updateLvl("fishing", newLvl);
   }, 5000);
 }
 
@@ -270,9 +285,15 @@ function cooking() {
 
   showAnimationBar();
 
-  cookingInterval = setInterval(function () {
+  cookingInterval = setInterval(async function () {
     console.log("cooking test");
     updateSkillLvlXpBar(listOfSkills[3], "10px");
+    let skillLvl = document.getElementById("skillLvl_cooking");
+    newLvl = await userData();
+    newLvl = newLvl[0].skills[listOfSkills[3]].lvl;
+    newLvl++;
+    skillLvl.innerText = "lvl " + newLvl;
+    updateLvl("cooking", newLvl);
   }, 5000);
 }
 
