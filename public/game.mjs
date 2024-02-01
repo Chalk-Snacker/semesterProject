@@ -1,9 +1,5 @@
 "use strict";
-let woodcuttingInterval,
-  miningInterval,
-  fishingInterval,
-  cookingInterval,
-  progressInnerBarDiv,
+let progressInnerBarDiv,
   newLvl,
   newXp,
   oldLvl,
@@ -13,8 +9,6 @@ let isRest = false;
 
 let userDataValues = await userData();
 const listOfSkills = Object.keys(userDataValues[0].skills);
-
-let testVar = 1;
 
 export function loadGame() {
   // hent informasjon om brukeren fra serveren og erstatt statiske verdier under (brukt for testing) med dem
@@ -130,10 +124,8 @@ function initIdle(aContainer) {
     lvlXpContainer.appendChild(skillLvl);
     lvlXpContainer.append(skillXpBarOuterDiv);
 
-    // skillListDiv.appendChild(skillXpBarOuterDiv); // skillXpBarOuter
     skillXpBarOuterDiv.appendChild(skillXpBarInnerDiv); // skillXpBarInner
     skillListDiv.appendChild(lvlXpContainer);
-    // skillListDiv.appendChild(skillLvl); //  skill lvl
     skillListDiv.appendChild(img); // skill icon
     idleTopLeftDiv.appendChild(skillListDiv);
   }
