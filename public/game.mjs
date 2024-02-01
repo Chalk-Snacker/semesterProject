@@ -4,13 +4,15 @@ let woodcuttingInterval,
   fishingInterval,
   cookingInterval,
   progressInnerBarDiv,
-  newLvl = null;
+  newLvl,
+  newXp,
+  oldLvl,
+  xpIncreasePx,
+  skillInterval = null;
+let isRest = false;
 
 let userDataValues = await userData();
-// console.log(userDataValues);
 const listOfSkills = Object.keys(userDataValues[0].skills);
-// console.log(listOfSkills[1]);
-console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
 
 let testVar = 1;
 
@@ -100,7 +102,6 @@ function initIdle(aContainer) {
   // Skill list
   // skriv det heller om senere, bare kod slik at du har spillet "ferdig" og kan heller oppdatere det senere for server
   for (let i = 0; i < listOfSkills.length; i++) {
-    // console.log(userDataValues[0].skills[listOfSkills[i]]);
     const skillListDiv = document.createElement("div");
     skillListDiv.classList.add("skillListDiv");
     skillListDiv.id = "skillListDiv_" + listOfSkills[i];
@@ -142,25 +143,33 @@ function initIdle(aContainer) {
   // Woodcutting button
   const woodcuttingButton = document.createElement("button");
   woodcuttingButton.id = "woodCuttingButton";
-  woodcuttingButton.addEventListener("click", woodcutting);
+  woodcuttingButton.addEventListener("click", function () {
+    doSkill("woodcutting");
+  });
   idleBottomDiv.appendChild(woodcuttingButton);
 
   // Mining button
   const miningButton = document.createElement("button");
   miningButton.id = "miningButton";
-  miningButton.addEventListener("click", mining);
+  miningButton.addEventListener("click", function () {
+    doSkill("mining");
+  });
   idleBottomDiv.appendChild(miningButton);
 
   // Fishing button
   const fishingButton = document.createElement("button");
   fishingButton.id = "fishingButton";
-  fishingButton.addEventListener("click", fishing);
+  fishingButton.addEventListener("click", function () {
+    doSkill("fishing");
+  });
   idleBottomDiv.appendChild(fishingButton);
 
   // Cooking button
   const cookingButton = document.createElement("button");
   cookingButton.id = "cookingButton";
-  cookingButton.addEventListener("click", cooking);
+  cookingButton.addEventListener("click", function () {
+    doSkill("cooking");
+  });
   idleBottomDiv.appendChild(cookingButton);
   // ---- END OF IDLE UI ----
 }
@@ -168,8 +177,13 @@ function updateSkillLvlXpBar(skillName, xpValue) {
   const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
   // width is not set, so i set it to be 0 if we have 0 xp on the bar
   let currentWidth = parseFloat(innerBar.style.width) || 0;
-  currentWidth += parseFloat(xpValue);
-  innerBar.style.width = currentWidth + "px";
+  if (!isRest) {
+    currentWidth += parseFloat(xpValue);
+    innerBar.style.width = currentWidth + "px";
+  } else {
+    innerBar.style.width = 0;
+    innerBar.style.width = xpValue + "px";
+  }
   innerBar.offsetWidth; // Force repaint
 }
 
@@ -197,103 +211,40 @@ function initSettings() {
   // asdf
 }
 
-// ---------------- Skill functions ----------------------
-
-function woodcutting() {
+// ---------------- Skill function ----------------------
+function doSkill(aSkill) {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
   progressOuterBarDiv.style.visibility = "hidden";
-  clearInterval(miningInterval);
-  clearInterval(fishingInterval);
-  clearInterval(cookingInterval);
-  clearInterval(woodcuttingInterval);
+  clearInterval(skillInterval);
   showAnimationBar();
 
-  woodcuttingInterval = setInterval(async function () {
-    // oppdater verdier her med sjekker og alt annet ig orker ikke mer nå...
+  skillInterval = setInterval(async function () {
+    // add resources to be added into inventory later
+    isRest = false;
+    let skillLvl = document.getElementById("skillLvl_" + aSkill);
+    let xpIncrease = 12;
+    newXp = await userData();
+    newXp = newXp[0].skills[aSkill].xp;
+    newXp += xpIncrease;
+    oldLvl = await userData();
+    oldLvl = oldLvl[0].skills[aSkill].lvl;
+    updateXp(aSkill, newXp);
 
-    testVar++;
-    console.log("amount of wood: " + testVar);
-    updateSkillLvlXpBar(listOfSkills[0], "10px");
-
-    let skillLvl = document.getElementById("skillLvl_woodcutting");
     newLvl = await userData();
-    newLvl = newLvl[0].skills[listOfSkills[0]].lvl;
-    newLvl++;
+    newLvl = newLvl[0].skills[aSkill].lvl;
     skillLvl.innerText = "lvl " + newLvl;
-    updateLvl("woodcutting", newLvl);
-    // console.log(userDataValues[0].skills[listOfSkills[0]].lvl);
-
-    // skillIncrease(skillLvl_woodcutting);
-  }, 5000);
-}
-
-function mining() {
-  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  progressOuterBarDiv.style.display = "none";
-  progressOuterBarDiv.style.visibility = "hidden";
-  clearInterval(woodcuttingInterval);
-  clearInterval(fishingInterval);
-  clearInterval(cookingInterval);
-  clearInterval(miningInterval);
-
-  showAnimationBar();
-
-  miningInterval = setInterval(async function () {
-    console.log("mining test");
-    updateSkillLvlXpBar(listOfSkills[1], "10px");
-    let skillLvl = document.getElementById("skillLvl_mining");
-    newLvl = await userData();
-    newLvl = newLvl[0].skills[listOfSkills[1]].lvl;
-    newLvl++;
-    skillLvl.innerText = "lvl " + newLvl;
-
-    updateLvl("mining", newLvl);
-  }, 5000);
-}
-
-function fishing() {
-  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  progressOuterBarDiv.style.display = "none";
-  progressOuterBarDiv.style.visibility = "hidden";
-  clearInterval(woodcuttingInterval);
-  clearInterval(miningInterval);
-  clearInterval(cookingInterval);
-  clearInterval(fishingInterval);
-
-  showAnimationBar();
-
-  fishingInterval = setInterval(async function () {
-    updateSkillLvlXpBar(listOfSkills[2], "10px");
-    let skillLvl = document.getElementById("skillLvl_fishing");
-    newLvl = await userData();
-    newLvl = newLvl[0].skills[listOfSkills[2]].lvl;
-    newLvl++;
-    skillLvl.innerText = "lvl " + newLvl;
-    updateLvl("fishing", newLvl);
-  }, 5000);
-}
-
-function cooking() {
-  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  progressOuterBarDiv.style.display = "none";
-  progressOuterBarDiv.style.visibility = "hidden";
-  clearInterval(woodcuttingInterval);
-  clearInterval(fishingInterval);
-  clearInterval(miningInterval);
-  clearInterval(cookingInterval);
-
-  showAnimationBar();
-
-  cookingInterval = setInterval(async function () {
-    console.log("cooking test");
-    updateSkillLvlXpBar(listOfSkills[3], "10px");
-    let skillLvl = document.getElementById("skillLvl_cooking");
-    newLvl = await userData();
-    newLvl = newLvl[0].skills[listOfSkills[3]].lvl;
-    newLvl++;
-    skillLvl.innerText = "lvl " + newLvl;
-    updateLvl("cooking", newLvl);
+    const xpThreshHold = userDataValues[0].skills[aSkill].xpThreshHold[oldLvl];
+    xpIncreasePx = xpIncrease * (150 / xpThreshHold);
+    if (oldLvl == newLvl || newLvl == null) {
+      updateSkillLvlXpBar(aSkill, xpIncreasePx);
+    } else {
+      isRest = true;
+      const remainder = newXp % xpThreshHold;
+      const remainderPixels = remainder * (150 / xpThreshHold);
+      console.log("remainder ", remainderPixels);
+      updateSkillLvlXpBar(aSkill, remainder);
+    }
   }, 5000);
 }
 
@@ -382,22 +333,20 @@ async function userData() {
   }
 }
 
-async function updateLvl(skillName, newLvl) {
+async function updateXp(skillName, newXp) {
   // fiks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
-  const updatedSkill = {
+  const updatedSkillXp = {
     [skillName]: {
-      lvl: newLvl,
+      xp: newXp,
     },
   };
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedSkill),
+    body: JSON.stringify(updatedSkillXp),
   };
   try {
     const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
-    // const response = await fetch(`http://localhost:8080/game/mining`, requestOptions);
-    // const response = await fetch(`http://localhost:8080/game/`, requestOptions);
 
     if (response.status !== 200) {
       console.log("Error editing user");
@@ -408,58 +357,3 @@ async function updateLvl(skillName, newLvl) {
     console.log(error);
   }
 }
-
-// lage en funksjon som oppdaterer xp, og hvis xp er max så med en if check så øke lvl, eller ha 2 separerte funksjoner?
-// function updateSkillLvl(aSkill, ha et parameter til? isåfall newLevel){
-//   skillLvl.innerText = "lvl " + userDataValues[0].skills[listOfSkills[i]].lvl;
-//     skillLvl.id = `skillLvl_${listOfSkills[i]}`;
-// }
-
-/* 
-få updateXp og updateLvl til å kunne oppdatere verdier på serveren
-kjør den i hvert intervall på skills, så når den er ferdig med å eks. fiske en fisk så kjører denne funksjonen
-async function skillIncrase() {
-  async function updateXp() {
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify(testPlayerUpdated), // testPlayerUpdated er/ var et object
-    };
-    try {
-      const response = await fetch(`http://localhost:8080/game/${playerName}`, requestOptions);
-      if (response.status != 200) {
-        console.log("Error editing user");
-        throw new Error("Server error: " + response.status);
-      }
-      const data = await response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function updateLvl() {
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      // body: JSON.stringify(testPlayerUpdated), // testPlayerUpdated er/ var et object
-    };
-    try {
-      const response = await fetch(`http://localhost:8080/game/${playerName}`, requestOptions);
-      if (response.status != 200) {
-        console.log("Error editing user");
-        throw new Error("Server error: " + response.status);
-      }
-      const data = await response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  try {
-    const updateXp = await updateXp();
-    if (xp >= max xp needed to lvl up) {
-      const updateLvl = await updateLvl();
-    }
-  } catch (error) {
-    console.log("error idk");
-  }
-}
-*/

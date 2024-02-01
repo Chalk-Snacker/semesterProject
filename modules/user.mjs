@@ -11,5 +11,10 @@ class User {
       cooking: new Skill("Cooking"),
     };
   }
+  lvlUp(skillName) {
+    if (this.skills[skillName]) {
+      this.skills[skillName].lvlUp();
+    }
+  }
 }
 export default User;

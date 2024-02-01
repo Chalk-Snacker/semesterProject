@@ -25,15 +25,21 @@ GAME_API.post("/", (req, res) => {
 GAME_API.put("/:id", (req, res) => {
   const skillName = req.params.id;
   const updatedUserData = req.body;
-
-  if (users[0].skills && users[0].skills[skillName] && users[0].skills[skillName].lvl !== undefined) {
-    users[0].skills[skillName].lvl = updatedUserData[skillName].lvl;
-    res.status(200).json({ success: true, message: "Skill level updated successfully" });
+  const user = users[0].skills[skillName];
+  if (users[0].skills && users[0].skills[skillName] && users[0].skills[skillName].xp !== undefined) {
+    users[0].skills[skillName].xp = updatedUserData[skillName].xp;
+    if (user.xp >= user.xpThreshHold[user.lvl]) {
+      console.log("condition met");
+      user.restXp = user.xp % user.xpThreshHold[user.lvl];
+      user.xp = user.restXp;
+      user.restXp = 0;
+      user.lvl++;
+    }
+    res.status(200).json({ success: true, message: "Level xp updated successfully" });
   } else {
-    console.log("Mining property or its level is undefined");
     res.status(404).json({ success: false, error: "User or skill not found" });
   }
-  console.log(users[0]);
+  console.log(users[0].skills);
 });
 
 GAME_API.delete("/:id", (req, res) => {

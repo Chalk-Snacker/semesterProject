@@ -245,4 +245,5 @@ async function editUser(playerName) {
 6. hvis du begynner å farme eks. woodcutting og går til inventory farmer den fortsatt // lag en egen funksjon for å stoppe farming
    så du ikke trenger å ha 100 linjer hvergang det må stoppes, og kall på den når du bytter skill å grinde eller vindu
 7. gjør sjekk på xp bar at den blir 0px når width er like lang som outerbar, og så increase lvl med 1
+8. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
 */
