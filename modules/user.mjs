@@ -1,4 +1,4 @@
-import { Skill } from "./UserGameData.mjs";
+import { Skill, Inventory } from "./UserGameData.mjs";
 class User {
   constructor() {
     this.email = "";
@@ -9,6 +9,9 @@ class User {
       mining: new Skill("Mining"),
       fishing: new Skill("Fishing"),
       cooking: new Skill("Cooking"),
+    };
+    this.inventory = {
+      armor: new Inventory("armor"),
     };
   }
 }

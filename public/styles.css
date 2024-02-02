@@ -109,20 +109,35 @@
   position: absolute;
 }
 
-/* Idle UI */
+/* ---------- IDLE UI ------------ */
+
 #idleTopDiv {
   position: absolute;
   /* width: 775px;
   height: 910px; */
   width: 1550px;
   height: 550px;
-  background-color: white;
 }
 #idleTopLeftDiv {
   position: absolute;
   width: 600px;
   height: 550px;
   background-color: #1e682e;
+}
+
+#idleTopRightDiv {
+  position: absolute;
+  width: 950px;
+  height: 550px;
+  left: 600px;
+  background-color: #e6832e;
+}
+#idleBottomDiv {
+  position: absolute;
+  width: 1550px;
+  height: 360px;
+  top: 550px;
+  background-color: #e72257;
 }
 .skillListDiv {
   border: 3px solid red;
@@ -161,20 +176,6 @@
   background-color: black;
 }
 
-#idleTopRightDiv {
-  position: absolute;
-  width: 950px;
-  height: 550px;
-  left: 600px;
-  background-color: #e6832e;
-}
-#idleBottomDiv {
-  position: absolute;
-  width: 1550px;
-  height: 360px;
-  top: 550px;
-  background-color: #e72257;
-}
 #progressOuterBarDiv {
   position: absolute;
   width: 300px;
@@ -251,17 +252,86 @@
   max-height: 10%;
 }
 
-/* Inventory UI */
+/* ---------- INVENTORY UI ------------ */
 #inventoryLeftDiv {
   position: absolute;
   width: 775px;
   height: 910px;
-  background-color: antiquewhite;
+  background-color: aqua;
+}
+
+#inventoryRightDiv {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  left: 775px;
+  background-color: grey;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 217px;
+  z-index: 1;
+}
+
+.inventorySlotsDiv {
+  width: 100%;
+  height: 100%;
+  background-color: #f59f13;
+  border: solid grey;
+  box-sizing: border-box;
+  position: relative;
+  top: 40px;
+}
+.inventorySlotsDiv > img {
+  width: 100%;
+  height: 100%;
 }
 #inventoryRightDiv {
   position: absolute;
   width: 775px;
   height: 910px;
   left: 775px;
-  background-color: aqua;
+  background-color: orange;
+  z-index: 1;
 }
+#inventoryCategoryHeader {
+  position: absolute;
+  width: 775px;
+  height: 70px;
+  left: 775px;
+  background-color: #1e682e;
+  z-index: 2;
+}
+#armorButton {
+  width: 100px;
+  height: 30px;
+  background-color: black;
+  cursor: pointer;
+}
+#weaponsButton {
+  width: 100px;
+  height: 30px;
+  background-color: blue;
+  cursor: pointer;
+}
+#spellsButton {
+  width: 100px;
+  height: 30px;
+  background-color: white;
+  cursor: pointer;
+}
+#consumablesButton {
+  width: 100px;
+  height: 30px;
+  background-color: red;
+  cursor: pointer;
+}
+#resourcesButton {
+  width: 100px;
+  height: 30px;
+  background-color: yellow;
+  cursor: pointer;
+}
+
+/* .inventorySlot2 {
+  background-color: red;
+} */

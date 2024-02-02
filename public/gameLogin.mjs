@@ -31,57 +31,58 @@ function loginUser() {
   // bruk html templates
 
   // login:
-  const formContainer = document.getElementById("containerGameplayZone");
-  const userForm = document.createElement("form");
+  // const formContainer = document.getElementById("containerGameplayZone");
+  // const userForm = document.createElement("form");
 
-  const usernameLabel = document.createElement("label");
-  usernameLabel.classList.add("registerUserLabel");
-  usernameLabel.innerText = "Character name";
-  const username = document.createElement("input");
-  username.classList.add("registerUser");
-  username.setAttribute("type", "text");
-  username.setAttribute("name", "username");
-  username.setAttribute("id", "textField0");
+  // const usernameLabel = document.createElement("label");
+  // usernameLabel.classList.add("registerUserLabel");
+  // usernameLabel.innerText = "Character name";
+  // const username = document.createElement("input");
+  // username.classList.add("registerUser");
+  // username.setAttribute("type", "text");
+  // username.setAttribute("name", "username");
+  // username.setAttribute("id", "textField0");
 
-  const passwordLabel = document.createElement("label");
-  passwordLabel.classList.add("registerUserLabel");
-  passwordLabel.innerText = "Password";
-  const password = document.createElement("input");
-  password.classList.add("registerUser");
-  username.setAttribute("type", "password");
-  username.setAttribute("name", "password");
-  username.setAttribute("id", "textField1");
+  // const passwordLabel = document.createElement("label");
+  // passwordLabel.classList.add("registerUserLabel");
+  // passwordLabel.innerText = "Password";
+  // const password = document.createElement("input");
+  // password.classList.add("registerUser");
+  // username.setAttribute("type", "password");
+  // username.setAttribute("name", "password");
+  // username.setAttribute("id", "textField1");
 
-  const loginButton = document.createElement("button");
-  loginButton.innerText = "Login";
-  loginButton.addEventListener("click", function (event) {
-    loadGame();
-    event.preventDefault();
-  });
+  // const loginButton = document.createElement("button");
+  // loginButton.innerText = "Login";
+  // loginButton.addEventListener("click", function (event) {
+  //   loadGame();
+  //   event.preventDefault();
+  // });
 
-  const createNewUserButton = document.createElement("button");
-  createNewUserButton.innerText = "Create new user";
-  createNewUserButton.addEventListener("click", function (event) {
-    createUserUi();
-    event.preventDefault();
-  });
+  // const createNewUserButton = document.createElement("button");
+  // createNewUserButton.innerText = "Create new user";
+  // createNewUserButton.addEventListener("click", function (event) {
+  //   createUserUi();
+  //   event.preventDefault();
+  // });
 
-  userForm.appendChild(usernameLabel);
-  userForm.appendChild(username);
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(passwordLabel);
-  userForm.appendChild(password);
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(loginButton);
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(createNewUserButton);
-  userForm.appendChild(document.createElement("br"));
-  userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(usernameLabel);
+  // userForm.appendChild(username);
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(passwordLabel);
+  // userForm.appendChild(password);
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(loginButton);
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(createNewUserButton);
+  // userForm.appendChild(document.createElement("br"));
+  // userForm.appendChild(document.createElement("br"));
 
-  formContainer.appendChild(userForm);
+  // formContainer.appendChild(userForm);
+  loadGame();
 }
 
 function createUserUi() {
@@ -231,9 +232,8 @@ async function editUser(playerName) {
 
 /*
 --------------------------------------- TO DO: ---------------------------------------
-1. oppdater stats med if tester e.l. når du skal lvl opp... må vel da lage et xp system...
-2. sett inn spillernavn + lvl
-3. bytte "game" i filnavn til hva du skal kalle spillet
+1. sett inn spillernavn + lvl
+2. bytte "game" i filnavn til hva du skal kalle spillet
 
 
 --------------------------------------- Game fixes: ---------------------------------------
@@ -246,4 +246,5 @@ async function editUser(playerName) {
    så du ikke trenger å ha 100 linjer hvergang det må stoppes, og kall på den når du bytter skill å grinde eller vindu
 7. gjør sjekk på xp bar at den blir 0px når width er like lang som outerbar, og så increase lvl med 1
 8. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
+9. når du lukker spillet spillet og åpner det igjen husker den lvl, men xp bar er resatt..
 */

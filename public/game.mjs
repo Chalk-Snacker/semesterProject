@@ -4,10 +4,12 @@ let progressInnerBarDiv,
   newXp,
   oldLvl,
   xpIncreasePx,
-  skillInterval = null;
+  skillInterval,
+  jau = null;
 let isRest = false;
-
-let userDataValues = await userData();
+const inventorySlots = [];
+const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
+const userDataValues = await userData();
 const listOfSkills = Object.keys(userDataValues[0].skills);
 
 export function loadGame() {
@@ -20,6 +22,7 @@ export function loadGame() {
   const containerGameplay = document.getElementById("containerGameplayZone");
 
   const div = document.createElement("div");
+  div.id = "container";
   containerOuter.appendChild(div);
   containerInner.appendChild(div);
   containerGameplay.appendChild(div);
@@ -61,10 +64,11 @@ export function loadGame() {
   // ------------ End of Buttons ---------
 
   initBattle(div);
-  initInventory(div);
+
   initShop(div);
   initIdle(div);
   initSettings(div);
+  initInventory(div);
 }
 
 function initIdle(aContainer) {
@@ -158,17 +162,36 @@ function initBattle() {
   // asdf
 }
 
-function initInventory(aContainer) {
-  const inventoryLeftDiv = document.createElement("div");
-  const inventoryRightDiv = document.createElement("div");
-  inventoryLeftDiv.id = "inventoryLeftDiv";
-  inventoryRightDiv.id = "inventoryRightDiv";
+// function initInventory(aContainer) {
+//   const inventoryLeftDiv = document.createElement("div");
+//   const inventoryRightDiv = document.createElement("div");
+//   inventoryLeftDiv.id = "inventoryLeftDiv";
+//   inventoryRightDiv.id = "inventoryRightDiv";
 
-  aContainer.appendChild(inventoryLeftDiv);
-  aContainer.appendChild(inventoryRightDiv);
+//   const inventoryCategoryHeader = document.createElement("div");
+//   inventoryCategoryHeader.id = "inventoryCategoryHeader";
 
-  // create the rest of inventory system
-}
+//   for (let i = 0; i < inventoryCategories.length; i++) {
+//     const button = document.createElement("button");
+//     button.id = inventoryCategories[i] + "Button";
+//     button.addEventListener("click", function () {
+//       console.log("jau");
+//       // fetchInventory();
+//     });
+//     inventoryCategoryHeader.appendChild(button);
+//   }
+
+//   const inventoryContainer = document.createElement("div");
+//   // lag inventory divs (som en skill levels)
+
+//   aContainer.appendChild(inventoryCategoryHeader);
+//   aContainer.appendChild(inventoryLeftDiv);
+//   aContainer.appendChild(inventoryRightDiv);
+
+//   console.log(document.getElementsByTagName("*").length);
+
+//   // create the rest of inventory system
+// }
 
 function initShop() {
   // asdf
@@ -228,6 +251,11 @@ function showAnimationBar() {
   progressInnerBarDiv.style.animation = "progress-animation 5s linear infinite";
   progressOuterBarDiv.style.display = "block";
   progressOuterBarDiv.style.visibility = "visible";
+}
+
+async function fetchInventory() {
+  // newXp = await userData();
+  // newXp = newXp[0].skills[aSkill].xp;
 }
 
 // ---------------- Button functions for toggling css----------------------
@@ -324,3 +352,65 @@ async function updateXp(skillName, newXp) {
     console.log(error);
   }
 }
+
+//--------- SCRAPPED GRID INVENTORY SYSTEM? -----------
+
+function initInventory(aContainer) {
+  const inventoryLeftDiv = document.createElement("div");
+  const inventoryRightDiv = document.createElement("div");
+  inventoryLeftDiv.id = "inventoryLeftDiv";
+  inventoryRightDiv.id = "inventoryRightDiv";
+  const inventoryCategoryHeader = document.createElement("div");
+  inventoryCategoryHeader.id = "inventoryCategoryHeader";
+  const inventoryContainer = document.createElement("div");
+  for (let j = 0; j < 24; j++) {
+    const inventorySlot = document.createElement("div");
+    inventorySlot.classList.add("inventorySlotsDiv"); // to give all of them a general style
+    const uniqueId = "inventorySlot" + j;
+    inventorySlot.id = uniqueId;
+    jau = document.getElementById("inventorySlot");
+
+    inventorySlots.push(j);
+    inventorySlot.dataset.slotId = j;
+    inventoryRightDiv.appendChild(inventorySlot);
+  }
+  for (let i = 0; i < inventoryCategories.length; i++) {
+    const button = document.createElement("button");
+    button.id = inventoryCategories[i] + "Button";
+    button.addEventListener("click", function () {
+      console.log("jau");
+      Testtt(1);
+      // fetchInventory();
+    });
+    inventoryCategoryHeader.appendChild(button);
+  }
+  inventoryRightDiv.appendChild(inventoryContainer);
+
+  aContainer.appendChild(inventoryCategoryHeader);
+  aContainer.appendChild(inventoryLeftDiv);
+  aContainer.appendChild(inventoryRightDiv);
+
+  console.log(document.getElementsByTagName("*").length);
+
+  // create the rest of inventory system
+}
+function Testtt(slotId) {
+  jau = document.getElementById("inventorySlot" + inventorySlots[slotId]); // parse inn tall senere
+  console.log(slotId);
+  const img = document.createElement("img");
+  img.src = "./asset/skillsTest.jpg";
+  console.log(jau);
+  jau.appendChild(img);
+}
+setTimeout(() => {
+  // laster før de divene blir lagd, kanskje funker når den blir async func?
+  // få spillet itl å starte i idle, og kun kjøre denne (laster inn inventory)
+  // når du trykker på inventory knapp
+  // husk å gjem css og (clear divs?)
+  Testtt(inventorySlots[2]);
+}, 1000);
+/* 
+1. opprett et item på serveren
+2. hent dataen, og få item inn i første inventory slot
+3. med for loop, fyll inventory med alle items spiller har
+*/
