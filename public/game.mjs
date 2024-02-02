@@ -95,6 +95,7 @@ function initIdle(aContainer) {
 
   // Skill list
   // skriv det heller om senere, bare kod slik at du har spillet "ferdig" og kan heller oppdatere det senere for server
+
   for (let i = 0; i < listOfSkills.length; i++) {
     const skillListDiv = document.createElement("div");
     skillListDiv.classList.add("skillListDiv");
@@ -128,43 +129,17 @@ function initIdle(aContainer) {
     skillListDiv.appendChild(lvlXpContainer);
     skillListDiv.appendChild(img); // skill icon
     idleTopLeftDiv.appendChild(skillListDiv);
+
+    // skill buttons
+    const skillButton = document.createElement("button");
+    skillButton.id = listOfSkills[i] + "Button";
+    skillButton.addEventListener("click", function () {
+      doSkill(listOfSkills[i]);
+    });
+    idleBottomDiv.appendChild(skillButton);
   }
-
-  // --- Buttons ---
-
-  // Woodcutting button
-  const woodcuttingButton = document.createElement("button");
-  woodcuttingButton.id = "woodCuttingButton";
-  woodcuttingButton.addEventListener("click", function () {
-    doSkill("woodcutting");
-  });
-  idleBottomDiv.appendChild(woodcuttingButton);
-
-  // Mining button
-  const miningButton = document.createElement("button");
-  miningButton.id = "miningButton";
-  miningButton.addEventListener("click", function () {
-    doSkill("mining");
-  });
-  idleBottomDiv.appendChild(miningButton);
-
-  // Fishing button
-  const fishingButton = document.createElement("button");
-  fishingButton.id = "fishingButton";
-  fishingButton.addEventListener("click", function () {
-    doSkill("fishing");
-  });
-  idleBottomDiv.appendChild(fishingButton);
-
-  // Cooking button
-  const cookingButton = document.createElement("button");
-  cookingButton.id = "cookingButton";
-  cookingButton.addEventListener("click", function () {
-    doSkill("cooking");
-  });
-  idleBottomDiv.appendChild(cookingButton);
-  // ---- END OF IDLE UI ----
 }
+
 function updateSkillLvlXpBar(skillName, xpValue) {
   const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
   // width is not set, so i set it to be 0 if we have 0 xp on the bar

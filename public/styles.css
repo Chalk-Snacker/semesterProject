@@ -137,56 +137,28 @@
   position: absolute;
   width: 150px;
   height: 10px;
-  /* left: 325px; */
   background-color: blue;
 }
 #skillXpBarInnerDiv_woodcutting {
   position: absolute;
   height: 10px;
-
   background-color: black;
   display: flex;
-
-  /* linke width til å være en int verdi */
 }
 #skillXpBarInnerDiv_mining {
   position: absolute;
-  /* width: 150px; */
   height: 10px;
   background-color: black;
-  /* linke width til å være en int verdi */
 }
 #skillXpBarInnerDiv_fishing {
   position: absolute;
-  /* width: 150px; */
   height: 10px;
   background-color: black;
-  /* linke width til å være en int verdi */
 }
 #skillXpBarInnerDiv_cooking {
   position: absolute;
-  /* width: 150px; */
   height: 10px;
   background-color: black;
-  /* linke width til å være en int verdi */
-}
-
-#skillListDiv_woodcutting > img {
-  max-width: 10%;
-  max-height: 10%;
-}
-
-#skillListDiv_mining > img {
-  max-width: 10%;
-  max-height: 10%;
-}
-#skillListDiv_fishing > img {
-  max-width: 10%;
-  max-height: 10%;
-}
-#skillListDiv_cooking > img {
-  max-width: 10%;
-  max-height: 10%;
 }
 
 #idleTopRightDiv {
@@ -213,9 +185,6 @@
 }
 #progressInnerBarDiv {
   position: absolute;
-  /* width: 285px;
-  height: 15px;
-  margin: 7.5px; */
   width: 300px;
   height: 30px;
   background-color: black;
@@ -231,7 +200,7 @@
 }
 
 /* Skill buttons */
-#woodCuttingButton {
+#woodcuttingButton {
   width: 125px;
   height: 100px;
   cursor: pointer;
@@ -262,6 +231,24 @@
   background-size: 1650px;
   background-position: -475px -120px;
   background-image: url("./asset/SpriteSheet.png");
+}
+
+#skillListDiv_woodcutting > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+
+#skillListDiv_mining > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+#skillListDiv_fishing > img {
+  max-width: 10%;
+  max-height: 10%;
+}
+#skillListDiv_cooking > img {
+  max-width: 10%;
+  max-height: 10%;
 }
 
 /* Inventory UI */
