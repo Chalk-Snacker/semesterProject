@@ -1,3 +1,4 @@
+import { BronzeStats, IronStats, SteelStats, BlackStats, MithrilStats, AdamantStats, RuneStats, Capes } from "./items.mjs";
 export class Skill {
   constructor(skillName) {
     this.skillName = skillName;
@@ -30,15 +31,75 @@ class Item {
   }
 
   // kjør den i route?
-  setStatsOnItem() {
-    switch (this.itemName) {
-      case "steelArmor":
-        this.lvlReq = 1;
-        this.armor = 10;
+  setStatsOnItem(itemType, itemCategory, itemSlot) {
+    switch (itemType && itemCategory) {
+      case itemType == "bronze" && itemCategory == "armor":
+        this.lvlReq = BronzeStats.lvlReq;
+        this.armor = BronzeStats.armor.itemSlot;
         break;
-      case "runeArmor":
-        this.lvlReq = 30;
-        this.armor = 40;
+
+      case itemType == "bronze" && itemCategory == "weapon":
+        this.lvlReq = BronzeStats.lvlReq;
+        this.attack = BronzeStats.weapon.itemSlot;
+        break;
+
+      case itemType == "iron" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = IronStats.armor.itemSlot;
+        break;
+
+      case itemType == "iron" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = IronStats.weapon.itemSlot;
+        break;
+
+      case itemType == "steel" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = SteelStats.armor.itemSlot;
+        break;
+
+      case itemType == "steel" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = SteelStats.weapon.itemSlot;
+        break;
+
+      case itemType == "black" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = BlackStats.armor.itemSlot;
+        break;
+
+      case itemType == "black" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = BlackStats.weapon.itemSlot;
+        break;
+
+      case itemType == "mithril" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = MithrilStats.armor.itemSlot;
+        break;
+
+      case itemType == "mithril" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = MithrilStats.weapon.itemSlot;
+        break;
+
+      case itemType == "adamant" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = AdamantStats.armor.itemSlot;
+        break;
+
+      case itemType == "adamant" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = AdamantStats.weapon.itemSlot;
+        break;
+      case itemType == "rune" && itemCategory == "armor":
+        this.lvlReq = 1;
+        this.armor = RuneStats.armor.itemSlot;
+        break;
+
+      case itemType == "rune" && itemCategory == "weapon":
+        this.lvlReq = 1;
+        this.attack = RuneStats.weapon.itemSlot;
         break;
     }
   }
@@ -50,14 +111,7 @@ export class Inventory {
     // lag noen default items nye spillere starter med
     switch (inventoryCategory) {
       case "Armor":
-        (this.helms = []),
-          (this.shoulders = []),
-          (this.chestPlates = []),
-          (this.gauntlets = []),
-          (this.belt = []),
-          (this.legs = []),
-          (this.shoes = []),
-          (this.shield = []);
+        (this.helms = []), (this.chestPlates = []), (this.cape = []), (this.gauntlets = []), (this.legs = []), (this.shoes = []), (this.shield = []);
         break;
       case "Weapons":
         (this.swords = []),
@@ -84,12 +138,11 @@ export class Inventory {
     switch (itemType) {
       case "armor":
         this.helms.push(new Item("Starting helmet", "armor", "head"));
-        this.shoulders.push(new Item("Starting shoulders", "armor", "shoulder"));
         this.chestPlates.push(new Item("Starting chestPlates", "armor", "chest"));
         this.gauntlets.push(new Item("Starting gauntlets", "armor", "hands"));
-        this.belt.push(new Item("Starting belt", "armor", "waist"));
         this.legs.push(new Item("Starting legs", "armor", "legs"));
         this.shoes.push(new Item("Starting shoes", "armor", "feet"));
+        // this.cape.push(new Item("Starting cape", "armor", "back"));
         this.shield.push(new Item("Starting shield", "armor", "off-hand"));
         break;
       case "weapons":

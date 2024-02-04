@@ -7,7 +7,6 @@ users[0].inventory.armor.createStartingItems("armor");
 users[0].inventory.weapons.createStartingItems("weapons");
 users[0].inventory.spells.createStartingItems("spells");
 users[0].inventory.consumables.createStartingItems("consumables");
-
 console.log("User starting items: ", users[0].inventory);
 
 GAME_API.get("/", (req, res) => {
