@@ -18,6 +18,29 @@ export class Skill {
   }
 }
 
+class items {
+  constructor(itemName, itemCategory, itemSlot) {
+    // klasse for å lage alle items
+    this.itemName = itemName;
+    this.itemCategory = itemCategory;
+    this.itemSlot = itemSlot;
+    this.lvlReq;
+    this.armor;
+  }
+  createItem() {
+    switch (this.itemName) {
+      case "steelArmor":
+        this.lvlReq = 1;
+        this.armor = 10;
+        break;
+      case "runeArmor":
+        this.lvlReq = 30;
+        this.armor = 40;
+        break;
+    }
+  }
+}
+
 export class Inventory {
   constructor(inventoryCategory) {
     this.inventoryCategory = inventoryCategory;
