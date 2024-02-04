@@ -3,11 +3,12 @@ import { users } from "./usersRoute.mjs";
 
 // requests from game.mjs
 const GAME_API = express.Router();
-users[0].inventory.armor.createStartingItems("armor");
 users[0].inventory.weapons.createStartingItems("weapons");
 users[0].inventory.spells.createStartingItems("spells");
 users[0].inventory.consumables.createStartingItems("consumables");
-console.log("User starting items: ", users[0].inventory);
+// console.log("User starting items: ", users[0].inventory);
+// console.log("Armor: ", users[0].inventory.armor.helms[0].armor);
+console.log("Weapons: ", users[0].inventory.weapons.swords[0]); // hvordan logge attack stat?
 
 GAME_API.get("/", (req, res) => {
   res.json(users);
