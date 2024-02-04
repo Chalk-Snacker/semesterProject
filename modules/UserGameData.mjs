@@ -26,8 +26,11 @@ class items {
     this.itemSlot = itemSlot;
     this.lvlReq;
     this.armor;
+    this.attack;
   }
-  createItem() {
+
+  // kjør den i route?
+  setStatsOnItem() {
     switch (this.itemName) {
       case "steelArmor":
         this.lvlReq = 1;
@@ -45,25 +48,37 @@ export class Inventory {
   constructor(inventoryCategory) {
     this.inventoryCategory = inventoryCategory;
     // lag noen default items nye spillere starter med
-    this.armor = {
-      helms: [],
-      shoulders: [],
-      chestPlates: [],
-      gauntlets: [],
-      belt: [],
-      legs: [],
-      shoes: [],
-    };
-    this.weapons = {
-      swords: [],
-      axes: [],
-      maces: [],
-      staffs: [],
-      bows: [],
-    };
-    this.spells = {};
-    this.consumables = {};
-    this.resources = {};
+    switch (inventoryCategory) {
+      case "Armor":
+        this.armor = {
+          helms: [],
+          shoulders: [],
+          chestPlates: [],
+          gauntlets: [],
+          belt: [],
+          legs: [],
+          shoes: [],
+        };
+        break;
+      case "Weapons":
+        this.weapons = {
+          swords: [],
+          axes: [],
+          maces: [],
+          staffs: [],
+          bows: [],
+        };
+        break;
+      case "Spells":
+        this.spells = {};
+        break;
+      case "Consumables":
+        this.consumables = {};
+        break;
+      case "Resources":
+        this.resources = {};
+        break;
+    }
   }
 }
 

@@ -11,7 +11,11 @@ class User {
       cooking: new Skill("Cooking"),
     };
     this.inventory = {
-      armor: new Inventory("armor"),
+      armor: new Inventory("Armor"),
+      weapons: new Inventory("Weapons"),
+      spells: new Inventory("Spells"),
+      consumables: new Inventory("Consumables"),
+      resources: new Inventory("Resources"),
     };
   }
 }

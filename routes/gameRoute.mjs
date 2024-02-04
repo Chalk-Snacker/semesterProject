@@ -26,7 +26,8 @@ GAME_API.put("/:id", (req, res) => {
   } else {
     res.status(404).json({ success: false, error: "User or skill not found" });
   }
-  console.log(users[0].skills);
+  // console.log(users[0].skills);
+  console.log(users[0].inventory);
   // console.log(users[0].skills[skillName].xp);
 });
 
