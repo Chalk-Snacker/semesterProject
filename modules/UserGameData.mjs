@@ -18,7 +18,7 @@ export class Skill {
   }
 }
 
-class items {
+class Item {
   constructor(itemName, itemCategory, itemSlot) {
     // klasse for å lage alle items
     this.itemName = itemName;
@@ -50,35 +50,66 @@ export class Inventory {
     // lag noen default items nye spillere starter med
     switch (inventoryCategory) {
       case "Armor":
-        this.armor = {
-          helms: [],
-          shoulders: [],
-          chestPlates: [],
-          gauntlets: [],
-          belt: [],
-          legs: [],
-          shoes: [],
-        };
+        (this.helms = []),
+          (this.shoulders = []),
+          (this.chestPlates = []),
+          (this.gauntlets = []),
+          (this.belt = []),
+          (this.legs = []),
+          (this.shoes = []),
+          (this.shield = []);
         break;
       case "Weapons":
-        this.weapons = {
-          swords: [],
-          axes: [],
-          maces: [],
-          staffs: [],
-          bows: [],
-        };
+        (this.swords = []),
+          (this.axes = []),
+          (this.maces = []),
+          (this.greatSword = []),
+          (this.greatAxe = []),
+          (this.greatMace = []),
+          (this.staffs = []),
+          (this.bows = []);
         break;
       case "Spells":
-        this.spells = {};
+        (this.holy = []), (this.fire = []), (this.ice = []), (this.shadow = []);
         break;
       case "Consumables":
-        this.consumables = {};
+        (this.healingPotions = []), (this.xpPotion = []);
         break;
       case "Resources":
-        this.resources = {};
+        (this.fish = []), (this.logs = []), (this.ore = []), (this.food = []);
         break;
     }
+  }
+  createStartingItems(itemType) {
+    switch (itemType) {
+      case "armor":
+        this.helms.push(new Item("Starting helmet", "armor", "head"));
+        this.shoulders.push(new Item("Starting shoulders", "armor", "shoulder"));
+        this.chestPlates.push(new Item("Starting chestPlates", "armor", "chest"));
+        this.gauntlets.push(new Item("Starting gauntlets", "armor", "hands"));
+        this.belt.push(new Item("Starting belt", "armor", "waist"));
+        this.legs.push(new Item("Starting legs", "armor", "legs"));
+        this.shoes.push(new Item("Starting shoes", "armor", "feet"));
+        this.shield.push(new Item("Starting shield", "armor", "off-hand"));
+        break;
+      case "weapons":
+        this.swords.push(new Item("Starting sword", "weapon", "1-hand"));
+        this.axes.push(new Item("Starting axe", "weapon", "1-hand"));
+        this.maces.push(new Item("Starting mace", "weapon", "1-hand"));
+        this.staffs.push(new Item("old ass walking stick", "weapon", "1-hand"));
+        this.bows.push(new Item("Dennis the menace's slingshot", "weapon", "1-hand"));
+
+        break;
+      case "spells":
+        this.fire.push(new Item("shitty flame", "spell", "1-hand")); // 1-hand or spell??
+        break;
+      case "consumables":
+        this.healingPotions.push(new Item("soyPot", "consumable", "itemSlot"));
+        break;
+    }
+  }
+  addNewItem() {
+    // this.helms.push(new Item("Starting helmet", "armor", "head"));
   }
 }
 

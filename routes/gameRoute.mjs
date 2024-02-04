@@ -3,6 +3,12 @@ import { users } from "./usersRoute.mjs";
 
 // requests from game.mjs
 const GAME_API = express.Router();
+users[0].inventory.armor.createStartingItems("armor");
+users[0].inventory.weapons.createStartingItems("weapons");
+users[0].inventory.spells.createStartingItems("spells");
+users[0].inventory.consumables.createStartingItems("consumables");
+
+console.log("User starting items: ", users[0].inventory);
 
 GAME_API.get("/", (req, res) => {
   res.json(users);
@@ -27,8 +33,6 @@ GAME_API.put("/:id", (req, res) => {
     res.status(404).json({ success: false, error: "User or skill not found" });
   }
   // console.log(users[0].skills);
-  console.log(users[0].inventory);
-  // console.log(users[0].skills[skillName].xp);
 });
 
 GAME_API.delete("/:id", (req, res) => {
