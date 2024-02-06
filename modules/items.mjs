@@ -1,124 +1,101 @@
-export const BronzeStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
+export class BronzeArmor {
+  constructor(itemType) {
+    switch (itemType) {
+      case "helm":
+        this.helm = {
+          name: "Bronze helmet",
+          defense: 5,
+          lvlReq: 3,
+        };
+        break;
+      case "chestPlate":
+        this.chestPlate = {
+          name: "Bronze chestplate",
+          defense: 14,
+          lvlReq: 3,
+        };
+        break;
+      case "gauntlets":
+        this.gauntlets = {
+          name: "Bronze gauntlets",
+          defense: 2,
+          lvlReq: 3,
+        };
+        break;
+      case "legs":
+        this.legs = {
+          name: "Slacks",
+          defense: 7,
+          lvlReq: 3,
+        };
+        break;
+      case "shoes":
+        this.shoes = {
+          name: "Hobo slippers",
+          defense: 2,
+          lvlReq: 3,
+        };
+        break;
+      case "shield":
+        this.sword = {
+          name: "Torn umbrella",
+          defense: 6,
+          lvlReq: 3,
+        };
+        break;
+    }
+  }
+}
 
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
+export class BronzeWeapons {
+  constructor(weaponType) {
+    switch (weaponType) {
+      case "sword":
+        this.sword = {
+          name: "Bronze sword",
+          attack: 12,
+          lvlReq: 3,
+        };
+        break;
+      case "axe":
+        this.sword = {
+          name: "Bronze axe",
+          attack: 12,
+          lvlReq: 3,
+        };
+        break;
+      case "mace":
+        this.sword = {
+          name: "Bronze mace",
+          attack: 12,
+          lvlReq: 3,
+        };
+        break;
+    }
+  }
+}
 
-export const IronStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-
-export const SteelStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-
-export const BlackStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-
-export const MithrilStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-
-export const AdamantStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-export const RuneStats = {
-  armor: { helm: 5, chestPlate: 14, gauntlets: 2, legs: 7, shoes: 2, shield: 6 },
-
-  weapon: {
-    sword: 3,
-    axe: 3,
-    mace: 3,
-    greatSword: 7,
-    greatAxe: 7,
-    greatMace: 7,
-    staff: 7,
-    bow: 7,
-  },
-  lvlReq: 1,
-};
-
-export const Capes = {
-  owlsShroud: {
-    armor: 48,
-    lvlReq: 32,
-  },
-  testCape: {
-    armor: 99,
-    lvlReq: 1,
-  },
-};
+export class LegendaryItems {
+  constructor(aLegendary) {
+    switch (aLegendary) {
+      case "magicFunCloth":
+        // add drop rate?
+        this.cape = {
+          name: "magicFunCloth",
+          defense: 48,
+          lvlReq: 32,
+        };
+        break;
+      case "addNewLego..":
+        // this.cape = {
+        //   name: "magicFunCloth",
+        //   defense: 48,
+        //   lvlReq: 32,
+        // };
+        break;
+    }
+  }
+}
 
 //export const BronzeStatsStats = {
 //   helm: 0,
@@ -141,3 +118,99 @@ export const Capes = {
 // Object.keys(BronzeStats).forEach((stat) => {
 //   BronzeStats[stat] = 10;
 // });
+
+// gi items navn og alt annet i klassen så du ikke må parse inn 100 parametere som det er nå
+export class StartingItems {
+  constructor(itemType) {
+    // Add a property to store the item type
+    this.itemType = itemType;
+    this.item = {};
+
+    switch (itemType) {
+      case "helm":
+        this.item = {
+          name: "Dr Pepper cap",
+          defense: 1,
+          lvlReq: 1,
+        };
+        break;
+      case "chestPlate":
+        this.item = {
+          name: "League of Legends shirt",
+          defense: 99,
+          lvlReq: 1,
+        };
+        break;
+      case "cape":
+        this.item = {
+          name: "bed sheet",
+          defense: 1,
+          lvlReq: 1,
+        };
+        break;
+      case "gauntlets":
+        this.item = {
+          name: "disposable gloves",
+          defense: 1,
+          lvlReq: 1,
+        };
+        break;
+      case "legs":
+        this.item = {
+          name: "Slacks",
+          defense: 1,
+          lvlReq: 1,
+        };
+        break;
+      case "shoes":
+        this.item = {
+          name: "Hobo slippers",
+          defense: 1,
+          lvlReq: 1,
+        };
+        break;
+      case "shield":
+        this.item = {
+          name: "Torn umbrella",
+          defense: 2,
+          lvlReq: 1,
+        };
+        break;
+      case "sword":
+        this.item = {
+          name: "Homemade wooden butterknife",
+          attack: 2,
+          lvlReq: 1,
+        };
+        break;
+    }
+  }
+}
+
+export class Spells {
+  constructor(spellType) {
+    switch (spellType) {
+      case "fire":
+        this.spell = {
+          name: "Shitty flame",
+          magic: 4,
+          lvlReq: 1,
+        };
+        break;
+    }
+  }
+}
+
+export class Consumables {
+  constructor(consumableType) {
+    switch (consumableType) {
+      case "healingPotion":
+        this.potion = {
+          name: "Soy pot",
+          healing: 3,
+          lvlReq: 1,
+        };
+        break;
+    }
+  }
+}
