@@ -321,7 +321,6 @@ async function userData() {
       throw new Error("Server error: " + response.status);
     }
     let data = await response.json();
-    // console.log("ka e detta? ", data);
     return data;
   } catch (error) {
     console.log(error);

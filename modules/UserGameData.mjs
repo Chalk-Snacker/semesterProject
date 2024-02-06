@@ -54,6 +54,7 @@ export class Inventory {
     switch (itemType) {
       case "armor":
         this.helms.push(new StartingItems("helm"));
+        this.helms.push(new BronzeArmor("helm"));
         this.chestPlates.push(new StartingItems("chestPlate"));
         this.cape.push(new StartingItems("cape"));
         this.gauntlets.push(new StartingItems("gauntlets"));
