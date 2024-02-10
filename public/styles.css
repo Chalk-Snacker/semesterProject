@@ -293,11 +293,11 @@
   background-color: orange;
   z-index: 1;
 }
-/*
+
 #inventoryCategoryHeader {
   position: absolute;
   width: 775px;
-  height: 70px;
+  height: 40px;
   left: 775px;
   background-color: #1e682e;
   z-index: 2;
