@@ -5,10 +5,11 @@ import UserGameDataLogger from "../modules/UserGameDataLogger.mjs";
 
 // requests from game.mjs
 const GAME_API = express.Router();
-users[0].inventory.armor.createStartingItems("armor");
-users[0].inventory.weapons.createStartingItems("weapons");
-users[0].inventory.spells.createStartingItems("spells");
-users[0].inventory.consumables.createStartingItems("consumables");
+// users[0].inventory.armor.createStartingItems("armor");
+// users[0].inventory.weapons.createStartingItems("weapons");
+// users[0].inventory.spells.createStartingItems("spells");
+// users[0].inventory.consumables.createStartingItems("consumables");
+// kommenterer disse for å teste uten user[0]
 
 GAME_API.put("/:id", (req, res, next) => {
   UserGameDataLogger.logInventory(users[0]);

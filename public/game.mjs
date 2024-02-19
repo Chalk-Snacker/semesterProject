@@ -12,12 +12,13 @@ let isRest = false;
 const inventorySlots = [];
 const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
 const userDataValues = await userData();
-const listOfSkills = Object.keys(userDataValues[0].skills);
-const listOfInventoryCategories = Object.keys(userDataValues[0].inventory);
+// const listOfSkills = Object.keys(userDataValues[0].skills);
+// const listOfInventoryCategories = Object.keys(userDataValues[0].inventory);
+// kommenterer disse vekk for å teste uten user[0]
 
 export function loadGame() {
   // hent informasjon om brukeren fra serveren og erstatt statiske verdier under (brukt for testing) med dem
-  // sjekk for om brukernavn og passord er riktig, gjøres ikke i loadGame, men i gameLogon.mjs
+  // sjekk for om brukernavn og passord er riktig, gjøres ikke i loadGame, men i gameLogin.mjs
   // når loadGame kjøres, hentes alle stats, xp, items i inventory, penger og spillernavn fra serveren utifra brukeren
   // hvis du er på en gjestbruker, vil du starte med et fastoppsett som alle nye brukere starter med, men vil ikke få mulighet til å lagre dataen
   const containerOuter = document.getElementById("containerBackgroundOuter");
@@ -26,6 +27,7 @@ export function loadGame() {
 
   const div = document.createElement("div");
   div.id = "container";
+
   containerOuter.appendChild(div);
   containerInner.appendChild(div);
   containerGameplay.appendChild(div);
@@ -100,7 +102,6 @@ function initIdle(aContainer) {
   progressOuterBarDiv.style.display = "none";
 
   // Skill list
-  // skriv det heller om senere, bare kod slik at du har spillet "ferdig" og kan heller oppdatere det senere for server
 
   for (let i = 0; i < listOfSkills.length; i++) {
     const skillListDiv = document.createElement("div");

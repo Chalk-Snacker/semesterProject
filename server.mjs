@@ -2,18 +2,6 @@ import express from "express"; // Express is installed using npm
 import USER_API from "./routes/usersRoute.mjs"; // This is where we have defined the API for working with users.
 import GAME_API from "./routes/gameRoute.mjs";
 import UserGameDataLogger from "./modules/UserGameDataLogger.mjs";
-import pg from "pg";
-const { Client } = pg;
-
-const client = new Client({
-  host: "localhost",
-  port: 5432,
-  database: "postgres",
-  user: "postgres",
-  password: "$v7my&DLQA#cM5YgGN8w",
-});
-// const client = new Client();
-await client.connect();
 
 // Creating an instance of the server
 const server = express();
@@ -22,7 +10,7 @@ const port = process.env.PORT || 8080;
 server.set("port", port);
 
 // Defining a folder that will contain static files.
-server.use(express.json());
+// server.use(express.json()); // flyttet til usersRoute.mjs
 server.use(express.static("public"));
 
 server.use("/user", USER_API); // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)

@@ -1,39 +1,92 @@
 import express from "express";
 import User from "../modules/user.mjs";
+import DBmanager from "../modules/storageManager.mjs";
+// import client from "../server.mjs";
 
 const USER_API = express.Router();
+USER_API.use(express.json());
 
 export const users = [];
 // a default user that doesnt save progress
-const guestUser = new User();
-guestUser.nick = "Guest";
-users.push(guestUser);
+// const guestUser = new User();
+// guestUser.nick = "Guest";
+// users.push(guestUser);
 
-USER_API.get("/:id", (req, res) => {
+USER_API.get("/:", (req, res) => {
   // Return user object
 });
 
 // dont need next for now
-USER_API.post("/", (req, res) => {
+USER_API.post("/", async (req, res) => {
   // create user
   // give the user an id?
   // TO DO:
   // check if username etc is already taken
   // dont store password
-  try {
-    const userData = req.body;
-    const user = new User();
+
+  // ----------- gammelt ------------
+
+  // try {
+  //   // await client.connect();
+  //   const userData = req.body;
+  //   const user = new User();
+  //   user.email = userData.playerEmail;
+  //   user.pswHash = userData.playerPsw;
+  //   user.nick = userData.playerNick;
+  //   users.push(user);
+  //   res.status(201).json({ success: true, message: "User created successfully" });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({ success: false, error: "Internal server error" });
+  // }
+  // console.log("Total users: ", users.length);
+  // console.log(users);
+
+  // ----------- nytt ----------
+  // const { name, email, password } = req.body;
+  const userData = req.body;
+
+  if (userData.playerNick != "" && userData.playerEmail != "" && userData.playerPsw != "") {
+    let user = new User();
+    ///TODO: Do not save passwords.
+
+    user.nick = userData.playerNick;
     user.email = userData.playerEmail;
     user.pswHash = userData.playerPsw;
-    user.nick = userData.playerNick;
-    users.push(user);
-    res.status(201).json({ success: true, message: "User created successfully" });
+    ///TODO: Does the user exist?
+    let exists = false;
+
+    if (!exists) {
+      //TODO: What happens if this fails?
+      user = await user.save();
+      console.log("asdf");
+      res.status(201).json(JSON.stringify(user)).end();
+    } else {
+      console.log("fdsa");
+      res.status(400).end();
+    }
+  } else {
+    res.status(400).send("Mangler data felt").end();
+  }
+});
+
+USER_API.post("/login", async (req, res) => {
+  const userData = req.body;
+
+  try {
+    const user = await DBmanager.userLoginAuth(userData.nick, userData.password);
+
+    if (user) {
+      // User exists and password is correct
+      res.status(200).json({ success: true, message: "Login successful" });
+    } else {
+      // User does not exist or password is incorrect
+      res.status(401).json({ success: false, error: "Invalid credentials" });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Internal server error" });
   }
-  console.log("Total users: ", users.length);
-  console.log(users);
 });
 
 USER_API.put("/:id", (req, res) => {
