@@ -29,7 +29,8 @@ class User {
     if (this.id == null) {
       return await DBManager.createUser(this);
     } else {
-      return await DBManager.updateUser(this);
+      // return await DBManager.updateUser(this);
+      return;
     }
   }
 

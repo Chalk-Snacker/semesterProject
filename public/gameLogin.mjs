@@ -1,5 +1,31 @@
 "use strict";
 import { loadGame } from "./game.mjs";
+let laMegBake = undefined;
+
+let crypto;
+try {
+  crypto = window.crypto || window.msCrypto; // For broader compatibility
+} catch (err) {
+  console.error("Web Crypto API is not supported!");
+}
+
+console.log(crypto);
+
+export async function hashPassword(password) {
+  if (!crypto) {
+    throw new Error("Web Crypto API is not supported!");
+  }
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+
+  const buffer = await crypto.subtle.digest("SHA-256", data);
+
+  const hashArray = Array.from(new Uint8Array(buffer));
+  const hashedPassword = hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+
+  return hashedPassword;
+}
 
 const testPlayer = {
   playerEmail: "testMail",
@@ -56,7 +82,10 @@ function loginUser() {
   loginButton.innerText = "Login";
   loginButton.addEventListener("click", function (event) {
     // loadGame(); // kommentert ut for testing
+
     correctLogin();
+    // loadGame();
+
     event.preventDefault();
   });
 
@@ -233,7 +262,7 @@ async function editUser(playerName) {
   }
 }
 
-async function correctLogin() {
+export async function correctLogin() {
   const usernameInput = document.getElementById("textField0");
   const passwordInput = document.getElementById("textField1");
 
@@ -250,12 +279,14 @@ async function correctLogin() {
   };
   try {
     let response = await fetch("http://localhost:8080/user/login", requestOptions);
-    if (response.status != 201 || response.status != 200) {
+    if (response.status !== 201 && response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
     }
-    // let data = await response.json();
-    // return data;
+    let data = await response.json();
+    if (typeof data == "object") {
+      loadGame(data);
+    }
   } catch (error) {
     console.log(error);
   }

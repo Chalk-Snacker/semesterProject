@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import DBmanager from "../modules/storageManager.mjs";
+import "dotenv/config";
 // import client from "../server.mjs";
 
 const USER_API = express.Router();
@@ -72,13 +73,20 @@ USER_API.post("/", async (req, res) => {
 
 USER_API.post("/login", async (req, res) => {
   const userData = req.body;
+  // console.log("LKADSHFKJASBHDFØKLAJNFGKLJBASDLKFJHASFGJLHABDJKFHASKDLJFHAKSJLDHFKJLASHDFKJLH", userData);
 
   try {
-    const user = await DBmanager.userLoginAuth(userData.nick, userData.password);
+    const user = await DBmanager.loginAuthUser(userData.nick, userData.password);
 
-    if (user) {
+    if (user !== undefined) {
       // User exists and password is correct
-      res.status(200).json({ success: true, message: "Login successful" });
+      // res.status(200).json({ success: true, message: "Login successful", user: user });
+      //const token = jsonwebtoken.sign({ userId: user.id, username: user.nick }, process.env.TOKEN_SECRET); // add expiration? {expiresIn:"1h"}
+      //res.json({ token: token });
+      // res.status(200).json({ success: true, message: "Login successful", user: user.id });
+      res.json({ userId: user.id });
+
+      console.log("Meine Mama hat einfach erlaubt dass ich cola trinken darf! Wie cool ist dass bitte? Ich zocke fortnite..und trinke cola! YIPEEEEEE!");
     } else {
       // User does not exist or password is incorrect
       res.status(401).json({ success: false, error: "Invalid credentials" });

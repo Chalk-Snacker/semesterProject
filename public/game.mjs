@@ -1,4 +1,5 @@
 "use strict";
+
 let progressInnerBarDiv,
   newLvl,
   newXp,
@@ -7,20 +8,27 @@ let progressInnerBarDiv,
   skillInterval,
   jau,
   userInventoryData,
-  items = null;
+  items,
+  fetchData,
+  xpThreshHold,
+  userLoginId = null;
 let isRest = false;
 const inventorySlots = [];
 const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
-const userDataValues = await userData();
-// const listOfSkills = Object.keys(userDataValues[0].skills);
-// const listOfInventoryCategories = Object.keys(userDataValues[0].inventory);
-// kommenterer disse vekk for å teste uten user[0]
+let listOfSkills = null;
+let userDataValues = null;
+let listOfInventoryCategories = null;
+let userId = null;
+export async function loadGame(userId) {
+  // lagrer brukerens id i localStorage, og alle requests bruker id for å finne riktig bruker
+  userLoginId = userId;
+  localStorage.setItem("userLoginId", JSON.stringify(userLoginId));
+  console.log(userLoginId);
+  userDataValues = await userData(userLoginId);
+  userDataValues = userDataValues.user;
+  listOfSkills = Object.keys(userDataValues.skills);
+  listOfInventoryCategories = Object.keys(userDataValues.inventory);
 
-export function loadGame() {
-  // hent informasjon om brukeren fra serveren og erstatt statiske verdier under (brukt for testing) med dem
-  // sjekk for om brukernavn og passord er riktig, gjøres ikke i loadGame, men i gameLogin.mjs
-  // når loadGame kjøres, hentes alle stats, xp, items i inventory, penger og spillernavn fra serveren utifra brukeren
-  // hvis du er på en gjestbruker, vil du starte med et fastoppsett som alle nye brukere starter med, men vil ikke få mulighet til å lagre dataen
   const containerOuter = document.getElementById("containerBackgroundOuter");
   const containerInner = document.getElementById("containerBackgroundInner");
   const containerGameplay = document.getElementById("containerGameplayZone");
@@ -110,7 +118,7 @@ function initIdle(aContainer) {
     // name of skill
     const skillName = document.createElement("h1");
     skillName.classList.add("skillName"); // style general for all
-    skillName.innerText = userDataValues[0].skills[listOfSkills[i]].skillName;
+    skillName.innerText = captializeFirstLetter(listOfSkills[i]);
 
     // xp and lvl tracking
     const lvlXpContainer = document.createElement("div");
@@ -122,7 +130,8 @@ function initIdle(aContainer) {
     const skillLvl = document.createElement("h3");
     skillLvl.classList.add("skillLvl");
     skillLvl.id = `skillLvl_${listOfSkills[i]}`;
-    skillLvl.innerText = "lvl " + userDataValues[0].skills[listOfSkills[i]].lvl;
+    skillLvl.innerText = "Lvl " + userDataValues.skills[listOfSkills[i]].lvl;
+
     //skill icon
     const img = document.createElement("img");
     img.id = "skillIcon";
@@ -224,30 +233,51 @@ function doSkill(aSkill) {
   showAnimationBar();
 
   skillInterval = setInterval(async function () {
-    // add resources to be added into inventory later
-    isRest = false;
-    let skillLvl = document.getElementById("skillLvl_" + aSkill);
-    let xpIncrease = 12;
-    newXp = await userData();
-    newXp = newXp[0].skills[aSkill].xp;
-    newXp += xpIncrease;
-    oldLvl = await userData();
-    oldLvl = oldLvl[0].skills[aSkill].lvl;
-    updateXp(aSkill, newXp);
+    try {
+      // add resources to be added into inventory later
+      // console.log("hei jeg er et interval");
+      isRest = false;
+      let skillLvl = document.getElementById("skillLvl_" + aSkill);
+      let xpIncrease = 12;
+      // console.log("jeg logges før vi henter data1");
+      // console.log(newData);
+      fetchData = await userData(userLoginId);
+      newXp = fetchData.user.skills[aSkill].xp;
+      oldLvl = fetchData.user.skills[aSkill].lvl;
+      // console.log(newXp);
+      newXp += xpIncrease;
+      const updatedData = await updateXp(aSkill, newXp);
+      // console.log("jeg logges før vi henter data2");
+      // newData = await userData(userLoginId);
+      // newLvl = newData.user.skills[aSkill].lvl;
+      // const updatedData = await updateXp();
+      console.log("sjekk på denne om den er riktig ", updatedData);
+      // newLvl = updatedData.userData.skills[aSkill].lvl;
+      newLvl = updatedData.userData[aSkill].lvl;
 
-    newLvl = await userData();
-    newLvl = newLvl[0].skills[aSkill].lvl;
-    skillLvl.innerText = "lvl " + newLvl;
-    const xpThreshHold = userDataValues[0].skills[aSkill].xpThreshHold[oldLvl];
-    xpIncreasePx = xpIncrease * (150 / xpThreshHold);
-    if (oldLvl == newLvl || newLvl == null) {
-      updateSkillLvlXpBar(aSkill, xpIncreasePx);
-    } else {
-      isRest = true;
-      const remainder = newXp % xpThreshHold;
-      const remainderPixels = remainder * (150 / xpThreshHold);
-      console.log("remainder ", remainderPixels);
-      updateSkillLvlXpBar(aSkill, remainder);
+      skillLvl.innerText = "Lvl " + newLvl;
+      // console.log("oldLvl", oldLvl, "newLvl", newLvl);
+
+      // const xpThreshHold = userDataValues[0].skills[aSkill].xpThreshHold[oldLvl];
+      // let xpThreshHold = newData.user.skills[aSkill].xpThreshHold[oldLvl];
+      // console.log("xpThreshHold", xpThreshHold, "oldLvl", oldLvl);
+      const xpThreshHold = fetchData.user.skills[aSkill].xpThreshHold;
+
+      xpIncreasePx = xpIncrease * (150 / xpThreshHold);
+      // console.log("hvorfor går vi ikke inn i if? ", " oldLvl", oldLvl, "newLvl", newLvl);
+      if (oldLvl == newLvl || newLvl == null) {
+        console.log("finn meg"); // logges ikke 🤔  // de er alltid like, blir oppdatert samtidig?
+        updateSkillLvlXpBar(aSkill, xpIncreasePx);
+      } else {
+        console.log("SER DU DENNE SÅ ER IKKE oldLvl LIK newLvl LENGER !!!!");
+        isRest = true;
+        const remainder = newXp % xpThreshHold;
+        const remainderPixels = remainder * (150 / xpThreshHold);
+        console.log("remainder ", remainderPixels);
+        updateSkillLvlXpBar(aSkill, remainder);
+      }
+    } catch (error) {
+      console.error("Interval error:", error);
     }
   }, 5000);
 }
@@ -317,27 +347,7 @@ function settings() {
   // css hidden toggle ting her
 }
 
-async function userData() {
-  let requestOptions = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    // body: JSON.stringify(user),
-  };
-  try {
-    let response = await fetch("http://localhost:8080/game/", requestOptions);
-    if (response.status != 200) {
-      console.log("Error getting stuff!");
-      throw new Error("Server error: " + response.status);
-    }
-    let data = await response.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function updateXp(skillName, newXp) {
-  // fiks funksjon senere når du har pålogging, så du kan sjekke på token så kun skill lvl på den ene brukeren øker.
   const updatedSkillXp = {
     [skillName]: {
       xp: newXp,
@@ -346,7 +356,7 @@ async function updateXp(skillName, newXp) {
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedSkillXp),
+    body: JSON.stringify({ updatedSkillXp, userLoginId }),
   };
   try {
     const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
@@ -355,7 +365,11 @@ async function updateXp(skillName, newXp) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
     }
-    const data = await response.json();
+    let newData = await response.json();
+    console.log(newData);
+    return newData;
+    // console.log("KAN DETTE BRUKES SOM NY DATA ?????", data);
+    // const data = await response.json();
   } catch (error) {
     console.log(error);
   }
@@ -387,4 +401,33 @@ async function showItems(inventoryCategory) {
       // jau.appendChild(img);
     }
   }
+}
+
+// funksjon for å hente ut brukerdata fra db
+async function userData() {
+  let requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userLoginId),
+    credentials: "include",
+  };
+  try {
+    let response = await fetch("http://localhost:8080/game/profile", requestOptions);
+    // if (response.status !== 201 && response.status !== 200) {
+    if (response.status !== 200) {
+      console.log("Error getting stuff!");
+      throw new Error("Server error: " + response.status);
+    }
+    let data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function captializeFirstLetter(aName) {
+  let firstLetter = aName.charAt(0).toUpperCase();
+  let rest = aName.slice(1);
+  return firstLetter + rest;
 }

@@ -5,13 +5,18 @@ export class Skill {
     this.skillName = skillName;
     this.lvl = 1;
     this.xp = 0;
-    this.xpThreshHold = {}; // flytt threshhold ut fra constructor, trenger ikke å ha den i brukeren
+    // this.xpThreshHold = {},
+    this.xpThreshHold = this.lvl * 50;
+    // flytt threshhold ut fra constructor, trenger ikke å ha den i brukeren
+    // evt bytte ut xpThreshHold med xpNeededForLvlUp og endre verdien hvergang du lvl opp
+    // this.xpNeededLvlUp;
     this.restXp = 0; // when lvl up, remaining xp will be tranfered towards next lvl
-    for (let i = 0; i < 100; i++) {
-      this.xpThreshHold[i] = 50 * i;
-    }
+    // for (let i = 0; i < 100; i++) {
+    //   this.xpThreshHold[i] = 50 * i;
+    // } // evt bytte ut xpThreshHold med xpNeededForLvlUp og endre verdien hvergang du lvl opp
   }
-  lvlUp() {
+  lvlUp2() {
+    // evt bytte ut xpThreshHold med xpNeededForLvlUp og endre verdien hvergang du lvl opp
     // if (this.lvl != 99) {
     //   // fjern kode utenfor if og test når det er mulig å teste spillet igjen
     //   // slett threshhold property
