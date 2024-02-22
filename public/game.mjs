@@ -2,7 +2,7 @@
 
 let progressInnerBarDiv,
   newLvl,
-  newXp,
+  currentXp,
   oldLvl,
   xpIncreasePx,
   skillInterval,
@@ -12,7 +12,9 @@ let progressInnerBarDiv,
   fetchData,
   xpThreshHold,
   userLoginId = null;
-let isRest = false;
+// let innerBar = null;
+let leveledUp = false;
+let remainder = null;
 const inventorySlots = [];
 const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
 let listOfSkills = null;
@@ -126,6 +128,7 @@ function initIdle(aContainer) {
     const skillXpBarInnerDiv = document.createElement("div");
     skillXpBarOuterDiv.id = "skillXpBarOuterDiv";
     skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + listOfSkills[i];
+
     // skill lvl
     const skillLvl = document.createElement("h3");
     skillLvl.classList.add("skillLvl");
@@ -153,21 +156,8 @@ function initIdle(aContainer) {
       doSkill(listOfSkills[i]);
     });
     idleBottomDiv.appendChild(skillButton);
+    updateSkillLvlXpBar(listOfSkills[i], null, false); // oppdaterer xpbar så den starter med riktig xp og ikke 0 hver gang
   }
-}
-
-function updateSkillLvlXpBar(skillName, xpValue) {
-  const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
-  // width is not set, so i set it to be 0 if we have 0 xp on the bar
-  let currentWidth = parseFloat(innerBar.style.width) || 0;
-  if (!isRest) {
-    currentWidth += parseFloat(xpValue);
-    innerBar.style.width = currentWidth + "px";
-  } else {
-    innerBar.style.width = 0;
-    innerBar.style.width = xpValue + "px";
-  }
-  innerBar.offsetWidth; // Force repaint
 }
 
 function initBattle() {
@@ -225,6 +215,7 @@ function initSettings() {
 }
 
 // ---------------- Skill function ----------------------
+
 function doSkill(aSkill) {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   progressOuterBarDiv.style.display = "none";
@@ -235,51 +226,59 @@ function doSkill(aSkill) {
   skillInterval = setInterval(async function () {
     try {
       // add resources to be added into inventory later
-      // console.log("hei jeg er et interval");
-      isRest = false;
+      leveledUp = false;
       let skillLvl = document.getElementById("skillLvl_" + aSkill);
       let xpIncrease = 12;
-      // console.log("jeg logges før vi henter data1");
-      // console.log(newData);
+
       fetchData = await userData(userLoginId);
-      newXp = fetchData.user.skills[aSkill].xp;
+      currentXp = fetchData.user.skills[aSkill].xp;
       oldLvl = fetchData.user.skills[aSkill].lvl;
-      // console.log(newXp);
-      newXp += xpIncrease;
-      const updatedData = await updateXp(aSkill, newXp);
-      // console.log("jeg logges før vi henter data2");
-      // newData = await userData(userLoginId);
-      // newLvl = newData.user.skills[aSkill].lvl;
-      // const updatedData = await updateXp();
-      console.log("sjekk på denne om den er riktig ", updatedData);
-      // newLvl = updatedData.userData.skills[aSkill].lvl;
+      currentXp += xpIncrease;
+      // regner ut resterende xp før den er oppdatert i tilfelle den lvl opp, regner vi på feil xå og thresh hold
+      xpThreshHold = fetchData.user.skills[aSkill].xpThreshHold;
+      remainder = currentXp % xpThreshHold;
+      console.log("currentXp", currentXp, "fetchData.user.skills[aSkill].xpThreshHold", fetchData.user.skills[aSkill].xpThreshHold);
+      console.log("remainder", remainder);
+
+      const updatedData = await updateXp(aSkill, currentXp);
       newLvl = updatedData.userData[aSkill].lvl;
-
       skillLvl.innerText = "Lvl " + newLvl;
-      // console.log("oldLvl", oldLvl, "newLvl", newLvl);
+      xpIncrease = updatedData.userData[aSkill].xp;
+      xpThreshHold = updatedData.userData[aSkill].xpThreshHold; // oppdaterer xpThreshHold så kan regne ut xp i px forhold til 100% (xpThreshHold)
 
-      // const xpThreshHold = userDataValues[0].skills[aSkill].xpThreshHold[oldLvl];
-      // let xpThreshHold = newData.user.skills[aSkill].xpThreshHold[oldLvl];
-      // console.log("xpThreshHold", xpThreshHold, "oldLvl", oldLvl);
-      const xpThreshHold = fetchData.user.skills[aSkill].xpThreshHold;
-
-      xpIncreasePx = xpIncrease * (150 / xpThreshHold);
-      // console.log("hvorfor går vi ikke inn i if? ", " oldLvl", oldLvl, "newLvl", newLvl);
       if (oldLvl == newLvl || newLvl == null) {
-        console.log("finn meg"); // logges ikke 🤔  // de er alltid like, blir oppdatert samtidig?
-        updateSkillLvlXpBar(aSkill, xpIncreasePx);
+        // vi har ikke levlet og skal bare øke baren med xpIncrease
+        updateSkillLvlXpBar(aSkill, leveledUp, true, xpIncrease);
       } else {
-        console.log("SER DU DENNE SÅ ER IKKE oldLvl LIK newLvl LENGER !!!!");
-        isRest = true;
-        const remainder = newXp % xpThreshHold;
-        const remainderPixels = remainder * (150 / xpThreshHold);
-        console.log("remainder ", remainderPixels);
-        updateSkillLvlXpBar(aSkill, remainder);
+        // leveled up
+        leveledUp = true;
+        // restXp blir nulla på server i utregning før jeg får henta den ut, så hvis vi lvl opp henter jeg ut xp som er hva restXp var på server
+        updateSkillLvlXpBar(aSkill, leveledUp, true, xpIncrease);
       }
     } catch (error) {
       console.error("Interval error:", error);
     }
   }, 5000);
+}
+
+async function updateSkillLvlXpBar(skillName, leveledUp, increase, xpIncrease) {
+  const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
+  if (increase) {
+    if (!leveledUp) {
+      // regner om xp til px økning for xp bar
+      xpIncrease = xpIncrease * (150 / xpThreshHold); // let xpIncreasePx istedenfor? definere den her istedenfor global siden den ikke brukes noen andre steder, gjør dette med andre variabler også, ikke ha de global his de ikke brukes andre steder
+      innerBar.style.width = xpIncrease + "px";
+    } else {
+      remainder = remainder * (150 / xpThreshHold);
+      innerBar.style.width = remainder + "px";
+    }
+    innerBar.offsetWidth; // Force repaint
+    return;
+  } else {
+    fetchData = await userData(userLoginId); // henter ny data for å oppdatere verdier når du logger inn
+    xpIncrease = fetchData.user.skills[skillName].xp * (150 / fetchData.user.skills[skillName].xpThreshHold);
+    innerBar.style.width = xpIncrease + "px";
+  }
 }
 
 function showAnimationBar() {
@@ -347,10 +346,10 @@ function settings() {
   // css hidden toggle ting her
 }
 
-async function updateXp(skillName, newXp) {
+async function updateXp(skillName, currentXp) {
   const updatedSkillXp = {
     [skillName]: {
-      xp: newXp,
+      xp: currentXp,
     },
   };
   const requestOptions = {
@@ -366,10 +365,7 @@ async function updateXp(skillName, newXp) {
       throw new Error("Server error: " + response.status);
     }
     let newData = await response.json();
-    console.log(newData);
     return newData;
-    // console.log("KAN DETTE BRUKES SOM NY DATA ?????", data);
-    // const data = await response.json();
   } catch (error) {
     console.log(error);
   }
@@ -413,13 +409,11 @@ async function userData() {
   };
   try {
     let response = await fetch("http://localhost:8080/game/profile", requestOptions);
-    // if (response.status !== 201 && response.status !== 200) {
     if (response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
     }
     let data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
