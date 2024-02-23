@@ -21,71 +21,109 @@ let listOfSkills = null;
 let userDataValues = null;
 let listOfInventoryCategories = null;
 let userId = null;
+
+function switchgameplay(gameplayType) {
+  // load correct gameplay template
+  const gameplayContainer = document.getElementById("gameplayContainer");
+  gameplayContainer.innerHTML = "";
+  gameplayContainer.appendChild(document.importNode(document.getElementById(gameplayType).content, true));
+  clearInterval(skillInterval);
+  // run code depending on template
+  console.log(gameplayType);
+  switch (gameplayType) {
+    case "idleTemplate":
+      initidle(gameplayContainer);
+      break;
+    case "inventoryTemplate":
+      initInventory();
+  }
+}
+
 export async function loadGame(userId) {
-  // lagrer brukerens id i localStorage, og alle requests bruker id for å finne riktig bruker
   userLoginId = userId;
   localStorage.setItem("userLoginId", JSON.stringify(userLoginId));
-  console.log(userLoginId);
   userDataValues = await userData(userLoginId);
   userDataValues = userDataValues.user;
   listOfSkills = Object.keys(userDataValues.skills);
   listOfInventoryCategories = Object.keys(userDataValues.inventory);
 
-  const containerOuter = document.getElementById("containerBackgroundOuter");
-  const containerInner = document.getElementById("containerBackgroundInner");
-  const containerGameplay = document.getElementById("containerGameplayZone");
-
-  const div = document.createElement("div");
-  div.id = "container";
-
-  containerOuter.appendChild(div);
-  containerInner.appendChild(div);
-  containerGameplay.appendChild(div);
-
   // -------- Main Buttons on side --------
+  const battleButton = document.getElementById("battleButton");
+  const shopButton = document.getElementById("shopButton");
+  const inventoryButton = document.getElementById("inventoryButton");
+  const idleButton = document.getElementById("idleButton");
+  const settingsButton = document.getElementById("settingsButton");
 
-  // battle button
-  const battleButton = document.createElement("button");
-  battleButton.id = "battleButton";
-  battleButton.addEventListener("click", function () {});
-  containerInner.appendChild(battleButton);
+  battleButton.addEventListener("click", function () {
+    switchgameplay("battleTemplate");
+  });
+  shopButton.addEventListener("click", function () {
+    switchgameplay("shopTemplate");
+  });
+  inventoryButton.addEventListener("click", function () {
+    switchgameplay("inventoryTemplate");
+  });
+  idleButton.addEventListener("click", function () {
+    switchgameplay("idleTemplate");
+  });
+  settingsButton.addEventListener("click", function () {
+    switchgameplay("settingsTemplate");
+  });
 
-  // inventory button
-  const InventoryButton = document.createElement("button");
-  InventoryButton.id = "inventoryButton";
-  InventoryButton.addEventListener("click", inventory);
-
-  containerInner.appendChild(InventoryButton);
-
-  // shop button
-  const shopButton = document.createElement("button");
-  shopButton.id = "shopButton";
-  shopButton.addEventListener("click", shop);
-
-  containerInner.appendChild(shopButton);
-
-  // idle button
-  const idleButton = document.createElement("button");
-  idleButton.id = "idleButton";
-  idleButton.addEventListener("click", idle);
-  containerInner.appendChild(idleButton);
-
-  // settings button
-  const settingsButton = document.createElement("button");
-  settingsButton.innerText = "settings";
-  settingsButton.id = "settingsButton";
-  settingsButton.addEventListener("click", settings);
-  containerInner.appendChild(settingsButton);
-  // ------------ End of Buttons ---------
-
-  initBattle(div);
-  initInventory(div);
-  initShop(div);
-  initIdle(div);
-  initSettings(div);
+  switchgameplay("idleTemplate");
 }
 
-function initIdle(aContainer) {
+function initidle() {
+  const idleTopLeftDiv = document.getElementById("idleTopLeftDiv");
+  const idleBottomDiv = document.getElementById("idleBottomDiv");
+  for (let i = 0; i < listOfSkills.length; i++) {
+    const skillListDiv = document.createElement("div");
+    skillListDiv.classList.add("skillListDiv");
+    skillListDiv.id = "skillListDiv_" + listOfSkills[i];
+    // name of skill
+    const skillName = document.createElement("h1");
+    skillName.classList.add("skillName"); // style general for all
+    skillName.innerText = captializeFirstLetter(listOfSkills[i]);
+
+    // xp and lvl tracking
+    const lvlXpContainer = document.createElement("div");
+    const skillXpBarOuterDiv = document.createElement("div");
+    const skillXpBarInnerDiv = document.createElement("div");
+    skillXpBarOuterDiv.id = "skillXpBarOuterDiv";
+    skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + listOfSkills[i];
+
+    // skill lvl
+    const skillLvl = document.createElement("h3");
+    skillLvl.classList.add("skillLvl");
+    skillLvl.id = `skillLvl_${listOfSkills[i]}`;
+    skillLvl.innerText = "Lvl " + userDataValues.skills[listOfSkills[i]].lvl;
+
+    //skill icon
+    const img = document.createElement("img");
+    img.id = "skillIcon";
+    img.src = "./asset/skillsTest.jpg";
+
+    skillListDiv.appendChild(skillName); // skill name
+    lvlXpContainer.appendChild(skillLvl);
+    lvlXpContainer.append(skillXpBarOuterDiv);
+
+    skillXpBarOuterDiv.appendChild(skillXpBarInnerDiv); // skillXpBarInner
+    skillListDiv.appendChild(lvlXpContainer);
+    skillListDiv.appendChild(img); // skill icon
+    idleTopLeftDiv.appendChild(skillListDiv);
+
+    // skill buttons
+    const skillButton = document.createElement("button");
+    skillButton.id = listOfSkills[i] + "Button";
+    skillButton.addEventListener("click", function () {
+      doSkill(listOfSkills[i]);
+    });
+    idleBottomDiv.appendChild(skillButton);
+    updateSkillLvlXpBar(listOfSkills[i], null, false); // oppdaterer xpbar så den starter med riktig xp og ikke 0 hver gang
+  }
+}
+
+function initIdleSlett(aContainer) {
   // Creates idle UI:
   const idleTopDiv = document.createElement("div");
   const idleTopLeftDiv = document.createElement("div");
@@ -164,14 +202,11 @@ function initBattle() {
   // asdf
 }
 
-function initInventory(aContainer) {
-  const inventoryLeftDiv = document.createElement("div");
-  const inventoryRightDiv = document.createElement("div");
-  inventoryLeftDiv.id = "inventoryLeftDiv";
-  inventoryRightDiv.id = "inventoryRightDiv";
-  const inventoryCategoryHeader = document.createElement("div");
-  inventoryCategoryHeader.id = "inventoryCategoryHeader";
-  const inventoryContainer = document.createElement("div");
+function initInventory() {
+  const inventoryLeftDiv = document.getElementById("inventoryLeftDiv");
+  const inventoryRightDiv = document.getElementById("inventoryRightDiv");
+  const inventoryCategoryHeader = document.getElementById("inventoryCategoryHeader");
+
   //inventory slot, grid style
   for (let j = 0; j < 24; j++) {
     const inventorySlot = document.createElement("div");
@@ -195,15 +230,8 @@ function initInventory(aContainer) {
     });
     inventoryCategoryHeader.appendChild(button);
   }
-  inventoryRightDiv.appendChild(inventoryContainer);
-
-  aContainer.appendChild(inventoryCategoryHeader);
-  aContainer.appendChild(inventoryLeftDiv);
-  aContainer.appendChild(inventoryRightDiv);
 
   // console.log(document.getElementsByTagName("*").length);
-
-  // create the rest of inventory system
 }
 
 function initShop() {
@@ -218,10 +246,10 @@ function initSettings() {
 
 function doSkill(aSkill) {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  progressOuterBarDiv.style.display = "none";
-  progressOuterBarDiv.style.visibility = "hidden";
+  // progressOuterBarDiv.style.display = "none";
+  // progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(skillInterval);
-  showAnimationBar();
+  // showAnimationBar();
 
   skillInterval = setInterval(async function () {
     try {
@@ -237,8 +265,6 @@ function doSkill(aSkill) {
       // regner ut resterende xp før den er oppdatert i tilfelle den lvl opp, regner vi på feil xå og thresh hold
       xpThreshHold = fetchData.user.skills[aSkill].xpThreshHold;
       remainder = currentXp % xpThreshHold;
-      console.log("currentXp", currentXp, "fetchData.user.skills[aSkill].xpThreshHold", fetchData.user.skills[aSkill].xpThreshHold);
-      console.log("remainder", remainder);
 
       const updatedData = await updateXp(aSkill, currentXp);
       newLvl = updatedData.userData[aSkill].lvl;
@@ -301,7 +327,7 @@ function showAnimationBar() {
 function battle() {
   // css hidden toggle ting her
 }
-function inventory() {
+function inventorySlett() {
   // hides the progressbar so that it doesnt automatically runs when going back to idle
   progressOuterBarDiv.style.visibility = "hidden";
   progressOuterBarDiv.style.display = "none";
@@ -380,17 +406,20 @@ async function showItems(inventoryCategory) {
     let slotDiv = document.getElementById(slotId);
     slotDiv.innerText = "";
   }
-  let itemTypes = Object.keys(userInventoryData[0].inventory[inventoryCategory]);
+  // let itemTypes = Object.keys(userInventoryData[0].inventory[inventoryCategory]);
+  let itemTypes = Object.keys(userInventoryData.user.inventory[inventoryCategory]);
+
   for (let i = 0; i < itemTypes.length; i++) {
     if (itemTypes[i] == "inventoryCategory") {
       continue;
     }
-    items = userInventoryData[0].inventory[inventoryCategory][itemTypes[i]];
+    // items = userInventoryData[0].inventory[inventoryCategory][itemTypes[i]];
+    items = userInventoryData.user.inventory[inventoryCategory][itemTypes[i]];
     for (let j = 0; j < items.length; j++) {
       let item = items[j].item;
-      // console.log(item.name);
 
-      jau = document.getElementById(inventorySlots[i - 1]);
+      // jau = document.getElementById(inventorySlots[i - 1]);
+      jau = document.getElementById(inventorySlots[i]);
       jau.innerText = item.name + "\n" + "Level: " + item.lvlReq;
       // const img = document.createElement("img");
       // img.src = "./asset/skillsTest.jpg";

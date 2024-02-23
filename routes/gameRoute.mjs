@@ -8,12 +8,6 @@ import DBmanager from "../modules/storageManager.mjs";
 const GAME_API = express.Router();
 GAME_API.use(express.json());
 
-// users[0].inventory.armor.createStartingItems("armor");
-// users[0].inventory.weapons.createStartingItems("weapons");
-// users[0].inventory.spells.createStartingItems("spells");
-// users[0].inventory.consumables.createStartingItems("consumables");
-// kommenterer disse for å teste uten user[0]
-
 GAME_API.put("/:id", (req, res, next) => {
   // UserGameDataLogger.logInventory(users[0]);
   next();
@@ -60,7 +54,7 @@ GAME_API.put("/:id", async (req, res) => {
   const user = req.body.userLoginId;
   const skillName = req.params.id;
   const updatedUserXp = req.body.updatedSkillXp[skillName].xp;
-  console.log(skillName, ": ", "xp:", updatedUserXp, " user id:", user.userId);
+  // console.log(skillName, ": ", "xp:", updatedUserXp, " user id:", user.userId);
   try {
     const userData = await DBmanager.updateUserSkils(user.userId, skillName, updatedUserXp);
     // console.log("nå har det blitt en lang dag", userData);

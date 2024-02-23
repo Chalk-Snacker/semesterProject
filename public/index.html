@@ -7,18 +7,95 @@
   </head>
   <body>
     <link href="styles.css" rel="stylesheet" type="text/css" />
-    <div id="containerBackgroundOuter">
+    <!-- <div id="containerBackgroundOuter">
       <div id="containerBackgroundInner">
         <div id="containerGameplayZone"></div>
       </div>
-    </div>
+    </div> -->
+
+    <!-- MAIN CONTAINER -->
+    <div id="container" class="containerBackgroundOuter"></div>
+
+    <!-- LOGIN -->
+    <template id="loginTemplate">
+      <label id="label" class="registerUserLabel">Character name</label>
+      <input class="registerUser" type="text" name="username" id="textField0" />
+    </br>
+      <label id="label" class="registerUserLabel">Password</label>
+      <input class="registerUser" type="password" name="password" id="textField1" />
+    </br>
+    <button id="loginButton">Login</button> 
+    <button id="createUserButton">Create user</button>
+    </template>
+    
+        <!-- CREATE USER -->
+    <template id="createUserTemplate">
+        <label id="label" class="registerUserLabel">Email</label>
+        <input class="registerUser" type="email" name="email" id="textField2" />
+        </br>
+        <label id="label" class="registerUserLabel">Character name</label>
+        <input class="registerUser" type="text" name="username" id="textField3" />
+        </br>
+        <label id="label" class="registerUserLabel">Password</label>
+        <input class="registerUser" type="password" name="password" id="textField4" />
+      </br>
+        <button id="submitButton">Submit</button>
+      </br>
+    </template>
+
+
+
+    <!-- GAME -->
+    
+<template id ="gameTemplate"> <!-- style denne med iktig bakgrunn ++ -->
+    <div id=" gameContainer"> 
+        <button id="battleButton"></button> <!-- disse knappene må ha en klikk funksjon og loade div under (gamestates) i forhold til riktig knapp-->
+        <!-- <button id="inventoryButton" onclick="main('gameTemplate','inventoryTemplate' )">inventory</button>  -->
+        <button id="shopButton"></button>
+        <button id="inventoryButton"></button>
+        <!-- <button id="idleButton" onclick="main('gameTemplate','idleTemplate' )">idle</button>  -->
+        <button id="idleButton"></button>
+        <button id="settingsButton"></button>
+        <div id="gameplayContainer"></div>
+    </div>   
+</template>
+
+        <!-- GAME STATES -->
+        <template id="battleTemplate">
+          <div id ="battleDiv"></div>
+         </template>
+
+         <template id="inventoryTemplate">
+          <div id ="inventoryLeftDiv"></div>
+          <div id ="inventoryRightDiv">
+              <div id ="inventoryCategoryHeader"></div>
+          </div>
+         </template>
+
+
+         <template id="shopTemplate">
+          <div id ="shopDiv"></div>
+         </template>
+
+
+         <template id="idleTemplate"> <!--husk å endre css id'er til disse (idle, inventory++)-->
+          <div id="idleTopDiv">
+              <div id="idleTopLeftDiv"></div>
+              <div id="idleTopRightDiv"></div>
+          </div>
+          <div id ="idleBottomDiv"></div>
+         </template>
+
+
+         <template id="settingsTemplate">
+          <div id ="settingsDiv"></div>
+         </template>
+      
 
     <script type="module">
-      import { main } from "./gameLogin.mjs";
-      // document.addEventListener("DOMContentLoaded", function () {
-      //   loadGame();
-      // });
-      main();
+      import { loginUser,loadTemplates } from "./gameLogin.mjs";
+      loadTemplates('loginTemplate');
+      loginUser();
     </script>
   </body>
 </html>

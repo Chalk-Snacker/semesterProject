@@ -290,7 +290,7 @@
   width: 775px;
   height: 910px;
   left: 775px;
-  background-color: orange;
+  background-color: black;
   z-index: 1;
 }
 
@@ -298,7 +298,7 @@
   position: absolute;
   width: 775px;
   height: 40px;
-  left: 775px;
+  /* left: 775px; */
   background-color: #1e682e;
   z-index: 2;
 }

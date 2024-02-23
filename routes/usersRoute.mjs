@@ -54,6 +54,12 @@ USER_API.post("/", async (req, res) => {
     user.nick = userData.playerNick;
     user.email = userData.playerEmail;
     user.pswHash = userData.playerPsw;
+
+    user.inventory.armor.createStartingItems("armor");
+    user.inventory.weapons.createStartingItems("weapons");
+    user.inventory.spells.createStartingItems("spells");
+    user.inventory.consumables.createStartingItems("consumables");
+
     ///TODO: Does the user exist?
     let exists = false;
 
