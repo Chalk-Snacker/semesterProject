@@ -7,17 +7,12 @@
   </head>
   <body>
     <link href="styles.css" rel="stylesheet" type="text/css" />
-    <!-- <div id="containerBackgroundOuter">
-      <div id="containerBackgroundInner">
-        <div id="containerGameplayZone"></div>
-      </div>
-    </div> -->
-
     <!-- MAIN CONTAINER -->
     <div id="container" class="containerBackgroundOuter"></div>
 
     <!-- LOGIN -->
-    <template id="loginTemplate">
+
+    <template id="loginTemplate" class="containerBackgroundInner">
       <label id="label" class="registerUserLabel">Character name</label>
       <input class="registerUser" type="text" name="username" id="textField0" />
     </br>
@@ -29,6 +24,7 @@
     </template>
     
         <!-- CREATE USER -->
+
     <template id="createUserTemplate">
         <label id="label" class="registerUserLabel">Email</label>
         <input class="registerUser" type="email" name="email" id="textField2" />
@@ -61,10 +57,13 @@
 </template>
 
         <!-- GAME STATES -->
+
+        <!-- battle -->
         <template id="battleTemplate">
           <div id ="battleDiv"></div>
          </template>
 
+        <!-- innventory -->
          <template id="inventoryTemplate">
           <div id ="inventoryLeftDiv"></div>
           <div id ="inventoryRightDiv">
@@ -72,21 +71,25 @@
           </div>
          </template>
 
-
+         <!-- shop -->
          <template id="shopTemplate">
           <div id ="shopDiv"></div>
-         </template>
+         </template>        
 
-
+         <!-- idle -->
          <template id="idleTemplate"> <!--husk å endre css id'er til disse (idle, inventory++)-->
           <div id="idleTopDiv">
               <div id="idleTopLeftDiv"></div>
-              <div id="idleTopRightDiv"></div>
+              <div id="idleTopRightDiv">
+                <div id="progressOuterBarDiv">
+                  <div id ="progressInnerBarDiv"></div>
+                </div>
+              </div>
           </div>
           <div id ="idleBottomDiv"></div>
          </template>
 
-
+         <!-- settings -->
          <template id="settingsTemplate">
           <div id ="settingsDiv"></div>
          </template>

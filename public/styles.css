@@ -5,6 +5,13 @@
   position: absolute;
 }
 
+.containerBackgroundOuter {
+  width: 1920px;
+  height: 1080px;
+  background: #59368d;
+  position: absolute;
+}
+
 #containerBackgroundInner > div {
   top: 30px;
   left: 30px;
@@ -178,7 +185,7 @@
 
 #progressOuterBarDiv {
   position: absolute;
-  width: 300px;
+  width: 350px;
   height: 30px;
   left: 325px;
   top: 10px;
@@ -186,7 +193,7 @@
 }
 #progressInnerBarDiv {
   position: absolute;
-  width: 300px;
+  width: 100px;
   height: 30px;
   background-color: black;
   animation: progress-animation 5s linear infinite;

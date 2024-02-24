@@ -1,26 +1,24 @@
 "use strict";
 
-let progressInnerBarDiv,
-  newLvl,
+let newLvl,
   currentXp,
   oldLvl,
-  xpIncreasePx,
   skillInterval,
   jau,
   userInventoryData,
   items,
   fetchData,
   xpThreshHold,
-  userLoginId = null;
-// let innerBar = null;
+  userLoginId,
+  remainder,
+  listOfSkills,
+  userDataValues,
+  listOfInventoryCategories = null;
+
 let leveledUp = false;
-let remainder = null;
+
 const inventorySlots = [];
 const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
-let listOfSkills = null;
-let userDataValues = null;
-let listOfInventoryCategories = null;
-let userId = null;
 
 function switchgameplay(gameplayType) {
   // load correct gameplay template
@@ -74,83 +72,14 @@ export async function loadGame(userId) {
 }
 
 function initidle() {
-  const idleTopLeftDiv = document.getElementById("idleTopLeftDiv");
-  const idleBottomDiv = document.getElementById("idleBottomDiv");
-  for (let i = 0; i < listOfSkills.length; i++) {
-    const skillListDiv = document.createElement("div");
-    skillListDiv.classList.add("skillListDiv");
-    skillListDiv.id = "skillListDiv_" + listOfSkills[i];
-    // name of skill
-    const skillName = document.createElement("h1");
-    skillName.classList.add("skillName"); // style general for all
-    skillName.innerText = captializeFirstLetter(listOfSkills[i]);
-
-    // xp and lvl tracking
-    const lvlXpContainer = document.createElement("div");
-    const skillXpBarOuterDiv = document.createElement("div");
-    const skillXpBarInnerDiv = document.createElement("div");
-    skillXpBarOuterDiv.id = "skillXpBarOuterDiv";
-    skillXpBarInnerDiv.id = "skillXpBarInnerDiv_" + listOfSkills[i];
-
-    // skill lvl
-    const skillLvl = document.createElement("h3");
-    skillLvl.classList.add("skillLvl");
-    skillLvl.id = `skillLvl_${listOfSkills[i]}`;
-    skillLvl.innerText = "Lvl " + userDataValues.skills[listOfSkills[i]].lvl;
-
-    //skill icon
-    const img = document.createElement("img");
-    img.id = "skillIcon";
-    img.src = "./asset/skillsTest.jpg";
-
-    skillListDiv.appendChild(skillName); // skill name
-    lvlXpContainer.appendChild(skillLvl);
-    lvlXpContainer.append(skillXpBarOuterDiv);
-
-    skillXpBarOuterDiv.appendChild(skillXpBarInnerDiv); // skillXpBarInner
-    skillListDiv.appendChild(lvlXpContainer);
-    skillListDiv.appendChild(img); // skill icon
-    idleTopLeftDiv.appendChild(skillListDiv);
-
-    // skill buttons
-    const skillButton = document.createElement("button");
-    skillButton.id = listOfSkills[i] + "Button";
-    skillButton.addEventListener("click", function () {
-      doSkill(listOfSkills[i]);
-    });
-    idleBottomDiv.appendChild(skillButton);
-    updateSkillLvlXpBar(listOfSkills[i], null, false); // oppdaterer xpbar så den starter med riktig xp og ikke 0 hver gang
-  }
-}
-
-function initIdleSlett(aContainer) {
-  // Creates idle UI:
-  const idleTopDiv = document.createElement("div");
-  const idleTopLeftDiv = document.createElement("div");
-  const idleTopRightDiv = document.createElement("div");
-  idleTopDiv.id = "idleTopDiv";
-  idleTopLeftDiv.id = "idleTopLeftDiv";
-  idleTopRightDiv.id = "idleTopRightDiv";
-
-  const idleBottomDiv = document.createElement("div");
-  idleBottomDiv.id = "idleBottomDiv";
-  aContainer.appendChild(idleTopDiv);
-  aContainer.appendChild(idleBottomDiv);
-  idleTopDiv.appendChild(idleTopLeftDiv);
-  idleTopDiv.appendChild(idleTopRightDiv);
-
   // Progressbar
-  const progressOuterBarDiv = document.createElement("div");
-  const progressInnerBarDiv = document.createElement("div");
-  progressOuterBarDiv.id = "progressOuterBarDiv";
-  progressInnerBarDiv.id = "progressInnerBarDiv";
-  idleTopRightDiv.appendChild(progressOuterBarDiv);
-  progressOuterBarDiv.appendChild(progressInnerBarDiv);
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
   progressOuterBarDiv.style.visibility = "hidden";
   progressOuterBarDiv.style.display = "none";
 
-  // Skill list
-
+  const idleTopLeftDiv = document.getElementById("idleTopLeftDiv");
+  const idleBottomDiv = document.getElementById("idleBottomDiv");
   for (let i = 0; i < listOfSkills.length; i++) {
     const skillListDiv = document.createElement("div");
     skillListDiv.classList.add("skillListDiv");
@@ -245,11 +174,11 @@ function initSettings() {
 // ---------------- Skill function ----------------------
 
 function doSkill(aSkill) {
-  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  // const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   // progressOuterBarDiv.style.display = "none";
   // progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(skillInterval);
-  // showAnimationBar();
+  showAnimationBar();
 
   skillInterval = setInterval(async function () {
     try {
@@ -308,10 +237,8 @@ async function updateSkillLvlXpBar(skillName, leveledUp, increase, xpIncrease) {
 }
 
 function showAnimationBar() {
-  let progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-
-  // progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
+  const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
+  const progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
   progressInnerBarDiv.style.animation = "none";
 
   // Force a reflow
@@ -322,30 +249,16 @@ function showAnimationBar() {
   progressOuterBarDiv.style.visibility = "visible";
 }
 
+function captializeFirstLetter(aName) {
+  let firstLetter = aName.charAt(0).toUpperCase();
+  let rest = aName.slice(1);
+  return firstLetter + rest;
+}
+
 // ---------------- Button functions for toggling css----------------------
 
 function battle() {
   // css hidden toggle ting her
-}
-function inventorySlett() {
-  // hides the progressbar so that it doesnt automatically runs when going back to idle
-  progressOuterBarDiv.style.visibility = "hidden";
-  progressOuterBarDiv.style.display = "none";
-
-  // rest of function
-  const test1 = document.getElementById("idleTopDiv");
-  const test2 = document.getElementById("idleBottomDiv");
-  test1.style.display = "none";
-  test1.style.visibility = "hidden";
-  test2.style.display = "none";
-  test2.style.visibility = "hidden";
-
-  const test3 = document.getElementById("inventoryLeftDiv");
-  const test4 = document.getElementById("inventoryRightDiv");
-  test3.style.display = "block";
-  test3.style.visibility = "visible";
-  test4.style.display = "block";
-  test4.style.visibility = "visible";
 }
 function shop() {
   // css hidden toggle ting her
@@ -372,6 +285,8 @@ function settings() {
   // css hidden toggle ting her
 }
 
+// ---------------- Server requests ----------------------
+
 async function updateXp(skillName, currentXp) {
   const updatedSkillXp = {
     [skillName]: {
@@ -396,7 +311,6 @@ async function updateXp(skillName, currentXp) {
     console.log(error);
   }
 }
-
 // funksjon for å targette inventoryslot
 async function showItems(inventoryCategory) {
   userInventoryData = await userData();
@@ -447,10 +361,4 @@ async function userData() {
   } catch (error) {
     console.log(error);
   }
-}
-
-function captializeFirstLetter(aName) {
-  let firstLetter = aName.charAt(0).toUpperCase();
-  let rest = aName.slice(1);
-  return firstLetter + rest;
 }
