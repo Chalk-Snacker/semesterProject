@@ -51,7 +51,7 @@
         <button id="inventoryButton"></button>
         <!-- <button id="idleButton" onclick="main('gameTemplate','idleTemplate' )">idle</button>  -->
         <button id="idleButton"></button>
-        <button id="settingsButton"></button>
+        <button id="settingsButton">Settings</button>
         <div id="gameplayContainer"></div>
     </div>   
 </template>
@@ -91,7 +91,15 @@
 
          <!-- settings -->
          <template id="settingsTemplate">
-          <div id ="settingsDiv"></div>
+          <label id="label" class="registerUserLabel">New character name</label>
+          <input class="registerUser" type="text" name="username" id="textField5" />
+          </br>
+          <label id="label" class="registerUserLabel">New password</label>
+          <input class="registerUser" type="password" name="password" id="textField6" />
+        </br>
+          <button id="editUserButton">Save settings</button>
+          <button id="deleteUserButton">Delete user</button>
+        </br>
          </template>
       
 

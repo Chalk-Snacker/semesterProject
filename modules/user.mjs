@@ -33,11 +33,6 @@ class User {
       return;
     }
   }
-
-  delete() {
-    /// TODO: What happens if the DBManager fails to complete its task?
-    DBManager.deleteUser(this);
-  }
 }
 
 export default User;

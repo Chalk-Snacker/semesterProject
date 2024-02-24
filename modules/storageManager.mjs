@@ -16,7 +16,27 @@ class DBManager {
       ssl: process.env.DB_SSL === "true" ? process.env.DB_SSL : false,
     };
   }
+  async updateUserInformation(user, nick, password) {
+    const client = new pg.Client(this.#credentials);
 
+    try {
+      await client.connect();
+      let output = await client.query('UPDATE "public"."Users" SET "nick" = $2::Text, "password" = $3::Text WHERE "id" = $1 RETURNING nick;', [
+        user,
+        nick,
+        password,
+      ]);
+      if (output.rows[0] > 0) {
+        console.log("username and password are successfully updated");
+        return output; // kan vel bare returne output istedenfor output.rows[0] siden vi spesifiserer hva vi returner i query
+      }
+    } catch (error) {
+      console.error("Error updating user information:", error);
+      console.log("Request failed");
+    } finally {
+      client.end();
+    }
+  }
   async updateUserSkils(idInput, skillName, updatedUserXp) {
     const client = new pg.Client(this.#credentials);
 
@@ -76,7 +96,7 @@ class DBManager {
 
     try {
       await client.connect();
-      const output = await client.query('Delete from "public"."Users"  where id = $1;', [user.id]);
+      const output = await client.query('DELETE from "public"."Users"  where id = $1;', [user.userId]);
 
       // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
       // Of special intrest is the rows and rowCount properties of this object.

@@ -103,43 +103,70 @@ USER_API.post("/login", async (req, res) => {
   }
 });
 
-USER_API.put("/:id", (req, res) => {
-  // edit user
-  // add an id or edit user with username?
+// USER_API.put("/:id", (req, res) => {
+//   // edit user
+//   // add an id or edit user with username?
 
-  const userId = req.params.playerNick;
-  const updatedUserData = req.body;
+//   const userId = req.params.playerNick;
+//   const updatedUserData = req.body;
 
-  const userIndex = users.findIndex((user) => user.playerNick === userId);
-  if (userIndex !== -1) {
-    for (const key in updatedUserData) {
-      if (updatedUserData.hasOwnProperty(key)) {
-        users[userIndex].email = updatedUserData.playerEmail;
-        users[userIndex].pswHash = updatedUserData.playerPsw;
-        users[userIndex].nick = updatedUserData.playerNick;
-      }
-    }
+//   const userIndex = users.findIndex((user) => user.playerNick === userId);
+//   if (userIndex !== -1) {
+//     for (const key in updatedUserData) {
+//       if (updatedUserData.hasOwnProperty(key)) {
+//         users[userIndex].email = updatedUserData.playerEmail;
+//         users[userIndex].pswHash = updatedUserData.playerPsw;
+//         users[userIndex].nick = updatedUserData.playerNick;
+//       }
+//     }
 
-    res.status(200).json({ success: true, message: " User deleted" });
-  } else {
-    res.status(404).json({ success: false, error: " User not found" });
+//     res.status(200).json({ success: true, message: " User deleted" });
+//   } else {
+//     res.status(404).json({ success: false, error: " User not found" });
+//   }
+//   console.log("REAL CONSOLE.LOG", users);
+// });
+
+USER_API.put("/usrPsw", async (req, res) => {
+  // const user = req.body.userLoginId;
+  const user = req.body.userLoginId.userId;
+  const updatedUserNick = req.body.updatedUserInformation.newUserName;
+  const updatedUserPassword = req.body.updatedUserInformation.newUserPassword;
+
+  try {
+    const userData = await DBmanager.updateUserInformation(user, updatedUserNick, updatedUserPassword);
+    res.status(200).json({ success: true, userData });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-  console.log("REAL CONSOLE.LOG", users);
 });
 
-USER_API.delete("/:id", (req, res) => {
-  // delete user
-  // add an id or delete with username?
-  const userId = req.params.playerNick;
+// USER_API.delete("/:id", (req, res) => {
+//   // delete user
+//   // add an id or delete with username?
+//   const userId = req.params.playerNick;
 
-  const userIndex = users.findIndex((user) => user.playerNick === userId);
-  if (userIndex !== -1) {
-    users.splice(userIndex, 1);
+//   const userIndex = users.findIndex((user) => user.playerNick === userId);
+//   if (userIndex !== -1) {
+//     users.splice(userIndex, 1);
+//     res.status(200).json({ success: true, message: " User deleted" });
+//   } else {
+//     res.status(404).json({ success: false, error: " User not found" });
+//   }
+//   console.log("REAL CONSOLE.LOG", users);
+// });
+
+USER_API.delete("/", async (req, res) => {
+  const user = req.body;
+
+  try {
+    await DBmanager.deleteUser(user);
     res.status(200).json({ success: true, message: " User deleted" });
-  } else {
-    res.status(404).json({ success: false, error: " User not found" });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-  console.log("REAL CONSOLE.LOG", users);
 });
 
 export default USER_API;

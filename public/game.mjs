@@ -1,5 +1,5 @@
 "use strict";
-
+import { loadTemplates } from "./gameLogin.mjs";
 let newLvl,
   currentXp,
   oldLvl,
@@ -30,10 +30,14 @@ function switchgameplay(gameplayType) {
   console.log(gameplayType);
   switch (gameplayType) {
     case "idleTemplate":
-      initidle(gameplayContainer);
+      initidle();
       break;
     case "inventoryTemplate":
       initInventory();
+      break;
+    case "settingsTemplate":
+      initSettings();
+      break;
   }
 }
 
@@ -168,7 +172,26 @@ function initShop() {
 }
 
 function initSettings() {
-  // asdf
+  const editUserButton = document.getElementById("editUserButton");
+  const deleteUserButton = document.getElementById("deleteUserButton");
+
+  editUserButton.addEventListener("click", function () {
+    const newUserName = document.getElementById("textField5").value;
+    const newUserPassword = document.getElementById("textField6").value;
+    if (newUserName == "" || newUserPassword == "") {
+      return;
+    } else {
+      // send information and use UPDATE on server
+      updateUserInformation(newUserName, newUserPassword);
+    }
+  });
+  deleteUserButton.addEventListener("click", function () {
+    deleteUser();
+    loadTemplates("loginTemplate");
+
+    // bytt til login
+  });
+  // send newUserName og newUserPassword til server og bruke UPDATE som i skills
 }
 
 // ---------------- Skill function ----------------------
@@ -358,6 +381,47 @@ async function userData() {
     }
     let data = await response.json();
     return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function updateUserInformation(usernameInput, passwordInput) {
+  const updatedUserInformation = {
+    newUserName: usernameInput,
+    newUserPassword: passwordInput,
+  };
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ updatedUserInformation, userLoginId }),
+  };
+  try {
+    const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
+    if (response.status != 200) {
+      console.log("Error editing user");
+      throw new Error("Server error: " + response.status);
+    }
+    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    return newUserName;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteUser() {
+  const requestOptions = {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userLoginId),
+  };
+  try {
+    const response = await fetch(`http://localhost:8080/user`, requestOptions);
+    if (response.status != 200) {
+      console.log("Error deleting user");
+      throw new Error("Server error: " + response.status);
+    }
+    // let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    // return newUserName;
   } catch (error) {
     console.log(error);
   }
