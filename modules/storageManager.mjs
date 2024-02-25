@@ -1,6 +1,7 @@
 import pg from "pg";
 import { dbConnectionString } from "./dbConfig.mjs";
 import { lvlUp } from "../middleware/lvlUpUser.mjs";
+import crypto from "node:crypto";
 
 if (dbConnectionString == undefined) {
   throw "You forgot the db connection string";
@@ -136,31 +137,6 @@ class DBManager {
     return user;
   }
 
-  async loginAuthUser(nickInput, passInput) {
-    const client = new pg.Client(this.#credentials);
-    try {
-      await client.connect();
-      // const output = await client.query('SELECT "public"."Users"("nick", "password") VALUES($1::Text, $3::Text', [user.nick, user.pswHash]);
-      const output = await client.query('SELECT * FROM "public"."Users" WHERE "nick" = $1 AND "password" = $2', [nickInput, passInput]);
-
-      if (output.rows.length > 0) {
-        // User exists
-        console.log("username and password are correct");
-        // console.log(output.rows[0]);
-        return output.rows[0]; // return the user
-      } else {
-        // user does not exist
-        console.log("wrong username or password");
-        return undefined;
-      }
-    } catch (error) {
-      console.error(error);
-      //TODO : Error handling?? Remember that this is a module seperate from your server
-    } finally {
-      client.end(); // Always disconnect from the database.
-    }
-    // return user; // token eller noe? idk kanskje i get heller ...
-  }
   async getUser(idInput) {
     const client = new pg.Client(this.#credentials);
     try {

@@ -1,31 +1,6 @@
 "use strict";
 import { loadGame } from "./game.mjs";
 
-let crypto;
-try {
-  crypto = window.crypto || window.msCrypto; // For broader compatibility
-} catch (err) {
-  console.error("Web Crypto API is not supported!");
-}
-
-console.log(crypto);
-
-export async function hashPassword(password) {
-  if (!crypto) {
-    throw new Error("Web Crypto API is not supported!");
-  }
-
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-
-  const buffer = await crypto.subtle.digest("SHA-256", data);
-
-  const hashArray = Array.from(new Uint8Array(buffer));
-  const hashedPassword = hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
-
-  return hashedPassword;
-}
-
 const testPlayer = {
   playerEmail: "testMail",
   playerPsw: "testPassWrD21132",
