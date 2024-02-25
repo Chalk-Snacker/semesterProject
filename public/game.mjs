@@ -323,7 +323,8 @@ async function updateXp(skillName, currentXp) {
   };
   try {
     // const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/${skillName}`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/${skillName}`, requestOptions);
+    const response = await fetch(`/game/${skillName}`, requestOptions);
 
     if (response.status !== 200) {
       console.log("Error editing user");
@@ -376,7 +377,8 @@ async function userData() {
   };
   try {
     // let response = await fetch("http://localhost:8080/game/profile", requestOptions);
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/profile`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/profile`, requestOptions);
+    const response = await fetch(`/game/profile`, requestOptions);
 
     if (response.status !== 200) {
       console.log("Error getting stuff!");
@@ -400,7 +402,8 @@ async function updateUserInformation(usernameInput, passwordInput) {
   };
   try {
     // const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/Psw`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/Psw`, requestOptions);
+    const response = await fetch(`/user/Psw`, requestOptions);
 
     if (response.status != 200) {
       console.log("Error editing user");
@@ -421,7 +424,8 @@ async function deleteUser() {
   };
   try {
     // const response = await fetch(`http://localhost:8080/user`, requestOptions);
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user`, requestOptions);
+    const response = await fetch(`/user`, requestOptions);
 
     if (response.status != 200) {
       console.log("Error deleting user");

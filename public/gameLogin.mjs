@@ -72,8 +72,8 @@ async function createUser() {
     body: JSON.stringify(user),
   };
   try {
-    const response = await fetch("https://semesterproject-8m7h.onrender.com/user", requestOptions);
-
+    // const response = await fetch("https://semesterproject-8m7h.onrender.com/user", requestOptions);
+    const response = await fetch("/user", requestOptions);
     if (response.status != 201) {
       console.log(response.status);
       console.log("Error creating user");
@@ -89,7 +89,8 @@ async function deleteUser(playerName) {
     method: "DELETE",
   };
   try {
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
+    const response = await fetch(`/user/${playerName}`, requestOptions);
     if (response.status != 200) {
       console.log("Error deleting user");
       throw new Error("Server error: " + response.status);
@@ -106,8 +107,9 @@ async function editUser(playerName) {
     body: JSON.stringify(testPlayerUpdated),
   };
   try {
-    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
-
+    // const response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
+    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
+    const response = await fetch(`/user/${playerName}`, requestOptions);
     if (response.status != 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
@@ -134,8 +136,8 @@ export async function correctLogin() {
   };
   try {
     // let response = await fetch("http://localhost:8080/user/login", requestOptions);
-    const response = await fetch("https://semesterproject-8m7h.onrender.com/user/login", requestOptions);
-
+    // const response = await fetch("https://semesterproject-8m7h.onrender.com/user/login", requestOptions);
+    const response = await fetch("/user/login", requestOptions);
     if (response.status !== 201 && response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
