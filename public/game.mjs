@@ -322,7 +322,8 @@ async function updateXp(skillName, currentXp) {
     body: JSON.stringify({ updatedSkillXp, userLoginId }),
   };
   try {
-    const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/${skillName}`, requestOptions);
 
     if (response.status !== 200) {
       console.log("Error editing user");
@@ -374,7 +375,9 @@ async function userData() {
     credentials: "include",
   };
   try {
-    let response = await fetch("http://localhost:8080/game/profile", requestOptions);
+    // let response = await fetch("http://localhost:8080/game/profile", requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/profile`, requestOptions);
+
     if (response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
@@ -396,7 +399,9 @@ async function updateUserInformation(usernameInput, passwordInput) {
     body: JSON.stringify({ updatedUserInformation, userLoginId }),
   };
   try {
-    const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/Psw`, requestOptions);
+
     if (response.status != 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
@@ -415,7 +420,9 @@ async function deleteUser() {
     body: JSON.stringify(userLoginId),
   };
   try {
-    const response = await fetch(`http://localhost:8080/user`, requestOptions);
+    // const response = await fetch(`http://localhost:8080/user`, requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user`, requestOptions);
+
     if (response.status != 200) {
       console.log("Error deleting user");
       throw new Error("Server error: " + response.status);

@@ -72,7 +72,7 @@ async function createUser() {
     body: JSON.stringify(user),
   };
   try {
-    let response = await fetch("http://localhost:8080/user", requestOptions);
+    const response = await fetch("https://semesterproject-8m7h.onrender.com/user", requestOptions);
 
     if (response.status != 201) {
       console.log(response.status);
@@ -89,7 +89,7 @@ async function deleteUser(playerName) {
     method: "DELETE",
   };
   try {
-    let response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
     if (response.status != 200) {
       console.log("Error deleting user");
       throw new Error("Server error: " + response.status);
@@ -106,7 +106,8 @@ async function editUser(playerName) {
     body: JSON.stringify(testPlayerUpdated),
   };
   try {
-    let response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
+    const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
+
     if (response.status != 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
@@ -132,7 +133,9 @@ export async function correctLogin() {
     credentials: "include",
   };
   try {
-    let response = await fetch("http://localhost:8080/user/login", requestOptions);
+    // let response = await fetch("http://localhost:8080/user/login", requestOptions);
+    const response = await fetch("https://semesterproject-8m7h.onrender.com/user/login", requestOptions);
+
     if (response.status !== 201 && response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
