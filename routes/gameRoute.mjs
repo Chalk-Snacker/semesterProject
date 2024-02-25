@@ -1,5 +1,4 @@
 import express from "express";
-import { users } from "./usersRoute.mjs";
 import util from "util";
 import UserGameDataLogger from "../modules/UserGameDataLogger.mjs";
 import DBmanager from "../modules/storageManager.mjs";

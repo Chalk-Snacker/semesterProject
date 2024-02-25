@@ -1,4 +1,3 @@
-import { users } from "../routes/usersRoute.mjs";
 import { StartingItems, Spells, Consumables, BronzeArmor, BronzeWeapons, LegendaryItems } from "./items.mjs";
 export class Skill {
   constructor(skillName) {
