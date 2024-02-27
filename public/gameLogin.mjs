@@ -29,7 +29,7 @@ export function loginUser() {
   const loginButton = document.getElementById("loginButton");
   loginButton.addEventListener("click", function (event) {
     correctLogin();
-    loadTemplates("gameTemplate");
+    loadTemplates("gameTemplate"); // kjør i correctLogin?
 
     event.preventDefault();
   });
