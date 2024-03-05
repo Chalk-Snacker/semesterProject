@@ -28,6 +28,8 @@ USER_API.post("/", hashPassword, async (req, res) => {
     user.inventory.weapons.createStartingItems("weapons");
     user.inventory.spells.createStartingItems("spells");
     user.inventory.consumables.createStartingItems("consumables");
+    user.equipped.helmet = user.inventory.armor.helms[0].item;
+    console.log(user.equipped.helmet);
 
     ///TODO: Does the user exist?
     let exists = false;
@@ -46,9 +48,7 @@ USER_API.post("/", hashPassword, async (req, res) => {
   }
 });
 
-USER_API.post("/login", loginAuthUser, async (req, res) => {
-  // asdf
-});
+USER_API.post("/login", loginAuthUser, async (req, res) => {});
 
 USER_API.put("/usrPsw", hashPassword, async (req, res) => {
   const userData = req.body;

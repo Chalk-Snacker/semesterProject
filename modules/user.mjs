@@ -20,8 +20,17 @@ class User {
       consumables: new Inventory("Consumables"),
       resources: new Inventory("Resources"),
     };
+    this.equipped = {
+      helmet: null,
+      chestPlate: null,
+      cape: null,
+      gauntlets: null,
+      legs: null,
+      shoes: null,
+      shield: null,
+      weapon: null,
+    };
   }
-
   async save() {
     /// TODO: What happens if the DBManager fails to complete its task?
 
@@ -36,3 +45,11 @@ class User {
 }
 
 export default User;
+
+// chestPlate: null,
+// cape: null,
+// gauntlets: null,
+// legs: null,
+// shoes: null,
+// shield: null,
+// weapon: null,

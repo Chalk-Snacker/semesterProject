@@ -92,6 +92,76 @@ class DBManager {
     }
   }
 
+  async equippedItems(userId, item) {
+    const client = new pg.Client(this.#credentials);
+
+    try {
+      await client.connect();
+      // const output = await client.query('UPDATE "public"."Users" SET "equipped"')
+      // const output = await client.query('SELECT * FROM "public"."Users" SET "inventory" WHERE "id" = $1 AND ',[userId] AND)
+      let output = await client.query('SELECT "inventory" FROM "public"."Users" WHERE "id" = $1', [userId]);
+      if (output.rows.length > 0) {
+        const inventory = output.rows[0].inventory;
+        // console.log(inventory);
+
+        const { category, itemSlot, foundItem } = findItemTypeAndItemSlot(inventory, item);
+        console.log("like glue", category, itemSlot, foundItem);
+        if (category && itemSlot) {
+          output = await client.query(
+            'SELECT * FROM "inventory" WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) OR "$.weapons.*[*]" ? (@.name == $1) RETURNING *',
+            [item]
+          );
+
+          // if (category && itemSlot) {
+          //   output = await client.query(
+          //     'SELECT * FROM "inventory" WHERE "inventory" @? $1 OR "inventory" @? $2 RETURNING *',
+          //     ["$.armor.*[*] ? (@.name == $1)", "$.weapons.*[*] ? (@.name == $1)"],
+          //     [item]
+          //   );
+
+          // output = await client.query('SELECT * FROM "inventory" WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) OR "$.weapons.*[*]" ?(@.name == $1)', [
+          //   item.name,
+          // ]);
+
+          // output = await client.query('SELECT * FROM "inventory" WHERE "inventory" @? $1 OR "inventory" @? $2', [
+          //   { path: "$.armor.*[*]", value: `(@.name == '${item.name}')` },
+          //   { path: "$.weapons.*[*]", value: `(@.name == '${item.name}')` },
+          // ]);
+
+          // output = await client.query('SELECT * FROM "public"."inventory" WHERE "public"."inventory" @? $1 OR "public"."inventory" @? $2', [
+          //   { path: "$.armor.*[*]", value: `(@.name == '${item.name}')` },
+          //   { path: "$.weapons.*[*]", value: `(@.name == '${item.name}')` },
+          // ]);
+
+          console.log("Hva er output?", output);
+
+          // ------------------------------------------------------------------------------------------------
+          // WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) || "$.weapons.*[*]" ?(@.name == $1)',
+          // output = await client.query(
+          //   'UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", "{${category}", "${itemSlot}}", $3, $4) WHERE "id" = $1 AND "inventory" @? "$.${category}.*[*]" ? (@.name == $2))',
+          //   [userId, item, category, itemSlot]
+          // );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await client.end();
+    }
+    function findItemTypeAndItemSlot(aInventory, aItem) {
+      for (const category in aInventory) {
+        for (const itemSlot in aInventory[category]) {
+          if (itemSlot === "inventoryCategory") continue;
+          const foundItem = aInventory[category][itemSlot].find((element) => element.name == aItem);
+          if (foundItem) {
+            return { category, itemSlot, foundItem: foundItem };
+          }
+        }
+      }
+      return { category: null, itemSlot: null }; // default om vi ikke fant noe item
+    }
+  }
+
   async deleteUser(user) {
     const client = new pg.Client(this.#credentials);
 
@@ -117,8 +187,8 @@ class DBManager {
     try {
       await client.connect();
       const output = await client.query(
-        'INSERT INTO "public"."Users"("nick", "email", "password","skills","inventory" ) VALUES($1::Text, $2::Text, $3::Text, $4::JSONB, $5::JSONB) RETURNING id;',
-        [user.nick, user.email, user.pswHash, JSON.stringify(user.skills), JSON.stringify(user.inventory)]
+        'INSERT INTO "public"."Users"("nick", "email", "password","skills","inventory", "equipped" ) VALUES($1::Text, $2::Text, $3::Text, $4::JSONB, $5::JSONB, $6::JSONB) RETURNING id;',
+        [user.nick, user.email, user.pswHash, JSON.stringify(user.skills), JSON.stringify(user.inventory), JSON.stringify(user.equipped)]
       );
 
       // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)

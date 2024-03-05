@@ -13,10 +13,10 @@ let newLvl,
   remainder,
   listOfSkills,
   userDataValues,
-  listOfInventoryCategories = null;
+  listOfInventoryCategories,
+  itemClicked = null;
 
 let leveledUp = false;
-
 const inventorySlots = [];
 const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
 
@@ -27,7 +27,6 @@ function switchgameplay(gameplayType) {
   gameplayContainer.appendChild(document.importNode(document.getElementById(gameplayType).content, true));
   clearInterval(skillInterval);
   // run code depending on template
-  console.log(gameplayType);
   switch (gameplayType) {
     case "idleTemplate":
       initidle();
@@ -46,6 +45,7 @@ export async function loadGame(userId) {
   localStorage.setItem("userLoginId", JSON.stringify(userLoginId));
   userDataValues = await userData(userLoginId);
   userDataValues = userDataValues.user;
+
   listOfSkills = Object.keys(userDataValues.skills);
   listOfInventoryCategories = Object.keys(userDataValues.inventory);
 
@@ -135,11 +135,19 @@ function initBattle() {
   // asdf
 }
 
-function initInventory() {
+async function initInventory() {
+  // equipped items side
   const inventoryLeftDiv = document.getElementById("inventoryLeftDiv");
+  // const equippedItems = await userData();
+  let equipButton = document.getElementById("equipItem");
+  equipButton.addEventListener("click", function () {
+    equipItem(itemClicked);
+    //showEquippedItems();
+    // etter equipped items er oppdatert, oppdater liste over equipped items
+  });
+
   const inventoryRightDiv = document.getElementById("inventoryRightDiv");
   const inventoryCategoryHeader = document.getElementById("inventoryCategoryHeader");
-
   //inventory slot, grid style
   for (let j = 0; j < 24; j++) {
     const inventorySlot = document.createElement("div");
@@ -163,7 +171,6 @@ function initInventory() {
     });
     inventoryCategoryHeader.appendChild(button);
   }
-
   // console.log(document.getElementsByTagName("*").length);
 }
 
@@ -201,7 +208,7 @@ function doSkill(aSkill) {
   // progressOuterBarDiv.style.display = "none";
   // progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(skillInterval);
-  showAnimationBar();
+  // showAnimationBar();
 
   skillInterval = setInterval(async function () {
     try {
@@ -272,50 +279,22 @@ function showAnimationBar() {
   progressOuterBarDiv.style.visibility = "visible";
 }
 
+// putt showItems og showEquippedItems her
+
 function captializeFirstLetter(aName) {
   let firstLetter = aName.charAt(0).toUpperCase();
   let rest = aName.slice(1);
   return firstLetter + rest;
 }
 
-// ---------------- Button functions for toggling css----------------------
-
-function battle() {
-  // css hidden toggle ting her
-}
-function shop() {
-  // css hidden toggle ting her
-}
-function idle() {
-  // css hidden toggle ting her
-  const test1 = document.getElementById("inventoryLeftDiv");
-  const test2 = document.getElementById("inventoryRightDiv");
-  test1.style.display = "none";
-  test1.style.visibility = "hidden";
-  test2.style.display = "none";
-  test2.style.visibility = "hidden";
-
-  const test3 = document.getElementById("idleTopDiv");
-  const test4 = document.getElementById("idleBottomDiv");
-  test3.style.display = "block";
-  test3.style.visibility = "visible";
-  test4.style.display = "block";
-  test4.style.visibility = "visible";
-
-  // husk å gjøre inventory visible igjen (gjelder alle kategorier)
-}
-function settings() {
-  // css hidden toggle ting her
-}
-
 // ---------------- Server requests ----------------------
 
 async function updateXp(skillName, currentXp) {
   const updatedSkillXp = {
-    [skillName]: {
-      xp: currentXp,
-    },
+    name: skillName,
+    xp: currentXp,
   };
+
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -324,46 +303,17 @@ async function updateXp(skillName, currentXp) {
   try {
     // const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
     // const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/${skillName}`, requestOptions);
-    const response = await fetch(`/game/${skillName}`, requestOptions);
+    const response = await fetch(`/game/xp`, requestOptions);
 
     if (response.status !== 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
     }
     let newData = await response.json();
+    showAnimationBar(); // kjør her istedenfor?
     return newData;
   } catch (error) {
     console.log(error);
-  }
-}
-// funksjon for å targette inventoryslot
-async function showItems(inventoryCategory) {
-  userInventoryData = await userData();
-  // clearing the inventory before listing (new) items
-  for (let i = 0; i < inventorySlots.length; i++) {
-    let slotId = inventorySlots[i];
-    let slotDiv = document.getElementById(slotId);
-    slotDiv.innerText = "";
-  }
-  // let itemTypes = Object.keys(userInventoryData[0].inventory[inventoryCategory]);
-  let itemTypes = Object.keys(userInventoryData.user.inventory[inventoryCategory]);
-
-  for (let i = 0; i < itemTypes.length; i++) {
-    if (itemTypes[i] == "inventoryCategory") {
-      continue;
-    }
-    // items = userInventoryData[0].inventory[inventoryCategory][itemTypes[i]];
-    items = userInventoryData.user.inventory[inventoryCategory][itemTypes[i]];
-    for (let j = 0; j < items.length; j++) {
-      let item = items[j].item;
-
-      // jau = document.getElementById(inventorySlots[i - 1]);
-      jau = document.getElementById(inventorySlots[i]);
-      jau.innerText = item.name + "\n" + "Level: " + item.lvlReq;
-      // const img = document.createElement("img");
-      // img.src = "./asset/skillsTest.jpg";
-      // jau.appendChild(img);
-    }
   }
 }
 
@@ -390,6 +340,7 @@ async function userData() {
     console.log(error);
   }
 }
+
 async function updateUserInformation(usernameInput, passwordInput) {
   const updatedUserInformation = {
     newUserName: usernameInput,
@@ -403,14 +354,15 @@ async function updateUserInformation(usernameInput, passwordInput) {
   try {
     // const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
     // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/Psw`, requestOptions);
-    const response = await fetch(`/user/Psw`, requestOptions);
+    // const response = await fetch(`/user/Psw`, requestOptions);
+    const response = await fetch(`/user/usrPsw`, requestOptions);
 
     if (response.status != 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
     }
-    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
-    return newUserName;
+    // let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    // return newUserName;
   } catch (error) {
     console.log(error);
   }
@@ -437,3 +389,93 @@ async function deleteUser() {
     console.log(error);
   }
 }
+
+//  ---------------------- Inventory equipped ----------------------
+
+async function equipItem(aItem) {
+  // PUT request som tar verdien til variabel som er hvilket item som ble klikket på
+  // kjør sjekk på server om den skal legges til eller ersatte gammel item utifra om item av samme typer er der fra før?
+  const item = { equipped: aItem };
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item, userLoginId }),
+  };
+  try {
+    const response = await fetch(`/game/item`, requestOptions);
+    if (response.status != 200) {
+      console.log("Error updating equipped items");
+      throw new Error("Server error: " + response.status);
+    }
+    // const updatedEuippedItems = await response.json();
+    // return updatedEuippedItems; // henter all data fra userData så trenger vel ikke hva denne returnerer?
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// disse er for å kunne oppdatere inventory fra shop, siden den også bruker inventory.
+async function buyItem() {
+  // i funksjonen du kjører denne, call på initInvenotry for å refreshe/ oppdatere hva som er i baggen
+}
+async function sellItem() {
+  // i funksjonen du kjører denne, call på initInvenotry for å refreshe/ oppdatere hva som er i baggen
+}
+
+// funksjon for å targette inventoryslot
+async function showItems(inventoryCategory) {
+  userInventoryData = await userData();
+  // clearing the inventory before listing (new) items
+  for (let i = 0; i < inventorySlots.length; i++) {
+    let slotId = inventorySlots[i];
+    let slotDiv = document.getElementById(slotId);
+    slotDiv.addEventListener("click", function () {
+      itemClicked = slotDiv.firstChild.data;
+    });
+    slotDiv.innerText = "";
+  }
+  // let itemTypes = Object.keys(userInventoryData[0].inventory[inventoryCategory]);
+  let itemTypes = Object.keys(userInventoryData.user.inventory[inventoryCategory]);
+  for (let i = 0; i < itemTypes.length; i++) {
+    if (itemTypes[i] == "inventoryCategory") {
+      continue;
+    }
+    // items = userInventoryData[0].inventory[inventoryCategory][itemTypes[i]];
+    items = userInventoryData.user.inventory[inventoryCategory][itemTypes[i]];
+
+    for (let j = 0; j < items.length; j++) {
+      let item = items[j];
+      // jau = document.getElementById(inventorySlots[i - 1]);
+      jau = document.getElementById(inventorySlots[i]);
+      jau.innerText = item.name + "\n" + "Level: " + item.lvlReq;
+      // const img = document.createElement("img");
+      // img.src = "./asset/skillsTest.jpg";
+      // jau.appendChild(img);
+    }
+  }
+}
+
+async function showEquippedItems() {
+  let equippedItems = await userData();
+  equippedItems = Object.keys(equippedItems.user.equippedItems);
+  console.log(equippedItems); // ingenting er foreløpig equipped
+}
+
+/*
+  1. lag alle div ++ i html  
+  2. fyll inn divene i html med info fra server
+  3. 
+
+for å oppdatere items i inventory = equipItem, sellItem og buyItem
+for å liste items etter oppdatering = showItems og showEquippedItems
+
+shop og inventory viser invenotry i begge. så etter du selger eller kjøper et item fra shop, på initInventory fortsatt kjøres. Resources fra skilling
+trenger ikke å kjøre initInventory siden du kan kun se de i inventory/ shop. Må kjøre InitInventory når du klikker på iniventory og shop. Selv om initInventory
+og initShop kjøres når du klikker på shop, loader du kun shopTemplate.
+
+shop må oppdatere inventory siden du kan selge resources fra skilling, så hvis du skiller og går rett til shop skal du kunne se de nye fiskene, oren osv...
+plis gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
+all henting av data fra server skjer med userData() det er en POST, men egeting brukes den som get, måtte bruke POST så jeg kunne sende inn bruker id.
+Hvis du får tokens til å funke istedenfor, gjør den om til en GET ig..
+nulle ("") itemClicked før den får ny verdi i tilfelle man dobbelt trykker på item?
+*/

@@ -124,64 +124,57 @@ export class StartingItems {
   constructor(itemType) {
     // Add a property to store the item type
     this.itemType = itemType;
-    this.item = {};
+    this.name;
+    this.defense;
+    this.lvlReq;
 
     switch (itemType) {
       case "helm":
-        this.item = {
-          name: "Dr Pepper cap",
-          defense: 1,
-          lvlReq: 1,
-        };
+        this.name = "Dr Pepper cap";
+        this.defense = 1;
+        this.lvlReq = 1;
         break;
       case "chestPlate":
-        this.item = {
-          name: "League of Legends shirt",
-          defense: 99,
-          lvlReq: 1,
-        };
+        this.name = "League of Legends shirt";
+        this.defense = 99;
+        this.lvlReq = 1;
+
         break;
       case "cape":
-        this.item = {
-          name: "bed sheet",
-          defense: 1,
-          lvlReq: 1,
-        };
+        this.name = "bed sheet";
+        this.defense = 1;
+        this.lvlReq = 1;
+
         break;
       case "gauntlets":
-        this.item = {
-          name: "disposable gloves",
-          defense: 1,
-          lvlReq: 1,
-        };
+        this.name = "disposable gloves";
+        this.defense = 1;
+        this.lvlReq = 1;
+
         break;
       case "legs":
-        this.item = {
-          name: "Slacks",
-          defense: 1,
-          lvlReq: 1,
-        };
+        this.name = "Slacks";
+        this.defense = 1;
+        this.lvlReq = 1;
+
         break;
       case "shoes":
-        this.item = {
-          name: "Hobo slippers",
-          defense: 1,
-          lvlReq: 1,
-        };
+        this.name = "Hobo slippers";
+        this.defense = 1;
+        this.lvlReq = 1;
+
         break;
       case "shield":
-        this.item = {
-          name: "Torn umbrella",
-          defense: 2,
-          lvlReq: 1,
-        };
+        this.name = "Torn umbrella";
+        this.defense = 2;
+        this.lvlReq = 1;
+
         break;
       case "sword":
-        this.item = {
-          name: "Homemade wooden butterknife",
-          attack: 2,
-          lvlReq: 1,
-        };
+        this.name = "Homemade wooden butterknife";
+        this.attack = 2;
+        this.lvlReq = 1;
+
         break;
     }
   }
