@@ -66,16 +66,73 @@
         <!-- innventory -->
          <template id="inventoryTemplate">
           <div id ="inventoryLeftDiv">
-            <button id ="equipItem">Equip</button>
+            <div id ="helmDiv" class="equippedListDiv">
+              <h1 id="helmH1"></h1>
+              <p id=helmP></p>
+            </div>
+            <div id ="capeDiv" class="equippedListDiv">
+              <h1 id="capeH1"></h1>
+              <p id=capeP></p>
+            </div>
+            <div id ="chestPlateDiv" class="equippedListDiv">
+              <h1 id="chestPlateH1"></h1>
+              <p id=chestPlateP></p>
+            </div>
+            <div id ="gauntletsDiv" class="equippedListDiv">
+              <h1 id="gauntletsH1"></h1>
+              <p id=gauntletsP></p>
+            </div>
+            <div id ="legsDiv" class="equippedListDiv">
+              <h1 id="legsH1"></h1>
+              <p id=legsP></p>
+            </div>
+            <div id ="shoesDiv" class="equippedListDiv">
+              <h1 id="shoesH1"></h1>
+              <p id=shoesP></p>
+            </div>
+            <div id ="shieldDiv" class="equippedListDiv">
+              <h1 id="shieldH1"></h1>
+              <p id=shieldP></p>
+            </div>
+            <div id ="weaponDiv" class="equippedListDiv">
+              <h1 id="weaponH1"></h1>
+              <p id=weaponP></p>
+            </div>
           </div>
           <div id ="inventoryRightDiv">
-              <div id ="inventoryCategoryHeader"></div>
+              <div id ="inventoryCategoryHeader"> 
+                <button id ="equipItem">Equip</button>
+              </div>
           </div>
          </template>
 
          <!-- shop -->
          <template id="shopTemplate">
-          <div id ="shopDiv"></div>
+          <div id ="shopLeftDiv">
+            <div id ="shopCategoryHeader"></div>
+            <div id ="shopTier1Div" class="shopTierDiv"> <!-- helm div-->
+              <h1 id="shopTier1H1"></h1>
+              <p id=shopTier1P></p>
+            </div>
+            <div id ="shopTier2Div" class="equippedListDiv"> <!-- helm div-->
+              <h1 id="shopTier2H1"></h1>
+              <p id=shopTier2P></p>
+            </div>
+            <div id ="shopTier3Div" class="equippedListDiv"> <!-- helm div-->
+              <h1 id="shopTie3H1"></h1>
+              <p id=shopTier3P></p>
+            </div>
+            <div id ="shopTier4Div" class="equippedListDiv"> <!-- helm div-->
+              <h1 id="shopTier4H1"></h1>
+              <p id=shopTier4P></p>
+            </div>
+          </div>
+          <div id ="shopRightDiv">
+            <div id ="inventoryCategoryHeader"> 
+              <button id ="buyItem" class="shopButton">Buy</button>
+              <button id ="sellItem"class="shopButton">Sell</button>
+            </div>
+          </div>
          </template>        
 
          <!-- idle -->

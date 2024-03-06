@@ -1,11 +1,12 @@
 export class BronzeArmor {
-  constructor(itemType) {
-    switch (itemType) {
+  constructor(itemSlot) {
+    switch (itemSlot) {
       case "helm":
         this.helm = {
           name: "Bronze helmet",
           defense: 5,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
       case "chestPlate":
@@ -13,6 +14,7 @@ export class BronzeArmor {
           name: "Bronze chestplate",
           defense: 14,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
       case "gauntlets":
@@ -20,6 +22,7 @@ export class BronzeArmor {
           name: "Bronze gauntlets",
           defense: 2,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
       case "legs":
@@ -27,6 +30,7 @@ export class BronzeArmor {
           name: "Slacks",
           defense: 7,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
       case "shoes":
@@ -34,6 +38,7 @@ export class BronzeArmor {
           name: "Hobo slippers",
           defense: 2,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
       case "shield":
@@ -41,6 +46,7 @@ export class BronzeArmor {
           name: "Torn umbrella",
           defense: 6,
           lvlReq: 3,
+          itemCategory: "armor",
         };
         break;
     }
@@ -55,20 +61,23 @@ export class BronzeWeapons {
           name: "Bronze sword",
           attack: 12,
           lvlReq: 3,
+          itemCategory: "weapon",
         };
         break;
       case "axe":
-        this.sword = {
+        this.axe = {
           name: "Bronze axe",
           attack: 12,
           lvlReq: 3,
+          itemCategory: "weapon",
         };
         break;
       case "mace":
-        this.sword = {
+        this.mace = {
           name: "Bronze mace",
           attack: 12,
           lvlReq: 3,
+          itemCategory: "weapon",
         };
         break;
     }
@@ -84,6 +93,7 @@ export class LegendaryItems {
           name: "magicFunCloth",
           defense: 48,
           lvlReq: 32,
+          itemCategory: "armor",
         };
         break;
       case "addNewLego..":
@@ -121,59 +131,62 @@ export class LegendaryItems {
 
 // gi items navn og alt annet i klassen så du ikke må parse inn 100 parametere som det er nå
 export class StartingItems {
-  constructor(itemType) {
+  constructor(itemSlot) {
     // Add a property to store the item type
-    this.itemType = itemType;
+    this.itemSlot = itemSlot;
     this.name;
     this.defense;
     this.lvlReq;
+    this.itemCategory;
 
-    switch (itemType) {
+    switch (itemSlot) {
       case "helm":
         this.name = "Dr Pepper cap";
         this.defense = 1;
         this.lvlReq = 1;
+        this.itemCategory = "armor";
         break;
       case "chestPlate":
         this.name = "League of Legends shirt";
         this.defense = 99;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "cape":
         this.name = "bed sheet";
         this.defense = 1;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "gauntlets":
         this.name = "disposable gloves";
         this.defense = 1;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "legs":
         this.name = "Slacks";
         this.defense = 1;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "shoes":
         this.name = "Hobo slippers";
         this.defense = 1;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "shield":
         this.name = "Torn umbrella";
         this.defense = 2;
         this.lvlReq = 1;
-
+        this.itemCategory = "armor";
         break;
       case "sword":
         this.name = "Homemade wooden butterknife";
         this.attack = 2;
         this.lvlReq = 1;
+        this.itemCategory = "weapon";
 
         break;
     }

@@ -5,14 +5,11 @@ let newLvl,
   oldLvl,
   skillInterval,
   jau,
-  userInventoryData,
   items,
-  fetchData,
   xpThreshHold,
   userLoginId,
   remainder,
   listOfSkills,
-  userDataValues,
   listOfInventoryCategories,
   itemClicked = null;
 
@@ -43,11 +40,6 @@ function switchgameplay(gameplayType) {
 export async function loadGame(userId) {
   userLoginId = userId;
   localStorage.setItem("userLoginId", JSON.stringify(userLoginId));
-  userDataValues = await userData(userLoginId);
-  userDataValues = userDataValues.user;
-
-  listOfSkills = Object.keys(userDataValues.skills);
-  listOfInventoryCategories = Object.keys(userDataValues.inventory);
 
   // -------- Main Buttons on side --------
   const battleButton = document.getElementById("battleButton");
@@ -75,10 +67,11 @@ export async function loadGame(userId) {
   switchgameplay("idleTemplate");
 }
 
-function initidle() {
+async function initidle() {
+  const userData = await getUserData(userLoginId);
+  listOfSkills = Object.keys(userData.user.skills);
   // Progressbar
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
-  const progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
   progressOuterBarDiv.style.visibility = "hidden";
   progressOuterBarDiv.style.display = "none";
 
@@ -104,7 +97,7 @@ function initidle() {
     const skillLvl = document.createElement("h3");
     skillLvl.classList.add("skillLvl");
     skillLvl.id = `skillLvl_${listOfSkills[i]}`;
-    skillLvl.innerText = "Lvl " + userDataValues.skills[listOfSkills[i]].lvl;
+    skillLvl.innerText = "Lvl " + userData.user.skills[listOfSkills[i]].lvl;
 
     //skill icon
     const img = document.createElement("img");
@@ -136,13 +129,16 @@ function initBattle() {
 }
 
 async function initInventory() {
+  const userData = await getUserData(userLoginId);
+  listOfInventoryCategories = Object.keys(userData.user.inventory);
   // equipped items side
-  const inventoryLeftDiv = document.getElementById("inventoryLeftDiv");
-  // const equippedItems = await userData();
-  let equipButton = document.getElementById("equipItem");
+  showEquippedItems();
+  const equipButton = document.getElementById("equipItem");
+  equipButton.classList.add("equipButton");
   equipButton.addEventListener("click", function () {
     equipItem(itemClicked);
-    //showEquippedItems();
+    showEquippedItems(); // kjør denne når funksjonen faktisk oppdaterer innhold
+    console.log("testtests");
     // etter equipped items er oppdatert, oppdater liste over equipped items
   });
 
@@ -217,12 +213,14 @@ function doSkill(aSkill) {
       let skillLvl = document.getElementById("skillLvl_" + aSkill);
       let xpIncrease = 12;
 
-      fetchData = await userData(userLoginId);
-      currentXp = fetchData.user.skills[aSkill].xp;
-      oldLvl = fetchData.user.skills[aSkill].lvl;
+      // fetchData = await userData(userLoginId);
+      const userData = await getUserData(userLoginId);
+
+      currentXp = userData.user.skills[aSkill].xp;
+      oldLvl = userData.user.skills[aSkill].lvl;
       currentXp += xpIncrease;
       // regner ut resterende xp før den er oppdatert i tilfelle den lvl opp, regner vi på feil xå og thresh hold
-      xpThreshHold = fetchData.user.skills[aSkill].xpThreshHold;
+      xpThreshHold = userData.user.skills[aSkill].xpThreshHold;
       remainder = currentXp % xpThreshHold;
 
       const updatedData = await updateXp(aSkill, currentXp);
@@ -260,8 +258,10 @@ async function updateSkillLvlXpBar(skillName, leveledUp, increase, xpIncrease) {
     innerBar.offsetWidth; // Force repaint
     return;
   } else {
-    fetchData = await userData(userLoginId); // henter ny data for å oppdatere verdier når du logger inn
-    xpIncrease = fetchData.user.skills[skillName].xp * (150 / fetchData.user.skills[skillName].xpThreshHold);
+    // fetchData = await userData(userLoginId); // henter ny data for å oppdatere verdier når du logger inn
+    const userData = await getUserData(userLoginId); // henter ny data for å oppdatere verdier når du logger inn
+
+    xpIncrease = userData.user.skills[skillName].xp * (150 / userData.user.skills[skillName].xpThreshHold);
     innerBar.style.width = xpIncrease + "px";
   }
 }
@@ -318,7 +318,7 @@ async function updateXp(skillName, currentXp) {
 }
 
 // funksjon for å hente ut brukerdata fra db
-async function userData() {
+async function getUserData() {
   let requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -424,7 +424,7 @@ async function sellItem() {
 
 // funksjon for å targette inventoryslot
 async function showItems(inventoryCategory) {
-  userInventoryData = await userData();
+  const userData = await getUserData(userLoginId);
   // clearing the inventory before listing (new) items
   for (let i = 0; i < inventorySlots.length; i++) {
     let slotId = inventorySlots[i];
@@ -434,14 +434,12 @@ async function showItems(inventoryCategory) {
     });
     slotDiv.innerText = "";
   }
-  // let itemTypes = Object.keys(userInventoryData[0].inventory[inventoryCategory]);
-  let itemTypes = Object.keys(userInventoryData.user.inventory[inventoryCategory]);
+  let itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
   for (let i = 0; i < itemTypes.length; i++) {
     if (itemTypes[i] == "inventoryCategory") {
       continue;
     }
-    // items = userInventoryData[0].inventory[inventoryCategory][itemTypes[i]];
-    items = userInventoryData.user.inventory[inventoryCategory][itemTypes[i]];
+    items = userData.user.inventory[inventoryCategory][itemTypes[i]];
 
     for (let j = 0; j < items.length; j++) {
       let item = items[j];
@@ -456,16 +454,28 @@ async function showItems(inventoryCategory) {
 }
 
 async function showEquippedItems() {
-  let equippedItems = await userData();
-  equippedItems = Object.keys(equippedItems.user.equippedItems);
-  console.log(equippedItems); // ingenting er foreløpig equipped
+  const userData = await getUserData(userLoginId);
+  let equippedItemsArr = Object.keys(userData.user.equipped);
+
+  for (let i = 0; i < equippedItemsArr.length; i++) {
+    const itemType = equippedItemsArr[i];
+    const h1 = document.getElementById(itemType + "H1");
+    const p = document.getElementById(itemType.toString() + "P");
+    h1.innerText = captializeFirstLetter(itemType);
+
+    const equippedItem = userData.user.equipped[itemType];
+
+    if (equippedItem != null) {
+      if (equippedItem.itemCategory === "weapon") {
+        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Attack::" + equippedItem.attack;
+      } else {
+        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Defense" + equippedItem.defense;
+      }
+    }
+  }
 }
 
 /*
-  1. lag alle div ++ i html  
-  2. fyll inn divene i html med info fra server
-  3. 
-
 for å oppdatere items i inventory = equipItem, sellItem og buyItem
 for å liste items etter oppdatering = showItems og showEquippedItems
 

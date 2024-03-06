@@ -267,6 +267,27 @@
   background-color: aqua;
 }
 
+.equippedListDiv {
+  border: 3px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 108.8px;
+}
+
+.equippedListDiv > p {
+  margin-left: 20px;
+  border: 2px solid black;
+}
+
+.equipButton {
+  position: absolute;
+  width: 100px;
+  height: 35px;
+  left: 550px;
+  background-color: #e6832e;
+}
+
 #inventoryRightDiv {
   position: absolute;
   width: 775px;
@@ -343,3 +364,25 @@
 /* .inventorySlot2 {
   background-color: red;
 } */
+
+/* ---- SHOP ---- */
+
+#shopLeftDiv {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  background-color: pink;
+}
+.shopTierDiv {
+  border: 3px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 108.8px;
+}
+.shopButton {
+  width: 60px;
+  height: 40px;
+  background-color: black;
+  color: yellow;
+}

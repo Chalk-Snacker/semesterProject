@@ -106,7 +106,7 @@ class DBManager {
           const query = `UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", '{${itemSlot}}', $1) WHERE "id" = $2 RETURNING *;`;
           try {
             const { rows } = await client.query(query, [foundItem, userId]);
-            console.log("Query result:", rows);
+            // console.log("Query result:", rows);
           } catch (error) {
             console.error("Error executing query:", error.message);
           }
@@ -119,10 +119,19 @@ class DBManager {
     }
     function findItemTypeAndItemSlot(aInventory, aItem) {
       for (const category in aInventory) {
-        for (const itemSlot in aInventory[category]) {
+        for (let itemSlot in aInventory[category]) {
           if (itemSlot === "inventoryCategory") continue;
           const foundItem = aInventory[category][itemSlot].find((element) => element.name == aItem);
           if (foundItem) {
+            switch (itemSlot) {
+              case "sword":
+              case "axe":
+              case "mace":
+              case "staff":
+              case "bow":
+                itemSlot = "weapon";
+                break;
+            }
             return { category, itemSlot, foundItem: foundItem };
           }
         }

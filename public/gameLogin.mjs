@@ -1,17 +1,6 @@
 "use strict";
 import { loadGame } from "./game.mjs";
 
-const testPlayer = {
-  playerEmail: "testMail",
-  playerPsw: "testPassWrD21132",
-  playerNick: "testPlayer",
-};
-const testPlayerUpdated = {
-  playerEmail: "testMailTest",
-  playerPsw: "testPassWrD21132Test",
-  playerNick: "Player1",
-};
-
 export function loadTemplates(templateId) {
   let container = document.getElementById("container");
   container.innerHTML = "";
@@ -78,41 +67,6 @@ async function createUser() {
   }
 }
 
-async function deleteUser(playerName) {
-  let requestOptions = {
-    method: "DELETE",
-  };
-  try {
-    // const response = await fetch(`https://localhost:8080/user/${playerName}`, requestOptions);
-    const response = await fetch(`/user/${playerName}`, requestOptions);
-    if (response.status != 200) {
-      console.log("Error deleting user");
-      throw new Error("Server error: " + response.status);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function editUser(playerName) {
-  let requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(testPlayerUpdated),
-  };
-  try {
-    // const response = await fetch(`http://localhost:8080/user/${playerName}`, requestOptions);
-    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/${playerName}`, requestOptions);
-    const response = await fetch(`/user/${playerName}`, requestOptions);
-    if (response.status != 200) {
-      console.log("Error editing user");
-      throw new Error("Server error: " + response.status);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export async function correctLogin() {
   const usernameInput = document.getElementById("textField0");
   const passwordInput = document.getElementById("textField1");
@@ -165,6 +119,6 @@ export async function correctLogin() {
 8. gjør sjekk på om spiller er max lvl før du lvler opp
 9. bytte mellom eks. inventory og idle, blir lvl 1, og oppdateres etter du kjører 1 interval på skillet
 0. skillxpbarloader ting resetter seg ikke eller noe weird når du prøver å bytte skill midway. den henter seg inn etter et interval. tror det kan fikse seg + det at baren ikke begynner før du har gjort et interval første gang med å kalle på baren førstegang du kjører et skill
-
+1. equip knapp oppdaterer ikke liste;
 for globals, kan heller hente verdi fra functions med return og heller redeklarere med samme navn.
 */
