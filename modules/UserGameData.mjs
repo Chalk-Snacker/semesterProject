@@ -24,17 +24,17 @@ export class Inventory {
     this.inventoryCategory = inventoryCategory;
     switch (inventoryCategory) {
       case "Armor":
-        (this.helms = []), (this.chestPlates = []), (this.cape = []), (this.gauntlets = []), (this.legs = []), (this.shoes = []), (this.shield = []);
+        (this.helm = []), (this.chestPlate = []), (this.cape = []), (this.gauntlets = []), (this.legs = []), (this.shoes = []), (this.shield = []);
         break;
       case "Weapons":
-        (this.swords = []),
-          (this.axes = []),
-          (this.maces = []),
+        (this.sword = []),
+          (this.axe = []),
+          (this.mace = []),
           (this.greatSword = []),
           (this.greatAxe = []),
           (this.greatMace = []),
-          (this.staffs = []),
-          (this.bows = []);
+          (this.staff = []),
+          (this.bow = []);
         break;
 
       case "Spells":
@@ -52,9 +52,9 @@ export class Inventory {
   createStartingItems(itemType) {
     switch (itemType) {
       case "armor":
-        this.helms.push(new StartingItems("helm"));
+        this.helm.push(new StartingItems("helm"));
         // this.helms.push(new BronzeArmor("helm"));
-        this.chestPlates.push(new StartingItems("chestPlate"));
+        this.chestPlate.push(new StartingItems("chestPlate"));
         this.cape.push(new StartingItems("cape"));
         this.gauntlets.push(new StartingItems("gauntlets"));
         this.legs.push(new StartingItems("legs"));
@@ -62,7 +62,7 @@ export class Inventory {
         this.shield.push(new StartingItems("shield"));
         break;
       case "weapons":
-        this.swords.push(new StartingItems("sword"));
+        this.sword.push(new StartingItems("sword"));
         break;
       case "spells":
         this.fire.push(new Spells("fire"));

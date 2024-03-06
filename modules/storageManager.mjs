@@ -97,50 +97,19 @@ class DBManager {
 
     try {
       await client.connect();
-      // const output = await client.query('UPDATE "public"."Users" SET "equipped"')
-      // const output = await client.query('SELECT * FROM "public"."Users" SET "inventory" WHERE "id" = $1 AND ',[userId] AND)
+
       let output = await client.query('SELECT "inventory" FROM "public"."Users" WHERE "id" = $1', [userId]);
       if (output.rows.length > 0) {
         const inventory = output.rows[0].inventory;
-        // console.log(inventory);
-
         const { category, itemSlot, foundItem } = findItemTypeAndItemSlot(inventory, item);
-        console.log("like glue", category, itemSlot, foundItem);
         if (category && itemSlot) {
-          output = await client.query(
-            'SELECT * FROM "inventory" WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) OR "$.weapons.*[*]" ? (@.name == $1) RETURNING *',
-            [item]
-          );
-
-          // if (category && itemSlot) {
-          //   output = await client.query(
-          //     'SELECT * FROM "inventory" WHERE "inventory" @? $1 OR "inventory" @? $2 RETURNING *',
-          //     ["$.armor.*[*] ? (@.name == $1)", "$.weapons.*[*] ? (@.name == $1)"],
-          //     [item]
-          //   );
-
-          // output = await client.query('SELECT * FROM "inventory" WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) OR "$.weapons.*[*]" ?(@.name == $1)', [
-          //   item.name,
-          // ]);
-
-          // output = await client.query('SELECT * FROM "inventory" WHERE "inventory" @? $1 OR "inventory" @? $2', [
-          //   { path: "$.armor.*[*]", value: `(@.name == '${item.name}')` },
-          //   { path: "$.weapons.*[*]", value: `(@.name == '${item.name}')` },
-          // ]);
-
-          // output = await client.query('SELECT * FROM "public"."inventory" WHERE "public"."inventory" @? $1 OR "public"."inventory" @? $2', [
-          //   { path: "$.armor.*[*]", value: `(@.name == '${item.name}')` },
-          //   { path: "$.weapons.*[*]", value: `(@.name == '${item.name}')` },
-          // ]);
-
-          console.log("Hva er output?", output);
-
-          // ------------------------------------------------------------------------------------------------
-          // WHERE "inventory" @? "$.armor.*[*]" ? (@.name == $1) || "$.weapons.*[*]" ?(@.name == $1)',
-          // output = await client.query(
-          //   'UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", "{${category}", "${itemSlot}}", $3, $4) WHERE "id" = $1 AND "inventory" @? "$.${category}.*[*]" ? (@.name == $2))',
-          //   [userId, item, category, itemSlot]
-          // );
+          const query = `UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", '{${itemSlot}}', $1) WHERE "id" = $2 RETURNING *;`;
+          try {
+            const { rows } = await client.query(query, [foundItem, userId]);
+            console.log("Query result:", rows);
+          } catch (error) {
+            console.error("Error executing query:", error.message);
+          }
         }
       }
     } catch (error) {

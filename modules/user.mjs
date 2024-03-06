@@ -15,13 +15,13 @@ class User {
     };
     this.inventory = {
       armor: new Inventory("Armor"),
-      weapons: new Inventory("Weapons"),
-      spells: new Inventory("Spells"),
-      consumables: new Inventory("Consumables"),
-      resources: new Inventory("Resources"),
+      weapon: new Inventory("Weapons"),
+      spell: new Inventory("Spells"),
+      consumable: new Inventory("Consumables"),
+      resource: new Inventory("Resources"),
     };
     this.equipped = {
-      helmet: null,
+      helm: null,
       chestPlate: null,
       cape: null,
       gauntlets: null,
