@@ -101,36 +101,116 @@
           </div>
           <div id ="inventoryRightDiv">
               <div id ="inventoryCategoryHeader"> 
-                <button id ="equipItem">Equip</button>
+                <button id ="equipItem" class="equipButton">Equip</button>
+                <button id="inventoryArmorButton" class="itemCategoryButton">Armor</button>
+              <button id="inventoryWeaponsButton" class="itemCategoryButton">Weapon</button>
+              <button id="inventoryPotionsButton" class="itemCategoryButton">Consumable</button>
+              </div>
+              <!-- Grid of inventory slots -->
+              <div id="inventorySlotsContainer">
+                <div id="inventorySlot0" class="inventorySlotsDiv" data-slot-id="0"></div>
+                <div id="inventorySlot1" class="inventorySlotsDiv" data-slot-id="1"></div>
+                <div id="inventorySlot2" class="inventorySlotsDiv" data-slot-id="2"></div>
+                <div id="inventorySlot3" class="inventorySlotsDiv" data-slot-id="3"></div>
+                <div id="inventorySlot4" class="inventorySlotsDiv" data-slot-id="4"></div>
+                <div id="inventorySlot5" class="inventorySlotsDiv" data-slot-id="5"></div>
+                <div id="inventorySlot6" class="inventorySlotsDiv" data-slot-id="6"></div>
+                <div id="inventorySlot7" class="inventorySlotsDiv" data-slot-id="7"></div>
+                <div id="inventorySlot8" class="inventorySlotsDiv" data-slot-id="8"></div>
+                <div id="inventorySlot9" class="inventorySlotsDiv" data-slot-id="9"></div>
+                <div id="inventorySlot10" class="inventorySlotsDiv" data-slot-id="10"></div>
+                <div id="inventorySlot11" class="inventorySlotsDiv" data-slot-id="11"></div>
+                <div id="inventorySlot12" class="inventorySlotsDiv" data-slot-id="12"></div>
+                <div id="inventorySlot13" class="inventorySlotsDiv" data-slot-id="13"></div>
+                <div id="inventorySlot14" class="inventorySlotsDiv" data-slot-id="14"></div>
+                <div id="inventorySlot15" class="inventorySlotsDiv" data-slot-id="15"></div>
+                <div id="inventorySlot16" class="inventorySlotsDiv" data-slot-id="16"></div>
+                <div id="inventorySlot17" class="inventorySlotsDiv" data-slot-id="17"></div>
+                <div id="inventorySlot18" class="inventorySlotsDiv" data-slot-id="18"></div>
+                <div id="inventorySlot19" class="inventorySlotsDiv" data-slot-id="19"></div>
+                <div id="inventorySlot20" class="inventorySlotsDiv" data-slot-id="20"></div>
+                <div id="inventorySlot21" class="inventorySlotsDiv" data-slot-id="21"></div>
+                <div id="inventorySlot22" class="inventorySlotsDiv" data-slot-id="22"></div>
+                <div id="inventorySlot23" class="inventorySlotsDiv" data-slot-id="23"></div>
               </div>
           </div>
          </template>
-
+ 
+                
+      
          <!-- shop -->
          <template id="shopTemplate">
           <div id ="shopLeftDiv">
-            <div id ="shopCategoryHeader"></div>
+            <div id ="shopCategoryHeader">
+              <button id ="buyButton" class="shopButton">Buy</button>
+              <button id="shopArmorButton">Armor</button>
+              <button id="shopWeaponsButton">Weapon</button>
+              <button id="shopPotionsButton">Consumable</button>
+            </div>
             <div id ="shopTier1Div" class="shopTierDiv"> <!-- helm div-->
               <h1 id="shopTier1H1"></h1>
-              <p id=shopTier1P></p>
+              <!-- <p id=shopTier1P></p> -->
+              <div id="item1Tier1Div" class ="itemTierDiv">
+                <h2>test h2</h2>
+                <p>test p</p>
+              </div>
+              <div id="item2Tier1Div" class ="itemTierDiv"></div>
+              <h2>test2 h2</h2>
+                <p>test2 p</p>
+              <div id="item3Tier1Div" class ="itemTierDiv"></div>
+              <div id="item4Tier1Div" class ="itemTierDiv"></div>
+              <div id="item5Tier1Div" class ="itemTierDiv"></div>
+              <div id="item6Tier1Div" class ="itemTierDiv"></div>
+              <div id="item7Tier1Div" class ="itemTierDiv"></div>
             </div>
-            <div id ="shopTier2Div" class="equippedListDiv"> <!-- helm div-->
+            <div id ="shopTier2Div" class="shopTierDiv"> <!-- helm div-->
               <h1 id="shopTier2H1"></h1>
               <p id=shopTier2P></p>
             </div>
-            <div id ="shopTier3Div" class="equippedListDiv"> <!-- helm div-->
+            <div id ="shopTier3Div" class="shopTierDiv"> <!-- helm div-->
               <h1 id="shopTie3H1"></h1>
               <p id=shopTier3P></p>
             </div>
-            <div id ="shopTier4Div" class="equippedListDiv"> <!-- helm div-->
+            <div id ="shopTier4Div" class="shopTierDiv"> <!-- helm div-->
               <h1 id="shopTier4H1"></h1>
               <p id=shopTier4P></p>
             </div>
           </div>
           <div id ="shopRightDiv">
-            <div id ="inventoryCategoryHeader"> 
-              <button id ="buyItem" class="shopButton">Buy</button>
-              <button id ="sellItem"class="shopButton">Sell</button>
+            <div id ="inventoryCategoryHeader2"> 
+              <button id ="sellButton"class="shopButton">Sell</button>
+              <button id="inventoryArmorButton" class="itemCategoryButton">Armor</button>
+              <button id="inventoryWeaponsButton" class="itemCategoryButton">Weapon</button>
+              <button id="inventoryPotionsButton" class="itemCategoryButton">Consumable</button>
+            </div>
+                <!-- Grid of inventory slots -->
+                <div id="inventorySlotsContainer">
+                  <div id="inventorySlot0" class="inventorySlotsDiv" data-slot-id="0"></div>
+                  <div id="inventorySlot1" class="inventorySlotsDiv" data-slot-id="1"></div>
+                  <div id="inventorySlot2" class="inventorySlotsDiv" data-slot-id="2"></div>
+                  <div id="inventorySlot3" class="inventorySlotsDiv" data-slot-id="3"></div>
+                  <div id="inventorySlot4" class="inventorySlotsDiv" data-slot-id="4"></div>
+                  <div id="inventorySlot5" class="inventorySlotsDiv" data-slot-id="5"></div>
+                  <div id="inventorySlot6" class="inventorySlotsDiv" data-slot-id="6"></div>
+                  <div id="inventorySlot7" class="inventorySlotsDiv" data-slot-id="7"></div>
+                  <div id="inventorySlot8" class="inventorySlotsDiv" data-slot-id="8"></div>
+                  <div id="inventorySlot9" class="inventorySlotsDiv" data-slot-id="9"></div>
+                  <div id="inventorySlot10" class="inventorySlotsDiv" data-slot-id="10"></div>
+                  <div id="inventorySlot11" class="inventorySlotsDiv" data-slot-id="11"></div>
+                  <div id="inventorySlot12" class="inventorySlotsDiv" data-slot-id="12"></div>
+                  <div id="inventorySlot13" class="inventorySlotsDiv" data-slot-id="13"></div>
+                  <div id="inventorySlot14" class="inventorySlotsDiv" data-slot-id="14"></div>
+                  <div id="inventorySlot15" class="inventorySlotsDiv" data-slot-id="15"></div>
+                  <div id="inventorySlot16" class="inventorySlotsDiv" data-slot-id="16"></div>
+                  <div id="inventorySlot17" class="inventorySlotsDiv" data-slot-id="17"></div>
+                  <div id="inventorySlot18" class="inventorySlotsDiv" data-slot-id="18"></div>
+                  <div id="inventorySlot19" class="inventorySlotsDiv" data-slot-id="19"></div>
+                  <div id="inventorySlot20" class="inventorySlotsDiv" data-slot-id="20"></div>
+                  <div id="inventorySlot21" class="inventorySlotsDiv" data-slot-id="21"></div>
+                  <div id="inventorySlot22" class="inventorySlotsDiv" data-slot-id="22"></div>
+                  <div id="inventorySlot23" class="inventorySlotsDiv" data-slot-id="23"></div>
+                </div>
+            </div>
             </div>
           </div>
          </template>        

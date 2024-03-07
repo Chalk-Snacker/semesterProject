@@ -4,18 +4,13 @@ let newLvl,
   currentXp,
   oldLvl,
   skillInterval,
-  jau,
-  items,
   xpThreshHold,
   userLoginId,
   remainder,
   listOfSkills,
-  listOfInventoryCategories,
   itemClicked = null;
 
 let leveledUp = false;
-const inventorySlots = [];
-const inventoryCategories = ["armor", "weapons", "spells", "consumables", "resources"];
 
 function switchgameplay(gameplayType) {
   // load correct gameplay template
@@ -30,6 +25,9 @@ function switchgameplay(gameplayType) {
       break;
     case "inventoryTemplate":
       initInventory();
+      break;
+    case "shopTemplate":
+      initShop();
       break;
     case "settingsTemplate":
       initSettings();
@@ -129,49 +127,52 @@ function initBattle() {
 }
 
 async function initInventory() {
-  const userData = await getUserData(userLoginId);
-  listOfInventoryCategories = Object.keys(userData.user.inventory);
-  // equipped items side
   showEquippedItems();
   const equipButton = document.getElementById("equipItem");
-  equipButton.classList.add("equipButton");
   equipButton.addEventListener("click", function () {
     equipItem(itemClicked);
-    showEquippedItems(); // kjør denne når funksjonen faktisk oppdaterer innhold
-    console.log("testtests");
+    showEquippedItems();
     // etter equipped items er oppdatert, oppdater liste over equipped items
   });
-
-  const inventoryRightDiv = document.getElementById("inventoryRightDiv");
-  const inventoryCategoryHeader = document.getElementById("inventoryCategoryHeader");
-  //inventory slot, grid style
-  for (let j = 0; j < 24; j++) {
-    const inventorySlot = document.createElement("div");
-    inventorySlot.classList.add("inventorySlotsDiv"); // to give all of them a general style
-    const uniqueId = "inventorySlot" + j;
-    inventorySlot.id = uniqueId;
-    jau = document.getElementById("inventorySlot");
-    // inventorySlot.innerText = j;
-    // jau.innerText = "test" + j;
-    // inventorySlots.push(j);
-    inventorySlots.push(uniqueId);
-    inventorySlot.dataset.slotId = j;
-    inventoryRightDiv.appendChild(inventorySlot);
-  }
-  //inventory category buttons
-  for (let i = 0; i < inventoryCategories.length; i++) {
-    const button = document.createElement("button");
-    button.id = inventoryCategories[i] + "Button";
-    button.addEventListener("click", function () {
-      showItems(listOfInventoryCategories[i]);
+  const inventorySlots = document.getElementsByClassName("itemCategoryButton");
+  for (let i = 0; i < inventorySlots.length; i++) {
+    inventorySlots[i].addEventListener("click", function (event) {
+      const itemCategory = event.target.innerText.toLowerCase();
+      showItems(itemCategory);
     });
-    inventoryCategoryHeader.appendChild(button);
   }
-  // console.log(document.getElementsByTagName("*").length);
 }
 
-function initShop() {
-  // asdf
+async function initShop() {
+  const userData = await getUserData(userLoginId);
+  const sellButton = document.getElementById("sellButton");
+  sellButton.addEventListener("click", function () {
+    const itemsEquipped = Object.values(userData.user.equipped);
+    let itemIsEquipped = false;
+    for (let j = 0; j < itemsEquipped.length; j++) {
+      if (itemsEquipped[j] == null) continue;
+      if (itemsEquipped[j].name == itemClicked) {
+        itemIsEquipped = true;
+        alert("Cant sell equipped item!");
+      } else {
+        if (!itemIsEquipped) {
+          sellItem(itemClicked);
+        }
+      }
+    }
+  });
+  const inventorySlots = document.getElementsByClassName("itemCategoryButton");
+  for (let i = 0; i < inventorySlots.length; i++) {
+    inventorySlots[i].addEventListener("click", function (event) {
+      const itemCategory = event.target.innerText.toLowerCase();
+      showItems(itemCategory);
+    });
+  }
+  // const buyButton = document.getElementById("buyButton");
+  // const sellButton = document.getElementById("sellButton");
+  // sellButton.addEventListener("click", function () {
+  //   // equipItem(itemClicked);
+  // });
 }
 
 function initSettings() {
@@ -204,7 +205,8 @@ function doSkill(aSkill) {
   // progressOuterBarDiv.style.display = "none";
   // progressOuterBarDiv.style.visibility = "hidden";
   clearInterval(skillInterval);
-  // showAnimationBar();
+  showAnimationBar();
+  clearInterval(skillInterval);
 
   skillInterval = setInterval(async function () {
     try {
@@ -279,7 +281,52 @@ function showAnimationBar() {
   progressOuterBarDiv.style.visibility = "visible";
 }
 
-// putt showItems og showEquippedItems her
+async function showEquippedItems() {
+  const userData = await getUserData(userLoginId);
+  let equippedItemsArr = Object.keys(userData.user.equipped);
+
+  for (let i = 0; i < equippedItemsArr.length; i++) {
+    const itemType = equippedItemsArr[i];
+    const h1 = document.getElementById(itemType + "H1");
+    const p = document.getElementById(itemType.toString() + "P");
+    h1.innerText = captializeFirstLetter(itemType);
+
+    const equippedItem = userData.user.equipped[itemType];
+
+    if (equippedItem != null) {
+      if (equippedItem.itemCategory === "weapon") {
+        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Attack::" + equippedItem.attack;
+      } else {
+        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Defense" + equippedItem.defense;
+      }
+    }
+  }
+}
+
+async function showItems(inventoryCategory) {
+  const userData = await getUserData(userLoginId);
+  // which slot was clicked
+  const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
+  for (let i = 0; i < inventorySlots.length; i++) {
+    const inventorySlot = inventorySlots[i];
+    inventorySlot.addEventListener("click", function (event) {
+      itemClicked = inventorySlot.innerText.split("\n");
+      itemClicked = itemClicked[0];
+    });
+    inventorySlot.innerText = "";
+  }
+
+  // info for each item in slot
+  const itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
+  for (let i = 0; i < itemTypes.length; i++) {
+    if (itemTypes[i] === "inventoryCategory") continue;
+    const items = userData.user.inventory[inventoryCategory][itemTypes[i]];
+    for (let j = 0; j < items.length; j++) {
+      const item = items[j];
+      inventorySlots[i].innerText = item.name + "\n" + "Level: " + item.lvlReq;
+    }
+  }
+}
 
 function captializeFirstLetter(aName) {
   let firstLetter = aName.charAt(0).toUpperCase();
@@ -414,69 +461,27 @@ async function equipItem(aItem) {
   }
 }
 
-// disse er for å kunne oppdatere inventory fra shop, siden den også bruker inventory.
-async function buyItem() {
-  // i funksjonen du kjører denne, call på initInvenotry for å refreshe/ oppdatere hva som er i baggen
-}
-async function sellItem() {
-  // i funksjonen du kjører denne, call på initInvenotry for å refreshe/ oppdatere hva som er i baggen
-}
+async function buyItem() {}
 
-// funksjon for å targette inventoryslot
-async function showItems(inventoryCategory) {
-  const userData = await getUserData(userLoginId);
-  // clearing the inventory before listing (new) items
-  for (let i = 0; i < inventorySlots.length; i++) {
-    let slotId = inventorySlots[i];
-    let slotDiv = document.getElementById(slotId);
-    slotDiv.addEventListener("click", function () {
-      itemClicked = slotDiv.firstChild.data;
-    });
-    slotDiv.innerText = "";
-  }
-  let itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
-  for (let i = 0; i < itemTypes.length; i++) {
-    if (itemTypes[i] == "inventoryCategory") {
-      continue;
+async function sellItem(aItem) {
+  const item = { itemToSell: aItem };
+  const requestOptions = {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item, userLoginId }),
+  };
+  try {
+    const response = await fetch(`/game/item`, requestOptions);
+    if (response.status != 204) {
+      console.log("Error deleting item from user");
+      throw new Error("Server error: " + response.status);
     }
-    items = userData.user.inventory[inventoryCategory][itemTypes[i]];
-
-    for (let j = 0; j < items.length; j++) {
-      let item = items[j];
-      // jau = document.getElementById(inventorySlots[i - 1]);
-      jau = document.getElementById(inventorySlots[i]);
-      jau.innerText = item.name + "\n" + "Level: " + item.lvlReq;
-      // const img = document.createElement("img");
-      // img.src = "./asset/skillsTest.jpg";
-      // jau.appendChild(img);
-    }
-  }
-}
-
-async function showEquippedItems() {
-  const userData = await getUserData(userLoginId);
-  let equippedItemsArr = Object.keys(userData.user.equipped);
-
-  for (let i = 0; i < equippedItemsArr.length; i++) {
-    const itemType = equippedItemsArr[i];
-    const h1 = document.getElementById(itemType + "H1");
-    const p = document.getElementById(itemType.toString() + "P");
-    h1.innerText = captializeFirstLetter(itemType);
-
-    const equippedItem = userData.user.equipped[itemType];
-
-    if (equippedItem != null) {
-      if (equippedItem.itemCategory === "weapon") {
-        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Attack::" + equippedItem.attack;
-      } else {
-        p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Defense" + equippedItem.defense;
-      }
-    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
 /*
-for å oppdatere items i inventory = equipItem, sellItem og buyItem
 for å liste items etter oppdatering = showItems og showEquippedItems
 
 shop og inventory viser invenotry i begge. så etter du selger eller kjøper et item fra shop, på initInventory fortsatt kjøres. Resources fra skilling

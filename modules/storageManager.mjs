@@ -29,7 +29,7 @@ class DBManager {
       ]);
       if (output.rows[0] > 0) {
         console.log("username and password are successfully updated");
-        return output; // kan vel bare returne output istedenfor output.rows[0] siden vi spesifiserer hva vi returner i query
+        return output;
       }
     } catch (error) {
       console.error("Error updating user information:", error);
@@ -106,7 +106,6 @@ class DBManager {
           const query = `UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", '{${itemSlot}}', $1) WHERE "id" = $2 RETURNING *;`;
           try {
             const { rows } = await client.query(query, [foundItem, userId]);
-            // console.log("Query result:", rows);
           } catch (error) {
             console.error("Error executing query:", error.message);
           }
@@ -137,6 +136,53 @@ class DBManager {
         }
       }
       return { category: null, itemSlot: null }; // default om vi ikke fant noe item
+    }
+  }
+
+  async sellItem(userId, item) {
+    const client = new pg.Client(this.#credentials);
+    console.log(item);
+    try {
+      await client.connect();
+
+      let output = await client.query('SELECT "inventory" FROM "public"."Users" WHERE "id" = $1', [userId]);
+      if (output.rows.length > 0) {
+        const inventory = output.rows[0].inventory;
+        const { category, itemSlot } = findItemTypeAndItemSlot(inventory, item);
+
+        if (category && itemSlot) {
+          const updatedInventory = removeItemFromInventory(inventory, category, itemSlot, item);
+          try {
+            await client.query(`UPDATE "public"."Users" SET "inventory" = $1 WHERE "id" = $2 RETURNING *;`, [updatedInventory, userId]);
+          } catch (error) {
+            console.error("Error executing query:", error.message);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await client.end();
+    }
+
+    function findItemTypeAndItemSlot(aInventory, aItem) {
+      for (const category in aInventory) {
+        for (let itemSlot in aInventory[category]) {
+          if (itemSlot === "inventoryCategory") continue;
+          const foundItem = aInventory[category][itemSlot].find((element) => element.name == aItem);
+          if (foundItem) {
+            return { category, itemSlot };
+          }
+        }
+      }
+      return { category: null, itemSlot: null }; // default if no item was found
+    }
+
+    function removeItemFromInventory(inventory, category, itemSlot, itemName) {
+      if (inventory[category] && inventory[category][itemSlot]) {
+        inventory[category][itemSlot] = inventory[category][itemSlot].filter((item) => item.name !== itemName);
+      }
+      return inventory;
     }
   }
 

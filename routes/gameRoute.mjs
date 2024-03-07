@@ -58,15 +58,25 @@ GAME_API.put("/item", async (req, res, next) => {
 
   try {
     const userData = await DBmanager.equippedItems(user.userId, item);
-    res.status(200).json({ success: true, message: "fetching successful", userData });
+    res.status(200).json({ success: true, message: "Update successful", userData });
   } catch (error) {
     console.log("Error", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
 
-GAME_API.delete("/:id", (req, res) => {
-  //
+GAME_API.delete("/item", async (req, res) => {
+  const user = req.body.userLoginId;
+  const item = req.body.item.itemToSell;
+  try {
+    const userData = await DBmanager.sellItem(user.userId, item);
+    res.status(204).json({ success: true, message: "Deletion successful", userData });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+
+  // sellItem;
 });
 
 export default GAME_API;

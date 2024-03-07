@@ -371,18 +371,76 @@
   position: absolute;
   width: 775px;
   height: 910px;
-  background-color: pink;
+  background-color: blanchedalmond;
 }
+#shopRightDiv {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  right: 370px;
+  background-color: green;
+}
+
 .shopTierDiv {
   border: 3px solid red;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  height: 108.8px;
+  height: 108px;
+  margin-top: 20px;
 }
 .shopButton {
   width: 60px;
   height: 40px;
   background-color: black;
   color: yellow;
+}
+
+#shopTier1Div {
+  background-color: brown;
+}
+#shopTier2Div {
+  background-color: grey;
+}
+#shopTier3Div {
+  background-color: white;
+}
+#shopTier4Div {
+  background-color: darkblue;
+}
+
+#inventorySlotsContainer {
+  position: absolute;
+  width: 775px;
+  height: 910px;
+  background-color: grey;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 217px; /* Adjusted to fit within 910px height taking into account the top offset of slots */
+  z-index: 1;
+}
+
+#shopCategoryHeader {
+  position: absolute;
+  width: 775px;
+  height: 40px;
+  /* left: 775px; */
+  /* background-color: #1e682e; */
+  background-color: #1e682e;
+  z-index: 2;
+}
+.inventorySlotsDiv {
+  background-color: #f59f13;
+  border: solid grey;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#inventoryCategoryHeader2 {
+  position: absolute;
+  width: 775px;
+  height: 40px;
+  /* left: 775px; */
+  background-color: #1e682e;
+  z-index: 2;
 }
