@@ -138,7 +138,7 @@ async function initInventory() {
   for (let i = 0; i < inventorySlots.length; i++) {
     inventorySlots[i].addEventListener("click", function (event) {
       const itemCategory = event.target.innerText.toLowerCase();
-      showItems(itemCategory);
+      showItemsInventory(itemCategory);
     });
   }
 }
@@ -165,7 +165,7 @@ async function initShop() {
   for (let i = 0; i < inventorySlots.length; i++) {
     inventorySlots[i].addEventListener("click", function (event) {
       const itemCategory = event.target.innerText.toLowerCase();
-      showItems(itemCategory);
+      showItemsInventory(itemCategory);
     });
   }
   // const buyButton = document.getElementById("buyButton");
@@ -303,7 +303,31 @@ async function showEquippedItems() {
   }
 }
 
-async function showItems(inventoryCategory) {
+async function showItemsInventory(inventoryCategory) {
+  const userData = await getUserData(userLoginId);
+  // which slot was clicked
+  const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
+  for (let i = 0; i < inventorySlots.length; i++) {
+    const inventorySlot = inventorySlots[i];
+    inventorySlot.addEventListener("click", function (event) {
+      itemClicked = inventorySlot.innerText.split("\n");
+      itemClicked = itemClicked[0];
+    });
+    inventorySlot.innerText = "";
+  }
+
+  // info for each item in slot
+  const itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
+  for (let i = 0; i < itemTypes.length; i++) {
+    if (itemTypes[i] === "inventoryCategory") continue;
+    const items = userData.user.inventory[inventoryCategory][itemTypes[i]];
+    for (let j = 0; j < items.length; j++) {
+      const item = items[j];
+      inventorySlots[i].innerText = item.name + "\n" + "Level: " + item.lvlReq;
+    }
+  }
+}
+async function showItemsShop(inventoryCategory) {
   const userData = await getUserData(userLoginId);
   // which slot was clicked
   const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
@@ -482,7 +506,7 @@ async function sellItem(aItem) {
 }
 
 /*
-for å liste items etter oppdatering = showItems og showEquippedItems
+for å liste items etter oppdatering = showItemsInventory og showEquippedItems
 
 shop og inventory viser invenotry i begge. så etter du selger eller kjøper et item fra shop, på initInventory fortsatt kjøres. Resources fra skilling
 trenger ikke å kjøre initInventory siden du kan kun se de i inventory/ shop. Må kjøre InitInventory når du klikker på iniventory og shop. Selv om initInventory

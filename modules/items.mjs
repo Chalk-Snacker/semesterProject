@@ -106,28 +106,65 @@ export class LegendaryItems {
     }
   }
 }
+export const shopArmorSet = {
+  bronzeArmorSet: {
+    helm: { name: "BronzeHelm", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    shoulder: { name: "Bronze shoudlers", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    chestPlate: { name: "Bronze chestplate", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    gauntlets: { name: "Bronze gauntlets", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    legs: { name: "Bronze legs", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    shoes: { name: "Bronze shoes", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+    shield: { name: "Bronze shield", defense: 20, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
+  },
+  ironArmorSet: {
+    helm: { name: "Iron helm", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    shoulder: { name: "Iron shouldesr", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    chestPlate: { name: "Iron chestplate", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    gauntlets: { name: "Iron gauntlets", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    legs: { name: "Iron legs", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    shoes: { name: "Iron shoes", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+    shield: { name: "Iron shield", defense: 46, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
+  },
+  steelArmorSet: {
+    helm: { name: "Steel helm", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    shoulder: { name: "Steel shoulder", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    chestPlate: { name: "Steel chestplate", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    gauntlets: { name: "Steel gauntlets", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    legs: { name: "Steel legs", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    shoes: { name: "Steel shoes", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+    shield: { name: "Steel shield", defense: 78, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
+  },
+};
+export const shopWeaponSet = {
+  bronzeWeaponSet: {
+    sword: { name: "Bronze sword", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+    axe: { name: "Bronze axe", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+    mace: { name: "Bronze maze", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+    greatSword: { name: "Bronze greatsword", attack: 28, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+    greatAxe: { name: "Bronze greataxe", attack: 28, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+    greatMace: { name: "Bronze greatmace", attack: 28, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
+  },
+  ironWeaponSet: {
+    sword: { name: "Iron sword", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+    axe: { name: "Iron axe", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+    mace: { name: "Iron maze", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+    greatSword: { name: "Iron greatsword", attack: 52, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+    greatAxe: { name: "Iron greataxe", attack: 52, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+    greatMace: { name: "Iron greatmace", attack: 52, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
+  },
+  steelWeaponSet: {
+    sword: { name: "Steel sword", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+    axe: { name: "Steel axe", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+    mace: { name: "Steel maze", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+    greatSword: { name: "Steel greatsword", attack: 72, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+    greatAxe: { name: "Steel greataxe", attack: 72, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+    greatMace: { name: "Steel greatmace", attack: 72, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
+  },
+};
 
-//export const BronzeStatsStats = {
-//   helm: 0,
-//   shoulder: 0,
-//   chestPlate: 0,
-//   gauntlets: 0,
-//   belt: 0,
-//   legs: 0,
-//   shoes: 0,
-//   shield: 0,
-//   sword: 0,
-//   axe: 0,
-//   mace: 0,
-//   greatSword: 0,
-//   greatAxe: 0,
-//   greatMace: 0,
-//   staff: 0,
-//   bow: 0,
-// };
-// Object.keys(BronzeStats).forEach((stat) => {
-//   BronzeStats[stat] = 10;
-// });
+// staff: { name: "bronzeHelm", defense: "10", lvlReq: "6", itemCategory: "armor" },
+// flimseyBow: { name: "bronzeHelm", defense: "10", lvlReq: "6", itemCategory: "armor" },
+// fjern starting items og legg de i shoppen?
 
 // gi items navn og alt annet i klassen så du ikke må parse inn 100 parametere som det er nå
 export class StartingItems {

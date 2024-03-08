@@ -1,4 +1,4 @@
-import { StartingItems, Spells, Consumables, BronzeArmor, BronzeWeapons, LegendaryItems } from "./items.mjs";
+import { StartingItems, Spells, Consumables } from "./items.mjs";
 export class Skill {
   constructor(skillName) {
     this.skillName = skillName;
@@ -71,33 +71,5 @@ export class Inventory {
         this.healingPotions.push(new Consumables("healingPotion"));
         break;
     }
-  }
-  addNewItem() {
-    //asdf
-  }
-}
-class Shop {
-  constructor(ItemType) {
-    // items player can buy for gold
-    this.ItemType = ItemType;
-    this.armor = {
-      helms: [],
-      shoulders: [],
-      chestPlates: [],
-      gauntlets: [],
-      belt: [],
-      legs: [],
-      shoes: [],
-    };
-    this.weapons = {
-      swords: [],
-      axes: [],
-      maces: [],
-      staffs: [],
-      bows: [],
-    };
-    this.spells = {};
-    this.consumables = {};
-    this.resources = {};
   }
 }

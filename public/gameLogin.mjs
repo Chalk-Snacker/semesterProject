@@ -117,8 +117,7 @@ export async function correctLogin() {
 6. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
 7. flytt alt html fra js inn i egne html templates og toggle de istedenfor  (fjern toggle css (er da undøvendig))
 8. gjør sjekk på om spiller er max lvl før du lvler opp
-9. bytte mellom eks. inventory og idle, blir lvl 1, og oppdateres etter du kjører 1 interval på skillet
-0. skillxpbarloader ting resetter seg ikke eller noe weird når du prøver å bytte skill midway. den henter seg inn etter et interval. tror det kan fikse seg + det at baren ikke begynner før du har gjort et interval første gang med å kalle på baren førstegang du kjører et skill
-1. equip knapp oppdaterer ikke liste;
+9. equip knapp oppdaterer ikke liste;
 for globals, kan heller hente verdi fra functions med return og heller redeklarere med samme navn.
+1. pass på at du ikke kan equippe annet enn armor og weapon
 */

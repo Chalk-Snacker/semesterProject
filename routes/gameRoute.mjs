@@ -2,6 +2,7 @@ import express from "express";
 import util from "util";
 // import UserGameDataLogger from "../modules/UserGameDataLogger.mjs";
 import DBmanager from "../modules/storageManager.mjs";
+import { createShop } from "../middleware/createShop.mjs";
 
 // requests from game.mjs
 const GAME_API = express.Router();
@@ -12,7 +13,7 @@ GAME_API.use(express.json());
 //   next();
 // });
 
-GAME_API.post("/profile", async (req, res, next) => {
+GAME_API.post("/profile", createShop, async (req, res, next) => {
   const user = req.body;
 
   try {
