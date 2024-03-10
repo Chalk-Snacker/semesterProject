@@ -1,4 +1,5 @@
 "use strict";
+// import { response } from "express";
 import { loadTemplates } from "./gameLogin.mjs";
 let newLvl,
   currentXp,
@@ -138,7 +139,7 @@ async function initInventory() {
   for (let i = 0; i < inventorySlots.length; i++) {
     inventorySlots[i].addEventListener("click", function (event) {
       const itemCategory = event.target.innerText.toLowerCase();
-      showItemsInventory(itemCategory);
+      showItems(itemCategory);
     });
   }
 }
@@ -161,11 +162,18 @@ async function initShop() {
       }
     }
   });
+
+  const buyButton = document.getElementById("buyButton");
+  buyButton.addEventListener("click", function () {
+    buyItem(itemClicked);
+  });
+
   const inventorySlots = document.getElementsByClassName("itemCategoryButton");
   for (let i = 0; i < inventorySlots.length; i++) {
     inventorySlots[i].addEventListener("click", function (event) {
       const itemCategory = event.target.innerText.toLowerCase();
-      showItemsInventory(itemCategory);
+      showItems(itemCategory);
+      showItemsShop(itemCategory);
     });
   }
   // const buyButton = document.getElementById("buyButton");
@@ -173,6 +181,38 @@ async function initShop() {
   // sellButton.addEventListener("click", function () {
   //   // equipItem(itemClicked);
   // });
+}
+
+async function showItemsShop(shopCategory) {
+  const shopData = await getItemsFromShop();
+  const shopItemSlots = document.getElementsByClassName("itemTierDiv");
+  for (let i = 0; i < shopItemSlots.length; i++) {
+    const shopItemSlot = shopItemSlots[i];
+    shopItemSlot.addEventListener("click", function (event) {
+      itemClicked = shopItemSlot.innerText.split("\n");
+      itemClicked = itemClicked[0];
+      console.log(itemClicked);
+    });
+    shopItemSlot.innerText = "";
+  }
+
+  const shopTierDiv = document.getElementsByClassName("shopTierDiv");
+
+  for (let i = 0; i < shopTierDiv.length; i++) {
+    const shopItemSlot = shopTierDiv[i].getElementsByClassName("itemTierDiv");
+    const itemQuality = Object.keys(shopData.shopData[i][shopCategory]);
+    const itemSet = shopData.shopData[i][shopCategory][itemQuality];
+
+    for (let j = 0; j < shopItemSlot.length; j++) {
+      const itemSlot = Object.keys(itemSet);
+      if (j < Object.keys(itemSlot).length) {
+        const item = itemSet[itemSlot[j]];
+        shopItemSlot[j].innerText = item.name + "\n" + item.info;
+      } else {
+        shopItemSlot[j].innerText = "";
+      }
+    }
+  }
 }
 
 function initSettings() {
@@ -303,51 +343,28 @@ async function showEquippedItems() {
   }
 }
 
-async function showItemsInventory(inventoryCategory) {
-  const userData = await getUserData(userLoginId);
-  // which slot was clicked
+async function showItems(inventoryCategory) {
+  const inventoryData = await getItemsFromInventory();
   const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
+  const inventory = inventoryData.inventoryData[inventoryCategory];
   for (let i = 0; i < inventorySlots.length; i++) {
     const inventorySlot = inventorySlots[i];
     inventorySlot.addEventListener("click", function (event) {
       itemClicked = inventorySlot.innerText.split("\n");
       itemClicked = itemClicked[0];
+      console.log(itemClicked);
     });
     inventorySlot.innerText = "";
   }
 
-  // info for each item in slot
-  const itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
-  for (let i = 0; i < itemTypes.length; i++) {
-    if (itemTypes[i] === "inventoryCategory") continue;
-    const items = userData.user.inventory[inventoryCategory][itemTypes[i]];
-    for (let j = 0; j < items.length; j++) {
-      const item = items[j];
-      inventorySlots[i].innerText = item.name + "\n" + "Level: " + item.lvlReq;
-    }
-  }
-}
-async function showItemsShop(inventoryCategory) {
-  const userData = await getUserData(userLoginId);
-  // which slot was clicked
-  const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
-  for (let i = 0; i < inventorySlots.length; i++) {
-    const inventorySlot = inventorySlots[i];
-    inventorySlot.addEventListener("click", function (event) {
-      itemClicked = inventorySlot.innerText.split("\n");
-      itemClicked = itemClicked[0];
-    });
-    inventorySlot.innerText = "";
-  }
-
-  // info for each item in slot
-  const itemTypes = Object.keys(userData.user.inventory[inventoryCategory]);
-  for (let i = 0; i < itemTypes.length; i++) {
-    if (itemTypes[i] === "inventoryCategory") continue;
-    const items = userData.user.inventory[inventoryCategory][itemTypes[i]];
-    for (let j = 0; j < items.length; j++) {
-      const item = items[j];
-      inventorySlots[i].innerText = item.name + "\n" + "Level: " + item.lvlReq;
+  let slotIndex = 0;
+  for (let i = 0; i < Object.keys(inventory).length; i++) {
+    let itemSlot = inventory[Object.keys(inventory)[i]];
+    const itemSlotArr = Object.keys(itemSlot);
+    for (let j = 0; j < itemSlotArr.length; j++) {
+      const item = inventory[Object.keys(inventory)[i]][itemSlotArr[j]];
+      inventorySlots[slotIndex].innerText = item.name + "\n" + "Level: " + item.lvlReq + "\n";
+      slotIndex++;
     }
   }
 }
@@ -404,6 +421,42 @@ async function getUserData() {
     if (response.status !== 200) {
       console.log("Error getting stuff!");
       throw new Error("Server error: " + response.status);
+    }
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function getItemsFromShop() {
+  const requestOptions = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+  try {
+    const response = await fetch("/game/shop", requestOptions);
+    if (response.status != 200) {
+      console.log("Error getting items from shop!");
+      throw new Error("Servererror: " + response.status);
+    }
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getItemsFromInventory() {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userLoginId),
+  };
+  try {
+    const response = await fetch("/game/inventory", requestOptions);
+    if (response.status != 200) {
+      console.log("Error getting items from inventory!");
+      throw new Error("Servererror: " + response.status);
     }
     let data = await response.json();
     return data;
@@ -485,7 +538,24 @@ async function equipItem(aItem) {
   }
 }
 
-async function buyItem() {}
+async function buyItem(aItem) {
+  const item = { itemToBuy: aItem };
+
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item, userLoginId }),
+  };
+  try {
+    const response = await fetch("game/shop", requestOptions);
+    if (response.status != 200) {
+      console.log("Error purchasing item from shop");
+      throw new Error("Server error: " + response.status);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 async function sellItem(aItem) {
   const item = { itemToSell: aItem };
@@ -506,7 +576,7 @@ async function sellItem(aItem) {
 }
 
 /*
-for å liste items etter oppdatering = showItemsInventory og showEquippedItems
+for å liste items etter oppdatering = showItems og showEquippedItems
 
 shop og inventory viser invenotry i begge. så etter du selger eller kjøper et item fra shop, på initInventory fortsatt kjøres. Resources fra skilling
 trenger ikke å kjøre initInventory siden du kan kun se de i inventory/ shop. Må kjøre InitInventory når du klikker på iniventory og shop. Selv om initInventory

@@ -107,7 +107,7 @@ export class LegendaryItems {
   }
 }
 export const shopArmorSet = {
-  bronzeArmorSet: {
+  bronzeSet: {
     helm: { name: "BronzeHelm", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
     shoulder: { name: "Bronze shoudlers", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
     chestPlate: { name: "Bronze chestplate", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
@@ -116,7 +116,7 @@ export const shopArmorSet = {
     shoes: { name: "Bronze shoes", defense: 10, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
     shield: { name: "Bronze shield", defense: 20, lvlReq: 3, itemCategory: "armor", price: 0, info: "Very cool item" },
   },
-  ironArmorSet: {
+  ironSet: {
     helm: { name: "Iron helm", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
     shoulder: { name: "Iron shouldesr", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
     chestPlate: { name: "Iron chestplate", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
@@ -125,7 +125,7 @@ export const shopArmorSet = {
     shoes: { name: "Iron shoes", defense: 23, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
     shield: { name: "Iron shield", defense: 46, lvlReq: 7, itemCategory: "armor", price: 0, info: "Even cooler item!" },
   },
-  steelArmorSet: {
+  steelSet: {
     helm: { name: "Steel helm", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
     shoulder: { name: "Steel shoulder", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
     chestPlate: { name: "Steel chestplate", defense: 39, lvlReq: 12, itemCategory: "armor", price: 0, info: "Based item" },
@@ -136,7 +136,7 @@ export const shopArmorSet = {
   },
 };
 export const shopWeaponSet = {
-  bronzeWeaponSet: {
+  bronzeSet: {
     sword: { name: "Bronze sword", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
     axe: { name: "Bronze axe", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
     mace: { name: "Bronze maze", attack: 17, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
@@ -144,7 +144,7 @@ export const shopWeaponSet = {
     greatAxe: { name: "Bronze greataxe", attack: 28, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
     greatMace: { name: "Bronze greatmace", attack: 28, lvlReq: 3, itemCategory: "weapon", price: 0, info: "Very cool item" },
   },
-  ironWeaponSet: {
+  ironSet: {
     sword: { name: "Iron sword", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
     axe: { name: "Iron axe", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
     mace: { name: "Iron maze", attack: 36, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
@@ -152,7 +152,7 @@ export const shopWeaponSet = {
     greatAxe: { name: "Iron greataxe", attack: 52, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
     greatMace: { name: "Iron greatmace", attack: 52, lvlReq: 7, itemCategory: "weapon", price: 0, info: "Even cooler item!" },
   },
-  steelWeaponSet: {
+  steelSet: {
     sword: { name: "Steel sword", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
     axe: { name: "Steel axe", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },
     mace: { name: "Steel maze", attack: 54, lvlReq: 12, itemCategory: "weapon", price: 0, info: "Based item" },

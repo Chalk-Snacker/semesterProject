@@ -2,6 +2,7 @@ import pg from "pg";
 import { dbConnectionString } from "./dbConfig.mjs";
 import { lvlUp } from "../middleware/lvlUpUser.mjs";
 import crypto from "node:crypto";
+import { inventory } from "./user.mjs";
 
 if (dbConnectionString == undefined) {
   throw "You forgot the db connection string";
@@ -139,9 +140,56 @@ class DBManager {
     }
   }
 
+  async equippedItems2(userId, item) {
+    const client = new pg.Client(this.#credentials);
+
+    try {
+      await client.connect();
+      let output = await client.query('SELECT * FROM "public"."Inventory" WHERE "id" = $1', [userId]);
+      console.log(output.rows[0]);
+      // let output = await client.query('SELECT "inventory" FROM "public"."Users" WHERE "id" = $1', [userId]);
+      // if (output.rows.length > 0) {
+      //   const inventory = output.rows[0].inventory;
+      //   const { category, itemSlot, foundItem } = findItemTypeAndItemSlot(inventory, item);
+      //   if (category && itemSlot) {
+      //     const query = `UPDATE "public"."Users" SET "equipped" = jsonb_set("equipped", '{${itemSlot}}', $1) WHERE "id" = $2 RETURNING *;`;
+      //     try {
+      //       const { rows } = await client.query(query, [foundItem, userId]);
+      //     } catch (error) {
+      //       console.error("Error executing query:", error.message);
+      //     }
+      //   }
+      // }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await client.end();
+    }
+    function findItemTypeAndItemSlot(aInventory, aItem) {
+      for (const category in aInventory) {
+        for (let itemSlot in aInventory[category]) {
+          if (itemSlot === "inventoryCategory") continue;
+          const foundItem = aInventory[category][itemSlot].find((element) => element.name == aItem);
+          if (foundItem) {
+            switch (itemSlot) {
+              case "sword":
+              case "axe":
+              case "mace":
+              case "staff":
+              case "bow":
+                itemSlot = "weapon";
+                break;
+            }
+            return { category, itemSlot, foundItem: foundItem };
+          }
+        }
+      }
+      return { category: null, itemSlot: null }; // default om vi ikke fant noe item
+    }
+  }
+
   async sellItem(userId, item) {
     const client = new pg.Client(this.#credentials);
-    console.log(item);
     try {
       await client.connect();
 
@@ -186,6 +234,116 @@ class DBManager {
     }
   }
 
+  async buyItem(userId, itemName) {
+    const client = new pg.Client(this.#credentials);
+    try {
+      await client.connect();
+
+      // Retrieve all sets
+      const allSetsQuery = `SELECT * FROM "public"."Shop";`;
+      const allSetsResult = await client.query(allSetsQuery);
+      const allSets = allSetsResult.rows;
+
+      for (const set of allSets) {
+        // Process armor sets
+        const armorSet = set.armor;
+        if (armorSet) {
+          const armorSetNames = Object.keys(armorSet);
+          for (const armorSetName of armorSetNames) {
+            const items = armorSet[armorSetName];
+            for (const itemSlot of Object.keys(items)) {
+              const item = items[itemSlot];
+              if (item.name === itemName) {
+                console.log("Item found in armor:", item);
+
+                // Insert the item into the inventory table
+                await this.insertItemIntoInventory("armor", armorSetName, { [itemSlot]: item });
+
+                return { [itemSlot]: item }; // Return an object with the item slot as the key
+              }
+            }
+          }
+        }
+
+        // Process weapon sets
+        const weaponSet = set.weapon;
+        if (weaponSet) {
+          const weaponSetNames = Object.keys(weaponSet);
+          for (const weaponSetName of weaponSetNames) {
+            const items = weaponSet[weaponSetName];
+            for (const itemSlot of Object.keys(items)) {
+              const item = items[itemSlot];
+              if (item.name === itemName) {
+                console.log("Item found in weapons:", item);
+
+                // Insert the item into the inventory table
+                await this.insertItemIntoInventory("weapon", weaponSetName, { [itemSlot]: item });
+
+                return { [itemSlot]: item }; // Return an object with the item slot as the key
+              }
+            }
+          }
+        }
+      }
+
+      console.log("Item not found.");
+      return null; // Return null if the item was not found
+    } catch (error) {
+      console.error("Error in buyItem:", error);
+      return null; // Ensure the function returns null in case of an error
+    } finally {
+      await client.end();
+    }
+  }
+
+  async insertItemIntoInventory(category, setName, item) {
+    const client = new pg.Client(this.#credentials);
+    try {
+      await client.connect();
+
+      // Check if the set exists in the inventory
+      const checkSetQuery = `
+        SELECT EXISTS (
+          SELECT 1
+          FROM "public"."Inventory"
+          WHERE "${category}"->>'${setName}' IS NOT NULL
+        ) AS "setExists";
+      `;
+      const checkSetResult = await client.query(checkSetQuery);
+      const setExists = checkSetResult.rows[0].setExists;
+
+      // Construct the update query using jsonb_set
+      let updateQuery;
+      if (setExists) {
+        // If the set exists, append the item to the existing set
+        updateQuery = `
+          UPDATE "public"."Inventory"
+          SET "${category}" = jsonb_set("${category}", '{"${setName}"}', "${category}"->'${setName}' || $1, true)
+          WHERE "${category}"->>'${setName}' IS NOT NULL;
+        `;
+      } else {
+        // If the set does not exist, create a new set with the item
+        updateQuery = `
+          UPDATE "public"."Inventory"
+          SET "${category}" = COALESCE(
+            jsonb_set("${category}", '{"${setName}"}', $1, true),
+            '{}'::jsonb
+          )
+          WHERE "${category}"->>'${setName}' IS NOT NULL;
+        `;
+      }
+
+      const values = [JSON.stringify(item)]; // Convert the item to JSON string
+
+      // Execute the update query
+      await client.query(updateQuery, values);
+    } catch (error) {
+      console.error("Error inserting item into inventory:", error);
+    } finally {
+      await client.end();
+    }
+  }
+
   async deleteUser(user) {
     const client = new pg.Client(this.#credentials);
 
@@ -210,7 +368,7 @@ class DBManager {
     const client = new pg.Client(this.#credentials);
     try {
       await client.connect();
-      const output = await client.query(
+      let output = await client.query(
         'INSERT INTO "public"."Users"("nick", "email", "password","skills","inventory", "equipped" ) VALUES($1::Text, $2::Text, $3::Text, $4::JSONB, $5::JSONB, $6::JSONB) RETURNING id;',
         [user.nick, user.email, user.pswHash, JSON.stringify(user.skills), JSON.stringify(user.inventory), JSON.stringify(user.equipped)]
       );
@@ -222,6 +380,21 @@ class DBManager {
         // We stored the user in the DB.
         user.id = output.rows[0].id;
       }
+      output = await client.query('SELECT  COUNT(*) FROM "public"."Inventory"');
+      const armorSet = {};
+      const weaponSet = {};
+      const armorQualityType = Object.keys(inventory.armor);
+      const weaponQualityType = Object.keys(inventory.weapon);
+      for (let i = 0; i < armorQualityType.length; i++) {
+        armorSet[armorQualityType[i]] = {};
+      }
+      for (let i = 0; i < weaponQualityType.length; i++) {
+        weaponSet[weaponQualityType[i]] = {};
+      }
+      output = await client.query(
+        'INSERT INTO "public"."Inventory"("armor", "weapon", "id") VALUES($1::JSONB, $2::JSONB, $3::Integer) RETURNING  *;', // add consumables and resource
+        [armorSet, weaponSet, user.id]
+      );
     } catch (error) {
       console.error(error);
       //TODO : Error handling?? Remember that this is a module seperate from your server
@@ -240,6 +413,43 @@ class DBManager {
         return output.rows[0]; // return the user
       } else {
         console.log("user does not exist");
+        return undefined;
+      }
+    } catch (error) {
+      console.error(error);
+      //TODO : Error handling?? Remember that this is a module seperate from your server
+    } finally {
+      client.end(); // Always disconnect from the database.
+    }
+  }
+
+  async getItemsFromShop() {
+    const client = new pg.Client(this.#credentials);
+    try {
+      await client.connect();
+      const output = await client.query('SELECT * FROM "public"."Shop"');
+      if (output.rows.length > 0) {
+        return output.rows; // return the items
+      } else {
+        // console.log("No items in shop");
+        return undefined;
+      }
+    } catch (error) {
+      console.error(error);
+      //TODO : Error handling?? Remember that this is a module seperate from your server
+    } finally {
+      client.end(); // Always disconnect from the database.
+    }
+  }
+  async getItemsFromInventory(userId) {
+    const client = new pg.Client(this.#credentials);
+    try {
+      await client.connect();
+      const output = await client.query('SELECT * FROM "public"."Inventory" WHERE id =$1', [userId]);
+      if (output.rows.length > 0) {
+        return output.rows[0]; // return the items
+      } else {
+        // console.log("No items in shop");
         return undefined;
       }
     } catch (error) {

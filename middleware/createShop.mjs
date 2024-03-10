@@ -19,7 +19,7 @@ export async function createShop(req, res, next) {
         output = await client.query('INSERT INTO "public"."Shop"("armor", "weapon") VALUES($1::JSONB, $2::JSONB);', [armorSet, weaponSet]);
       }
     } else {
-      console.log("Items are already in shop");
+      // console.log("Items are already in shop");
     }
     next();
   } catch (error) {

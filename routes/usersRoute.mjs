@@ -1,5 +1,6 @@
 import express from "express";
-import User from "../modules/user.mjs";
+// import User from "../modules/user.mjs";
+import { User } from "../modules/user.mjs";
 import DBmanager from "../modules/storageManager.mjs";
 import "dotenv/config";
 import { hashPassword } from "../middleware/hashPassword.mjs";
@@ -24,10 +25,11 @@ USER_API.post("/", hashPassword, async (req, res) => {
     user.email = userData.playerEmail;
     user.pswHash = userData.playerPsw;
 
-    user.inventory.armor.createStartingItems("armor");
-    user.inventory.weapon.createStartingItems("weapons");
-    user.inventory.spell.createStartingItems("spells");
-    user.inventory.consumable.createStartingItems("consumables");
+    // user.inventory.armor.createStartingItems("armor");
+    // user.inventory.weapon.createStartingItems("weapons");
+    // user.inventory.spell.createStartingItems("spells");
+    // user.inventory.consumable.createStartingItems("consumables");
+
     // user.equipped.helm = user.inventory.armor.helm[0].item;
     // console.log(user.equipped.helm);
 

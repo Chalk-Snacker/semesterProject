@@ -35,8 +35,22 @@ GAME_API.post("/profile", createShop, async (req, res, next) => {
   }
 });
 
-GAME_API.post("/", (req, res) => {
-  //
+// GAME_API.post("/", (req, res) => {
+//   //
+// });
+
+GAME_API.post("/shop", async (req, res) => {
+  const user = req.body.userLoginId;
+  const item = req.body.item.itemToBuy;
+  console.log(typeof item, item);
+
+  try {
+    const userData = await DBmanager.buyItem(user.userId, item);
+    res.status(200).json({ success: true, message: "Purchase of item successful", userData });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
 });
 
 GAME_API.put("/xp", async (req, res, next) => {
@@ -76,8 +90,27 @@ GAME_API.delete("/item", async (req, res) => {
     console.log("Error", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
+});
 
-  // sellItem;
+GAME_API.get("/shop", async (req, res) => {
+  try {
+    const shopData = await DBmanager.getItemsFromShop();
+    res.status(200).json({ success: true, message: "Retrival successful", shopData });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+GAME_API.post("/inventory", async (req, res) => {
+  const user = req.body;
+  try {
+    const inventoryData = await DBmanager.getItemsFromInventory(user.userId);
+    res.status(200).json({ success: true, message: "Retrival successful", inventoryData });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
 });
 
 export default GAME_API;
