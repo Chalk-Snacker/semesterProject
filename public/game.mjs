@@ -1,6 +1,5 @@
 "use strict";
-// import { response } from "express";
-import { loadTemplates } from "./gameLogin.mjs";
+import { loadTemplates, loginUser } from "./gameLogin.mjs";
 let newLvl,
   currentXp,
   oldLvl,
@@ -11,16 +10,22 @@ let newLvl,
   listOfSkills,
   itemClicked = null;
 
-let leveledUp = false;
+let leveledUp = false; // trenger vel ikke å være global?
 
-function switchgameplay(gameplayType) {
+async function switchgameplay(gameplayType) {
   // load correct gameplay template
   const gameplayContainer = document.getElementById("gameplayContainer");
   gameplayContainer.innerHTML = "";
   gameplayContainer.appendChild(document.importNode(document.getElementById(gameplayType).content, true));
   clearInterval(skillInterval);
+  const userData = await getUserData(userLoginId);
+  const username = document.getElementById("username");
+  username.innerText = userData.user.nick;
   // run code depending on template
   switch (gameplayType) {
+    case "battleTemplate":
+      initBattle();
+      break;
     case "idleTemplate":
       initidle();
       break;
@@ -38,7 +43,6 @@ function switchgameplay(gameplayType) {
 
 export async function loadGame(userId) {
   userLoginId = userId;
-  localStorage.setItem("userLoginId", JSON.stringify(userLoginId));
 
   // -------- Main Buttons on side --------
   const battleButton = document.getElementById("battleButton");
@@ -124,7 +128,8 @@ async function initidle() {
 }
 
 function initBattle() {
-  // asdf
+  const comingSoon = document.getElementById("comingSoon");
+  comingSoon.innerText = "Coming soon";
 }
 
 async function initInventory() {
@@ -215,27 +220,34 @@ async function showItemsShop(shopCategory) {
   }
 }
 
-function initSettings() {
+async function initSettings() {
   const editUserButton = document.getElementById("editUserButton");
   const deleteUserButton = document.getElementById("deleteUserButton");
+  const logoutButton = document.getElementById("logoutButton");
 
-  editUserButton.addEventListener("click", function () {
+  editUserButton.addEventListener("click", async function () {
     const newUserName = document.getElementById("textField5").value;
     const newUserPassword = document.getElementById("textField6").value;
     if (newUserName == "" || newUserPassword == "") {
+      alert("Please fill out all fields");
       return;
     } else {
-      // send information and use UPDATE on server
-      updateUserInformation(newUserName, newUserPassword);
+      await updateUserInformation(newUserName, newUserPassword);
+      switchgameplay("idleTemplate");
+      localStorage.removeItem("authToken");
     }
   });
-  deleteUserButton.addEventListener("click", function () {
+  deleteUserButton.addEventListener("click", async function () {
+    localStorage.removeItem("authToken");
     deleteUser();
     loadTemplates("loginTemplate");
-
-    // bytt til login
+    loginUser();
   });
-  // send newUserName og newUserPassword til server og bruke UPDATE som i skills
+  logoutButton.addEventListener("click", function () {
+    localStorage.removeItem("authToken");
+    loadTemplates("loginTemplate");
+    loginUser();
+  });
 }
 
 // ---------------- Skill function ----------------------
@@ -389,8 +401,6 @@ async function updateXp(skillName, currentXp) {
     body: JSON.stringify({ updatedSkillXp, userLoginId }),
   };
   try {
-    // const response = await fetch(`http://localhost:8080/game/${skillName}`, requestOptions);
-    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/${skillName}`, requestOptions);
     const response = await fetch(`/game/xp`, requestOptions);
 
     if (response.status !== 200) {
@@ -409,13 +419,11 @@ async function updateXp(skillName, currentXp) {
 async function getUserData() {
   let requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
     body: JSON.stringify(userLoginId),
     credentials: "include",
   };
   try {
-    // let response = await fetch("http://localhost:8080/game/profile", requestOptions);
-    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/game/profile`, requestOptions);
     const response = await fetch(`/game/profile`, requestOptions);
 
     if (response.status !== 200) {
@@ -476,17 +484,14 @@ async function updateUserInformation(usernameInput, passwordInput) {
     body: JSON.stringify({ updatedUserInformation, userLoginId }),
   };
   try {
-    // const response = await fetch(`http://localhost:8080/user/usrPsw`, requestOptions);
-    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user/Psw`, requestOptions);
-    // const response = await fetch(`/user/Psw`, requestOptions);
     const response = await fetch(`/user/usrPsw`, requestOptions);
 
     if (response.status != 200) {
       console.log("Error editing user");
       throw new Error("Server error: " + response.status);
     }
-    // let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
-    // return newUserName;
+    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    return newUserName;
   } catch (error) {
     console.log(error);
   }
@@ -499,8 +504,6 @@ async function deleteUser() {
     body: JSON.stringify(userLoginId),
   };
   try {
-    // const response = await fetch(`http://localhost:8080/user`, requestOptions);
-    // const response = await fetch(`https://semesterproject-8m7h.onrender.com/user`, requestOptions);
     const response = await fetch(`/user`, requestOptions);
 
     if (response.status != 200) {
@@ -574,17 +577,3 @@ async function sellItem(aItem) {
     console.log(error);
   }
 }
-
-/*
-for å liste items etter oppdatering = showItems og showEquippedItems
-
-shop og inventory viser invenotry i begge. så etter du selger eller kjøper et item fra shop, på initInventory fortsatt kjøres. Resources fra skilling
-trenger ikke å kjøre initInventory siden du kan kun se de i inventory/ shop. Må kjøre InitInventory når du klikker på iniventory og shop. Selv om initInventory
-og initShop kjøres når du klikker på shop, loader du kun shopTemplate.
-
-shop må oppdatere inventory siden du kan selge resources fra skilling, så hvis du skiller og går rett til shop skal du kunne se de nye fiskene, oren osv...
-plis gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
-all henting av data fra server skjer med userData() det er en POST, men egeting brukes den som get, måtte bruke POST så jeg kunne sende inn bruker id.
-Hvis du får tokens til å funke istedenfor, gjør den om til en GET ig..
-nulle ("") itemClicked før den får ny verdi i tilfelle man dobbelt trykker på item?
-*/

@@ -23,14 +23,15 @@ class DBManager {
 
     try {
       await client.connect();
-      let output = await client.query('UPDATE "public"."Users" SET "nick" = $2::Text, "password" = $3::Text WHERE "id" = $1 RETURNING nick;', [
+      let output = await client.query('UPDATE "public"."Users" SET "nick" = $2::Text, "password" = $3::Text WHERE "id" = $1 RETURNING *;', [
         user,
         nick,
         password,
       ]);
-      if (output.rows[0] > 0) {
+      if (output.rows.length > 0) {
         console.log("username and password are successfully updated");
-        return output;
+        console.log(output.rows[0].nick);
+        return output.rows[0].nick;
       }
     } catch (error) {
       console.error("Error updating user information:", error);
@@ -368,6 +369,8 @@ class DBManager {
     const client = new pg.Client(this.#credentials);
     try {
       await client.connect();
+      //gjør sjekk på om brukernavn eller mail allerede eksisterer
+
       let output = await client.query(
         'INSERT INTO "public"."Users"("nick", "email", "password","skills","inventory", "equipped" ) VALUES($1::Text, $2::Text, $3::Text, $4::JSONB, $5::JSONB, $6::JSONB) RETURNING id;',
         [user.nick, user.email, user.pswHash, JSON.stringify(user.skills), JSON.stringify(user.inventory), JSON.stringify(user.equipped)]

@@ -13,6 +13,7 @@
     <!-- LOGIN -->
 <!-- bruk forms så du kan bruke enter for å logge inn  -->
     <template id="loginTemplate" class="containerBackgroundInner">
+      <form>
       <label id="label" class="registerUserLabel">Character name</label>
       <input class="registerUser" type="text" name="username" id="textField0" />
     </br>
@@ -21,11 +22,13 @@
     </br>
     <button id="loginButton">Login</button> 
     <button id="createUserButton">Create user</button>
+  </form>
     </template>
     
         <!-- CREATE USER -->
 
     <template id="createUserTemplate">
+      <form>
         <label id="label" class="registerUserLabel">Email</label>
         <input class="registerUser" type="email" name="email" id="textField2" />
         </br>
@@ -36,6 +39,7 @@
         <input class="registerUser" type="password" name="password" id="textField4" />
       </br>
         <button id="submitButton">Submit</button>
+      </form>
       </br>
     </template>
 
@@ -44,7 +48,10 @@
     <!-- GAME -->
     
 <template id ="gameTemplate"> <!-- style denne med iktig bakgrunn ++ -->
-    <div id=" gameContainer"> 
+  <div id ="usernameDiv">
+    <h1 id ="username"></h1>
+  </div> 
+  <div id=" gameContainer"> 
         <button id="battleButton"></button> <!-- disse knappene må ha en klikk funksjon og loade div under (gamestates) i forhold til riktig knapp-->
         <!-- <button id="inventoryButton" onclick="main('gameTemplate','inventoryTemplate' )">inventory</button>  -->
         <button id="shopButton"></button>
@@ -60,7 +67,9 @@
 
         <!-- battle -->
         <template id="battleTemplate">
-          <div id ="battleDiv"></div>
+          <div id ="battleDiv">
+            <h1 id="comingSoon"></h1>
+          </div>
          </template>
 
         <!-- innventory -->
@@ -262,6 +271,8 @@
           <button id="editUserButton">Save settings</button>
           <button id="deleteUserButton">Delete user</button>
         </br>
+      </br>
+        <button id="logoutButton">Logout</button>
          </template>
       
 

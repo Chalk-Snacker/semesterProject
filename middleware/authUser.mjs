@@ -1,11 +1,18 @@
 import pg from "pg";
+import "dotenv/config";
 import { dbConnectionString } from "..//modules/dbConfig.mjs";
 import crypto from "node:crypto";
 
 export async function loginAuthUser(req, res, next) {
-  const userData = req.body;
-  const nickInput = userData.nick;
-  const passInput = userData.password;
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    res.status(401).json({ success: false, error: "Unauthorized" });
+    return;
+  }
+
+  const credentials = Buffer.from(authHeader.split(" ")[1], "base64").toString("utf-8");
+  const [nickInput, passInput] = credentials.split(":");
 
   const hashedPassword = crypto.createHash("sha256").update(passInput).digest("hex");
 
@@ -14,13 +21,12 @@ export async function loginAuthUser(req, res, next) {
     await client.connect();
     const output = await client.query('SELECT * FROM "public"."Users" WHERE "nick" = $1 AND "password" = $2', [nickInput, hashedPassword]);
     client.end();
+
     if (output.rows.length > 0) {
-      // User exists
       console.log("username and password are correct");
       res.status(200).json({ success: true, message: "Login successful", userId: output.rows[0].id });
       next();
     } else {
-      // user does not exist
       console.log("wrong username or password");
       res.status(401).json({ success: false, error: "Invalid credentials" });
     }

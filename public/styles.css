@@ -29,6 +29,12 @@
   background: #39738f;
   position: absolute;
 }
+#username {
+  width: 150px;
+  height: 30px;
+  border: 3px solid red;
+  background-color: aliceblue;
+}
 
 .registerUser {
   /* position: absolute; */
@@ -116,6 +122,11 @@
   position: absolute;
 }
 
+#comingSoon {
+  position: absolute;
+  left: 600px;
+  top: 300px;
+}
 /* ---------- IDLE UI ------------ */
 
 #idleTopDiv {
@@ -400,14 +411,10 @@
   color: yellow;
 }
 
-.itemTierDiv0 {
+.itemTierDiv {
   width: 300px;
   height: 100px;
-}
-
-.itemTierDiv1 {
-  width: 300px;
-  height: 100px;
+  border: 1px solid blue;
 }
 
 #shopTier1Div {

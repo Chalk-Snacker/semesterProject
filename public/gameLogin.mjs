@@ -8,11 +8,17 @@ export function loadTemplates(templateId) {
 }
 
 export function loginUser() {
-  // UI for pålogging:
+  const authToken = localStorage.getItem("authToken");
+  if (authToken) {
+    const userId = { userId: parseInt(authToken) };
+    loadTemplates("gameTemplate");
+    loadGame(userId);
+    return;
+  }
+
   const loginButton = document.getElementById("loginButton");
   loginButton.addEventListener("click", function (event) {
     correctLogin();
-    loadTemplates("gameTemplate"); // kjør i correctLogin?
 
     event.preventDefault();
   });
@@ -42,6 +48,10 @@ async function createUser() {
   const passwordInput = document.getElementById("textField4");
   const usernameInput = document.getElementById("textField3");
 
+  if (userEmailInput.value == "" || passwordInput.value == "" || usernameInput.value == "") {
+    alert("Please fill out all input fields");
+    return;
+  }
   const user = {
     // rename til newEmail ++ ?
     playerEmail: userEmailInput.value,
@@ -55,7 +65,6 @@ async function createUser() {
     body: JSON.stringify(user),
   };
   try {
-    // const response = await fetch("https://localhost:8080/user", requestOptions);
     const response = await fetch("/user", requestOptions);
     if (response.status != 201) {
       console.log(response.status);
@@ -67,31 +76,34 @@ async function createUser() {
   }
 }
 
-export async function correctLogin() {
+async function correctLogin() {
   const usernameInput = document.getElementById("textField0");
   const passwordInput = document.getElementById("textField1");
 
-  let userData = {
-    nick: usernameInput.value,
-    password: passwordInput.value,
-  };
+  if (!usernameInput || !passwordInput) {
+    console.error("Username or password inut elements not found");
+  }
+
+  const credentials = btoa(`${usernameInput.value}:${passwordInput.value}`);
+  const authHeader = `Basic ${credentials}`;
 
   let requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userData),
-    credentials: "include",
+    headers: { "Content-Type": "application/json", Authorization: authHeader },
   };
+
   try {
-    // let response = await fetch("http://localhost:8080/user/login", requestOptions);
-    // const response = await fetch("https://semesterproject-8m7h.onrender.com/user/login", requestOptions);
     const response = await fetch("/user/login", requestOptions);
     if (response.status !== 201 && response.status !== 200) {
       console.log("Error getting stuff!");
+      alert("Wrong username or password");
       throw new Error("Server error: " + response.status);
     }
     let data = await response.json();
     if (typeof data == "object") {
+      localStorage.setItem("authToken", data.userId);
+      requestOptions.headers.Authorization = `Bearer ${data.userId}`;
+      loadTemplates("gameTemplate");
       loadGame(data);
     }
   } catch (error) {
@@ -101,23 +113,22 @@ export async function correctLogin() {
 
 /*
 --------------------------------------- TO DO: ---------------------------------------
-1. sett inn spillernavn + lvl
-2. bytte "game" i filnavn til hva du skal kalle spillet
-3. lag middleware for auth som kan brukes til innlogging
-4. lage middleware for å lage starting items + skills?
-5. i loadTemplates, gjør en sjekk før du tømmer container i tilfelle noe går galt, så er siden blank
-6. skal kunne unequippe items?
+1. bytte "game" i filnavn til hva du skal kalle spillet
+2. lag middleware for auth som kan brukes til innlogging
+3. lage middleware for å lage starting items + skills?
+4. i loadTemplates, gjør en sjekk før du tømmer container i tilfelle noe går galt, så er siden blank
+5. skal kunne unequippe items?
+6. gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
 
 --------------------------------------- Game fixes: ---------------------------------------
-1. fix the idle and inventory functions, they are a mess with variables that have horrible names, aka fix 
-  the css hidden toggle stuff so its not ass
-3. husk å gjøre alt til const, og heller let om du får feilmelding
-4. make the category buttons smaller and the gameplay area bigger
-5. make the layout responsive
-6. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
-7. flytt alt html fra js inn i egne html templates og toggle de istedenfor  (fjern toggle css (er da undøvendig))
-8. gjør sjekk på om spiller er max lvl før du lvler opp
-9. equip knapp oppdaterer ikke liste;
+1. husk å gjøre alt til const, og heller let om du får feilmelding
+2. make the category buttons smaller and the gameplay area bigger
+3. make the layout responsive
+4. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
+5. flytt alt html fra js inn i egne html templates og toggle de istedenfor  (fjern toggle css (er da undøvendig))
+6. gjør sjekk på om spiller er max lvl før du lvler opp
+7. equip knapp oppdaterer ikke liste;
 for globals, kan heller hente verdi fra functions med return og heller redeklarere med samme navn.
-1. pass på at du ikke kan equippe annet enn armor og weapon
+8. pass på at du ikke kan equippe annet enn armor og weapon
+9. klikke på idle gjør høyre side (reservert for animasjon) lengre
 */

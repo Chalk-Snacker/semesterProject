@@ -1,17 +1,10 @@
 import express from "express";
 import util from "util";
-// import UserGameDataLogger from "../modules/UserGameDataLogger.mjs";
 import DBmanager from "../modules/storageManager.mjs";
 import { createShop } from "../middleware/createShop.mjs";
 
-// requests from game.mjs
 const GAME_API = express.Router();
 GAME_API.use(express.json());
-
-// GAME_API.put("/:id", (req, res, next) => {
-//   // UserGameDataLogger.logInventory(users[0]);
-//   next();
-// });
 
 GAME_API.post("/profile", createShop, async (req, res, next) => {
   const user = req.body;
@@ -34,10 +27,6 @@ GAME_API.post("/profile", createShop, async (req, res, next) => {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
-
-// GAME_API.post("/", (req, res) => {
-//   //
-// });
 
 GAME_API.post("/shop", async (req, res) => {
   const user = req.body.userLoginId;

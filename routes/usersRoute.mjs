@@ -1,5 +1,4 @@
 import express from "express";
-// import User from "../modules/user.mjs";
 import { User } from "../modules/user.mjs";
 import DBmanager from "../modules/storageManager.mjs";
 import "dotenv/config";
@@ -50,7 +49,7 @@ USER_API.post("/", hashPassword, async (req, res) => {
   }
 });
 
-USER_API.post("/login", loginAuthUser, async (req, res) => {});
+USER_API.post("/login", loginAuthUser, (req, res) => {});
 
 USER_API.put("/usrPsw", hashPassword, async (req, res) => {
   const userData = req.body;
