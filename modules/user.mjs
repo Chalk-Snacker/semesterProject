@@ -13,23 +13,6 @@ export class User {
       fishing: new Skill("Fishing"),
       cooking: new Skill("Cooking"),
     };
-    this.inventory = {
-      // armor: { bronzeSet: {}, ironSet: {}, steelSet: {} },
-      // weapon: { bronzeSet: {}, ironSet: {}, steelSet: {} },
-      // // spell: new Inventory("Spells"),
-      // // consumable: new Inventory("Consumables"),
-      // // resource: new Inventory("Resources"),
-    };
-    this.equipped = {
-      helm: null,
-      chestPlate: null,
-      cape: null,
-      gauntlets: null,
-      legs: null,
-      shoes: null,
-      shield: null,
-      weapon: null,
-    };
   }
   async save() {
     /// TODO: What happens if the DBManager fails to complete its task?
@@ -43,11 +26,21 @@ export class User {
     }
   }
 }
-
+// flytte til egen inventory fil? ta med items der også
 export const inventory = {
   id: null,
-  armor: { bronzeSet: {}, ironSet: {}, steelSet: {} },
-  weapon: { bronzeSet: {}, ironSet: {}, steelSet: {} },
+  armor: { startingSet: {}, bronzeSet: {}, ironSet: {}, steelSet: {} },
+  weapon: { startingSet: {}, bronzeSet: {}, ironSet: {}, steelSet: {} },
   consumables: {},
   resources: {},
+  equipped: {
+    helm: {},
+    chestPlate: {},
+    cape: {},
+    gauntlets: {},
+    legs: {},
+    shoes: {},
+    shield: {},
+    weapon: {},
+  },
 };

@@ -418,16 +418,16 @@
 }
 
 #shopTier1Div {
-  background-color: brown;
+  background-color: #e6832e;
 }
 #shopTier2Div {
-  background-color: grey;
+  background-color: brown;
 }
 #shopTier3Div {
-  background-color: white;
+  background-color: grey;
 }
 #shopTier4Div {
-  background-color: darkblue;
+  background-color: white;
 }
 
 #inventorySlotsContainer {

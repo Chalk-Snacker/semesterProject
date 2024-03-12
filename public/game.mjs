@@ -152,23 +152,26 @@ async function initInventory() {
 }
 
 async function initShop() {
-  const userData = await getUserData(userLoginId);
+  const userData = await getItemsFromInventory();
+
   const sellButton = document.getElementById("sellButton");
   sellButton.addEventListener("click", function () {
-    const itemsEquipped = Object.values(userData.user.equipped);
+    console.log(userData);
+    const itemsEquipped = Object.values(userData.inventoryData.equipped);
+
     let itemIsEquipped = false;
-    // for (let j = 0; j < itemsEquipped.length; j++) {
-    //   if (itemsEquipped[j] == null) continue;
-    //   if (itemsEquipped[j].name == itemClicked) {
-    //     itemIsEquipped = true;
-    //     alert("Cant sell equipped item!");
-    //   } else {
-    //     if (!itemIsEquipped) {
-    //       sellItem(itemClicked);
-    //       console.log(itemClicked);
-    //     }
-    //   }
-    // }
+    for (let j = 0; j < itemsEquipped.length; j++) {
+      if (itemsEquipped[j] == null) continue;
+      if (itemsEquipped[j].name == itemClicked) {
+        itemIsEquipped = true;
+        alert("Cant sell equipped item!");
+      } else {
+        if (!itemIsEquipped) {
+          sellItem(itemClicked);
+          console.log(itemClicked);
+        }
+      }
+    }
     for (let j = 0; j < itemsEquipped.length; j++) {
       sellItem(itemClicked);
       console.log(itemClicked);
@@ -341,17 +344,14 @@ function showAnimationBar() {
 }
 
 async function showEquippedItems() {
-  const userData = await getUserData(userLoginId);
-  let equippedItemsArr = Object.keys(userData.user.equipped);
-
+  const userData = await getItemsFromInventory();
+  let equippedItemsArr = Object.keys(userData.inventoryData.equipped);
   for (let i = 0; i < equippedItemsArr.length; i++) {
     const itemType = equippedItemsArr[i];
     const h1 = document.getElementById(itemType + "H1");
     const p = document.getElementById(itemType.toString() + "P");
     h1.innerText = captializeFirstLetter(itemType);
-
-    const equippedItem = userData.user.equipped[itemType];
-
+    const equippedItem = userData.inventoryData.equipped[itemType][itemType];
     if (equippedItem != null) {
       if (equippedItem.itemCategory === "weapon") {
         p.innerText = equippedItem.name + "\n" + "Level:" + equippedItem.lvlReq + "\n" + "Attack::" + equippedItem.attack;
@@ -470,6 +470,7 @@ async function getItemsFromInventory() {
       throw new Error("Servererror: " + response.status);
     }
     let data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);

@@ -24,14 +24,6 @@ USER_API.post("/", hashPassword, async (req, res) => {
     user.email = userData.playerEmail;
     user.pswHash = userData.playerPsw;
 
-    // user.inventory.armor.createStartingItems("armor");
-    // user.inventory.weapon.createStartingItems("weapons");
-    // user.inventory.spell.createStartingItems("spells");
-    // user.inventory.consumable.createStartingItems("consumables");
-
-    // user.equipped.helm = user.inventory.armor.helm[0].item;
-    // console.log(user.equipped.helm);
-
     ///TODO: Does the user exist?
     let exists = false;
 
