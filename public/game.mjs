@@ -1,5 +1,7 @@
 "use strict";
 import { loadTemplates, loginUser } from "./gameLogin.mjs";
+import { captializeFirstLetter } from "./utilities.mjs";
+
 let newLvl,
   currentXp,
   oldLvl,
@@ -155,16 +157,21 @@ async function initShop() {
   sellButton.addEventListener("click", function () {
     const itemsEquipped = Object.values(userData.user.equipped);
     let itemIsEquipped = false;
+    // for (let j = 0; j < itemsEquipped.length; j++) {
+    //   if (itemsEquipped[j] == null) continue;
+    //   if (itemsEquipped[j].name == itemClicked) {
+    //     itemIsEquipped = true;
+    //     alert("Cant sell equipped item!");
+    //   } else {
+    //     if (!itemIsEquipped) {
+    //       sellItem(itemClicked);
+    //       console.log(itemClicked);
+    //     }
+    //   }
+    // }
     for (let j = 0; j < itemsEquipped.length; j++) {
-      if (itemsEquipped[j] == null) continue;
-      if (itemsEquipped[j].name == itemClicked) {
-        itemIsEquipped = true;
-        alert("Cant sell equipped item!");
-      } else {
-        if (!itemIsEquipped) {
-          sellItem(itemClicked);
-        }
-      }
+      sellItem(itemClicked);
+      console.log(itemClicked);
     }
   });
 
@@ -375,16 +382,12 @@ async function showItems(inventoryCategory) {
     const itemSlotArr = Object.keys(itemSlot);
     for (let j = 0; j < itemSlotArr.length; j++) {
       const item = inventory[Object.keys(inventory)[i]][itemSlotArr[j]];
-      inventorySlots[slotIndex].innerText = item.name + "\n" + "Level: " + item.lvlReq + "\n";
-      slotIndex++;
+      if (item != null) {
+        inventorySlots[slotIndex].innerText = item.name + "\n" + "Level: " + item.lvlReq + "\n";
+        slotIndex++;
+      }
     }
   }
-}
-
-function captializeFirstLetter(aName) {
-  let firstLetter = aName.charAt(0).toUpperCase();
-  let rest = aName.slice(1);
-  return firstLetter + rest;
 }
 
 // ---------------- Server requests ----------------------
@@ -529,7 +532,7 @@ async function equipItem(aItem) {
     body: JSON.stringify({ item, userLoginId }),
   };
   try {
-    const response = await fetch(`/game/item`, requestOptions);
+    const response = await fetch(`/game/inventory`, requestOptions);
     if (response.status != 200) {
       console.log("Error updating equipped items");
       throw new Error("Server error: " + response.status);
@@ -550,7 +553,7 @@ async function buyItem(aItem) {
     body: JSON.stringify({ item, userLoginId }),
   };
   try {
-    const response = await fetch("game/shop", requestOptions);
+    const response = await fetch(`game/shop`, requestOptions);
     if (response.status != 200) {
       console.log("Error purchasing item from shop");
       throw new Error("Server error: " + response.status);
@@ -562,13 +565,14 @@ async function buyItem(aItem) {
 
 async function sellItem(aItem) {
   const item = { itemToSell: aItem };
+
   const requestOptions = {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ item, userLoginId }),
   };
   try {
-    const response = await fetch(`/game/item`, requestOptions);
+    const response = await fetch(`/game/inventory`, requestOptions);
     if (response.status != 204) {
       console.log("Error deleting item from user");
       throw new Error("Server error: " + response.status);

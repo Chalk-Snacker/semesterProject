@@ -235,13 +235,12 @@ class DBManager {
     }
   }
 
-  async buyItem(userId, itemName) {
+  async findItem(userId, itemName, action, table) {
     const client = new pg.Client(this.#credentials);
     try {
       await client.connect();
-
-      // Retrieve all sets
-      const allSetsQuery = `SELECT * FROM "public"."Shop";`;
+      // retrieving all sets
+      const allSetsQuery = `SELECT * FROM "public"."${table}";`;
       const allSetsResult = await client.query(allSetsQuery);
       const allSets = allSetsResult.rows;
 
@@ -256,11 +255,12 @@ class DBManager {
               const item = items[itemSlot];
               if (item.name === itemName) {
                 console.log("Item found in armor:", item);
-
-                // Insert the item into the inventory table
-                await this.insertItemIntoInventory("armor", armorSetName, { [itemSlot]: item });
-
-                return { [itemSlot]: item }; // Return an object with the item slot as the key
+                if (action == "add") {
+                  await this.insertItemIntoInventory("armor", armorSetName, { [itemSlot]: item });
+                  return { [itemSlot]: item }; // returning the item as a key in an object with itemslot as property name
+                } else if (action == "delete") {
+                  await this.removeItemFromInventory(userId, "armor", armorSetName, itemSlot);
+                }
               }
             }
           }
@@ -276,21 +276,20 @@ class DBManager {
               const item = items[itemSlot];
               if (item.name === itemName) {
                 console.log("Item found in weapons:", item);
+                if (action == "add") {
+                  await this.insertItemIntoInventory("weapon", weaponSetName, { [itemSlot]: item });
 
-                // Insert the item into the inventory table
-                await this.insertItemIntoInventory("weapon", weaponSetName, { [itemSlot]: item });
-
-                return { [itemSlot]: item }; // Return an object with the item slot as the key
+                  return { [itemSlot]: item }; // returning the item as a key in an object with itemslot as property name
+                } else if (action == "delete") {
+                  await this.removeItemFromInventory(userId, "weapon", weaponSetName, itemSlot);
+                }
               }
             }
           }
         }
       }
-
-      console.log("Item not found.");
-      return null; // Return null if the item was not found
     } catch (error) {
-      console.error("Error in buyItem:", error);
+      console.error("Error in findItem:", error);
       return null; // Ensure the function returns null in case of an error
     } finally {
       await client.end();
@@ -340,6 +339,24 @@ class DBManager {
       await client.query(updateQuery, values);
     } catch (error) {
       console.error("Error inserting item into inventory:", error);
+    } finally {
+      await client.end();
+    }
+  }
+
+  async removeItemFromInventory(userId, category, setName, itemSlot) {
+    const client = new pg.Client(this.#credentials);
+    try {
+      await client.connect();
+
+      const removeItemQuery = `
+        UPDATE "public"."Inventory"
+        SET ${category} = jsonb_set(${category}, '{${setName}, ${itemSlot}}', 'null'::jsonb)
+        WHERE "id" = $1;
+      `;
+      await client.query(removeItemQuery, [userId]);
+    } catch (error) {
+      console.error("Error removing item from inventory:", error);
     } finally {
       await client.end();
     }

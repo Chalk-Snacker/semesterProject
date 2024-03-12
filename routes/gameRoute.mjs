@@ -2,6 +2,7 @@ import express from "express";
 import util from "util";
 import DBmanager from "../modules/storageManager.mjs";
 import { createShop } from "../middleware/createShop.mjs";
+import { captializeFirstLetter } from "../public/utilities.mjs";
 
 const GAME_API = express.Router();
 GAME_API.use(express.json());
@@ -31,10 +32,11 @@ GAME_API.post("/profile", createShop, async (req, res, next) => {
 GAME_API.post("/shop", async (req, res) => {
   const user = req.body.userLoginId;
   const item = req.body.item.itemToBuy;
-  console.log(typeof item, item);
+  let table = req.originalUrl.split("/");
+  table = captializeFirstLetter(table[2]);
 
   try {
-    const userData = await DBmanager.buyItem(user.userId, item);
+    const userData = await DBmanager.findItem(user.userId, item, "add", table);
     res.status(200).json({ success: true, message: "Purchase of item successful", userData });
   } catch (error) {
     console.log("Error", error);
@@ -56,12 +58,13 @@ GAME_API.put("/xp", async (req, res, next) => {
   }
 });
 
-GAME_API.put("/item", async (req, res, next) => {
+GAME_API.put("/inventory", async (req, res, next) => {
   const user = req.body.userLoginId;
   const item = req.body.item.equipped;
-
+  let table = req.originalUrl.split("/");
+  table = captializeFirstLetter(table[2]);
   try {
-    const userData = await DBmanager.equippedItems(user.userId, item);
+    const userData = await DBmanager.equippedItems(user.userId, item, table);
     res.status(200).json({ success: true, message: "Update successful", userData });
   } catch (error) {
     console.log("Error", error);
@@ -69,11 +72,14 @@ GAME_API.put("/item", async (req, res, next) => {
   }
 });
 
-GAME_API.delete("/item", async (req, res) => {
+GAME_API.delete("/inventory", async (req, res) => {
   const user = req.body.userLoginId;
   const item = req.body.item.itemToSell;
+  let table = req.originalUrl.split("/");
+  table = captializeFirstLetter(table[2]);
+
   try {
-    const userData = await DBmanager.sellItem(user.userId, item);
+    const userData = await DBmanager.findItem(user.userId, item, "delete", table);
     res.status(204).json({ success: true, message: "Deletion successful", userData });
   } catch (error) {
     console.log("Error", error);
