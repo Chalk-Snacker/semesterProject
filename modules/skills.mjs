@@ -9,11 +9,18 @@ export class Skill {
     // this.xpNeededLvlUp;
     this.restXp = 0; // when lvl up, remaining xp will be tranfered towards next lvl
   }
-  lvlUp2() {
-    console.log("condition met");
-    this.restXp = this.xp % this.xpThreshHold[this.lvl];
-    this.xp = this.restXp;
-    this.restXp = 0;
-    this.lvl++;
-  }
+  // lvlUp2() {
+  //   console.log("condition met");
+  //   this.restXp = this.xp % this.xpThreshHold[this.lvl];
+  //   this.xp = this.restXp;
+  //   this.restXp = 0;
+  //   this.lvl++;
+  // }
+}
+
+export function lvlUp(currentXp, currentLvl, xpThreshHold, restXp) {
+  restXp = currentXp % xpThreshHold;
+  currentXp = restXp;
+  currentLvl++;
+  return { currentXp, currentLvl, xpThreshHold, restXp };
 }

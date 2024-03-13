@@ -1,4 +1,4 @@
-import { Skill } from "./UserGameData.mjs";
+import { Skill } from "./skills.mjs";
 import DBManager from "./storageManager.mjs";
 
 export class User {
@@ -26,21 +26,3 @@ export class User {
     }
   }
 }
-// flytte til egen inventory fil? ta med items der også
-export const inventory = {
-  id: null,
-  armor: { startingSet: {}, bronzeSet: {}, ironSet: {}, steelSet: {} },
-  weapon: { startingSet: {}, bronzeSet: {}, ironSet: {}, steelSet: {} },
-  consumables: {},
-  resources: {},
-  equipped: {
-    helm: {},
-    chestPlate: {},
-    cape: {},
-    gauntlets: {},
-    legs: {},
-    shoes: {},
-    shield: {},
-    weapon: {},
-  },
-};

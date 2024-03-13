@@ -1,7 +1,7 @@
 import pg from "pg";
 import { dbConnectionString } from "./dbConfig.mjs";
-import { lvlUp } from "../middleware/lvlUpUser.mjs";
-import { inventory } from "./user.mjs";
+import { lvlUp } from "./skills.mjs";
+import { inventory } from "./inventory.mjs";
 // import crypto from "node:crypto";
 
 if (dbConnectionString == undefined) {
@@ -62,6 +62,7 @@ class DBManager {
       const armorQualityType = Object.keys(inventory.armor);
       const weaponQualityType = Object.keys(inventory.weapon);
       const equipped = inventory.equipped;
+      const consumables = inventory.consumables;
       for (let i = 0; i < armorQualityType.length; i++) {
         armorSet[armorQualityType[i]] = {};
       }
@@ -69,8 +70,8 @@ class DBManager {
         weaponSet[weaponQualityType[i]] = {};
       }
       output = await client.query(
-        'INSERT INTO "public"."Inventory"("armor", "weapon", "id", "equipped") VALUES($1::JSONB, $2::JSONB, $3::Integer, $4::JSONB) RETURNING  *;', // add consumables and resource
-        [armorSet, weaponSet, user.id, equipped]
+        'INSERT INTO "public"."Inventory"("armor", "weapon", "id", "equipped", "consumables") VALUES($1::JSONB, $2::JSONB, $3::Integer, $4::JSONB, $5::JSONB) RETURNING  *;', // add consumables and resource
+        [armorSet, weaponSet, user.id, equipped, consumables]
       );
     } catch (error) {
       console.error(error);
@@ -201,7 +202,7 @@ class DBManager {
                   // console.log("Item found in armor:", item);
                   switch (action) {
                     case "buy":
-                      await this.insertItemIntoInventory("armor", armorSetName, { [itemSlot]: item });
+                      await this.insertItemIntoInventory(userId, "armor", armorSetName, { [itemSlot]: item });
                       break;
                     case "sell":
                       await this.removeItemFromInventory(userId, "armor", armorSetName, itemSlot);
@@ -228,13 +229,36 @@ class DBManager {
                   console.log("Item found in weapons:", item);
                   switch (action) {
                     case "buy":
-                      await this.insertItemIntoInventory("weapon", weaponSetName, { [itemSlot]: item });
+                      await this.insertItemIntoInventory(userId, "weapon", weaponSetName, { [itemSlot]: item });
                       break;
                     case "sell":
                       await this.removeItemFromInventory(userId, "weapon", weaponSetName, itemSlot);
                       break;
                     case "equip":
                       await this.equipItemFromInventory(userId, "equipped", "weapon", { ["weapon"]: item });
+                      break;
+                  }
+                }
+              }
+            }
+          }
+        }
+        const consumableSet = set.consumables;
+        if (consumableSet) {
+          const consumableSetNames = Object.keys(consumableSet);
+          for (const consumableSetName of consumableSetNames) {
+            const items = consumableSet[consumableSetName];
+            for (const itemSlot of Object.keys(items)) {
+              const item = items[itemSlot];
+              if (item) {
+                if (item.name === itemName) {
+                  console.log("Item found in weapons:", item);
+                  switch (action) {
+                    case "buy":
+                      await this.insertItemIntoInventory(userId, "consumables", consumableSetName, { [itemSlot]: item });
+                      break;
+                    case "sell":
+                      await this.removeItemFromInventory(userId, "consumables", consumableSetName, itemSlot);
                       break;
                   }
                 }
@@ -250,14 +274,14 @@ class DBManager {
       await client.end();
     }
   }
-  async insertItemIntoInventory(category, setName, item) {
+  async insertItemIntoInventory(userId, category, setName, item) {
     const client = new pg.Client(this.#credentials);
     try {
       await client.connect();
 
       await client.query(
-        `UPDATE "public"."Inventory" SET "${category}" = jsonb_set("${category}", '{"${setName}"}', "${category}"->'${setName}' || $1, true) WHERE "${category}"->>'${setName}' IS NOT NULL;`,
-        [JSON.stringify(item)]
+        `UPDATE "public"."Inventory" SET "${category}" = jsonb_set("${category}", '{"${setName}"}', "${category}"->'${setName}' || $2, true) WHERE "${category}"->>'${setName}' IS NOT NULL AND "id" = $1;`,
+        [userId, JSON.stringify(item)]
       );
 
       // Execute the update query
@@ -287,8 +311,8 @@ class DBManager {
       await client.connect();
 
       await client.query(
-        `UPDATE "public"."Inventory" SET ${category} = jsonb_set(${category}, '{${itemSlot}}', ${category}->'${itemSlot}' || $1, true) WHERE ${category}->>'${itemSlot}' IS NOT NULL;`,
-        [JSON.stringify(item)]
+        `UPDATE "public"."Inventory" SET ${category} = jsonb_set(${category}, '{${itemSlot}}', ${category}->'${itemSlot}' || $2, true) WHERE ${category}->>'${itemSlot}' IS NOT NULL AND "id" = $1;`,
+        [userId, JSON.stringify(item)]
       );
     } catch (error) {
       console.error("Error equipping item from inventory,", error);

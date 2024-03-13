@@ -416,7 +416,14 @@
   height: 100px;
   border: 1px solid blue;
 }
-
+.shopTierTitle {
+  position: relative;
+  width: 200px;
+  height: 35px;
+  background-color: #e72257;
+  top: 45px;
+  margin-bottom: 45px;
+}
 #shopTier1Div {
   background-color: #e6832e;
 }
@@ -428,6 +435,9 @@
 }
 #shopTier4Div {
   background-color: white;
+}
+#shopTier5Div {
+  background-color: yellow;
 }
 
 #inventorySlotsContainer {

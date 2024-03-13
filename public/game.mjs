@@ -142,9 +142,9 @@ async function initInventory() {
     showEquippedItems();
     // etter equipped items er oppdatert, oppdater liste over equipped items
   });
-  const inventorySlots = document.getElementsByClassName("itemCategoryButton");
-  for (let i = 0; i < inventorySlots.length; i++) {
-    inventorySlots[i].addEventListener("click", function (event) {
+  const itemCategoryButton = document.getElementsByClassName("itemCategoryButton");
+  for (let i = 0; i < itemCategoryButton.length; i++) {
+    itemCategoryButton[i].addEventListener("click", function (event) {
       const itemCategory = event.target.innerText.toLowerCase();
       showItems(itemCategory);
     });
@@ -191,11 +191,6 @@ async function initShop() {
       showItemsShop(itemCategory);
     });
   }
-  // const buyButton = document.getElementById("buyButton");
-  // const sellButton = document.getElementById("sellButton");
-  // sellButton.addEventListener("click", function () {
-  //   // equipItem(itemClicked);
-  // });
 }
 
 async function showItemsShop(shopCategory) {
@@ -219,12 +214,14 @@ async function showItemsShop(shopCategory) {
     const itemSet = shopData.shopData[i][shopCategory][itemQuality];
 
     for (let j = 0; j < shopItemSlot.length; j++) {
-      const itemSlot = Object.keys(itemSet);
-      if (j < Object.keys(itemSlot).length) {
-        const item = itemSet[itemSlot[j]];
-        shopItemSlot[j].innerText = item.name + "\n" + item.info;
-      } else {
-        shopItemSlot[j].innerText = "";
+      if (itemSet) {
+        const itemSlot = Object.keys(itemSet);
+        if (j < Object.keys(itemSlot).length) {
+          const item = itemSet[itemSlot[j]];
+          shopItemSlot[j].innerText = item.name + "\n" + item.info;
+        } else {
+          shopItemSlot[j].innerText = "";
+        }
       }
     }
   }
@@ -377,14 +374,17 @@ async function showItems(inventoryCategory) {
   }
 
   let slotIndex = 0;
-  for (let i = 0; i < Object.keys(inventory).length; i++) {
-    let itemSlot = inventory[Object.keys(inventory)[i]];
-    const itemSlotArr = Object.keys(itemSlot);
-    for (let j = 0; j < itemSlotArr.length; j++) {
-      const item = inventory[Object.keys(inventory)[i]][itemSlotArr[j]];
-      if (item != null) {
-        inventorySlots[slotIndex].innerText = item.name + "\n" + "Level: " + item.lvlReq + "\n";
-        slotIndex++;
+  if (inventory) {
+    const itemSets = Object.keys(inventory);
+    for (let i = 0; i < itemSets.length; i++) {
+      let itemSlot = inventory[Object.keys(inventory)[i]];
+      const itemSlotArr = Object.keys(itemSlot);
+      for (let j = 0; j < itemSlotArr.length; j++) {
+        const item = inventory[Object.keys(inventory)[i]][itemSlotArr[j]];
+        if (item != null) {
+          inventorySlots[slotIndex].innerText = item.name + "\n" + "Level: " + item.lvlReq + "\n";
+          slotIndex++;
+        }
       }
     }
   }
@@ -470,7 +470,6 @@ async function getItemsFromInventory() {
       throw new Error("Servererror: " + response.status);
     }
     let data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
