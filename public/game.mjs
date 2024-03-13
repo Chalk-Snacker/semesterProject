@@ -72,6 +72,7 @@ export async function loadGame(userId) {
   switchgameplay("idleTemplate");
 }
 
+// ---------------- init ----------------
 async function initidle() {
   const userData = await getUserData(userLoginId);
   listOfSkills = Object.keys(userData.user.skills);
@@ -128,12 +129,10 @@ async function initidle() {
     updateSkillLvlXpBar(listOfSkills[i], null, false); // oppdaterer xpbar så den starter med riktig xp og ikke 0 hver gang
   }
 }
-
 function initBattle() {
   const comingSoon = document.getElementById("comingSoon");
   comingSoon.innerText = "Coming soon";
 }
-
 async function initInventory() {
   showEquippedItems();
   const equipButton = document.getElementById("equipItem");
@@ -150,7 +149,6 @@ async function initInventory() {
     });
   }
 }
-
 async function initShop() {
   const userData = await getItemsFromInventory();
 
@@ -192,41 +190,6 @@ async function initShop() {
     });
   }
 }
-
-async function showItemsShop(shopCategory) {
-  const shopData = await getItemsFromShop();
-  const shopItemSlots = document.getElementsByClassName("itemTierDiv");
-  for (let i = 0; i < shopItemSlots.length; i++) {
-    const shopItemSlot = shopItemSlots[i];
-    shopItemSlot.addEventListener("click", function (event) {
-      itemClicked = shopItemSlot.innerText.split("\n");
-      itemClicked = itemClicked[0];
-      console.log(itemClicked);
-    });
-    shopItemSlot.innerText = "";
-  }
-
-  const shopTierDiv = document.getElementsByClassName("shopTierDiv");
-
-  for (let i = 0; i < shopTierDiv.length; i++) {
-    const shopItemSlot = shopTierDiv[i].getElementsByClassName("itemTierDiv");
-    const itemQuality = Object.keys(shopData.shopData[i][shopCategory]);
-    const itemSet = shopData.shopData[i][shopCategory][itemQuality];
-
-    for (let j = 0; j < shopItemSlot.length; j++) {
-      if (itemSet) {
-        const itemSlot = Object.keys(itemSet);
-        if (j < Object.keys(itemSlot).length) {
-          const item = itemSet[itemSlot[j]];
-          shopItemSlot[j].innerText = item.name + "\n" + item.info;
-        } else {
-          shopItemSlot[j].innerText = "";
-        }
-      }
-    }
-  }
-}
-
 async function initSettings() {
   const editUserButton = document.getElementById("editUserButton");
   const deleteUserButton = document.getElementById("deleteUserButton");
@@ -257,8 +220,7 @@ async function initSettings() {
   });
 }
 
-// ---------------- Skill function ----------------------
-
+// ---------------- Skill function ----------------
 function doSkill(aSkill) {
   // const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   // progressOuterBarDiv.style.display = "none";
@@ -304,7 +266,6 @@ function doSkill(aSkill) {
     }
   }, 5000);
 }
-
 async function updateSkillLvlXpBar(skillName, leveledUp, increase, xpIncrease) {
   const innerBar = document.getElementById("skillXpBarInnerDiv_" + skillName);
   if (increase) {
@@ -326,7 +287,6 @@ async function updateSkillLvlXpBar(skillName, leveledUp, increase, xpIncrease) {
     innerBar.style.width = xpIncrease + "px";
   }
 }
-
 function showAnimationBar() {
   const progressOuterBarDiv = document.getElementById("progressOuterBarDiv");
   const progressInnerBarDiv = document.getElementById("progressInnerBarDiv");
@@ -340,6 +300,7 @@ function showAnimationBar() {
   progressOuterBarDiv.style.visibility = "visible";
 }
 
+// ---------------- shop/ inventory ----------------
 async function showEquippedItems() {
   const userData = await getItemsFromInventory();
   let equippedItemsArr = Object.keys(userData.inventoryData.equipped);
@@ -358,7 +319,6 @@ async function showEquippedItems() {
     }
   }
 }
-
 async function showItems(inventoryCategory) {
   const inventoryData = await getItemsFromInventory();
   const inventorySlots = document.getElementsByClassName("inventorySlotsDiv");
@@ -389,8 +349,41 @@ async function showItems(inventoryCategory) {
     }
   }
 }
+async function showItemsShop(shopCategory) {
+  const shopData = await getItemsFromShop();
+  const shopItemSlots = document.getElementsByClassName("itemTierDiv");
+  for (let i = 0; i < shopItemSlots.length; i++) {
+    const shopItemSlot = shopItemSlots[i];
+    shopItemSlot.addEventListener("click", function (event) {
+      itemClicked = shopItemSlot.innerText.split("\n");
+      itemClicked = itemClicked[0];
+      console.log(itemClicked);
+    });
+    shopItemSlot.innerText = "";
+  }
 
-// ---------------- Server requests ----------------------
+  const shopTierDiv = document.getElementsByClassName("shopTierDiv");
+
+  for (let i = 0; i < shopTierDiv.length; i++) {
+    const shopItemSlot = shopTierDiv[i].getElementsByClassName("itemTierDiv");
+    const itemQuality = Object.keys(shopData.shopData[i][shopCategory]);
+    const itemSet = shopData.shopData[i][shopCategory][itemQuality];
+
+    for (let j = 0; j < shopItemSlot.length; j++) {
+      if (itemSet) {
+        const itemSlot = Object.keys(itemSet);
+        if (j < Object.keys(itemSlot).length) {
+          const item = itemSet[itemSlot[j]];
+          shopItemSlot[j].innerText = item.name + "\n" + item.info;
+        } else {
+          shopItemSlot[j].innerText = "";
+        }
+      }
+    }
+  }
+}
+
+// ---------------- Server requests ----------------
 
 async function updateXp(skillName, currentXp) {
   const updatedSkillXp = {
@@ -417,8 +410,29 @@ async function updateXp(skillName, currentXp) {
     console.log(error);
   }
 }
+async function updateUserInformation(usernameInput, passwordInput) {
+  const updatedUserInformation = {
+    newUserName: usernameInput,
+    newUserPassword: passwordInput,
+  };
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ updatedUserInformation, userLoginId }),
+  };
+  try {
+    const response = await fetch(`/user/usrPsw`, requestOptions);
 
-// funksjon for å hente ut brukerdata fra db
+    if (response.status != 200) {
+      console.log("Error editing user");
+      throw new Error("Server error: " + response.status);
+    }
+    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    return newUserName;
+  } catch (error) {
+    console.log(error);
+  }
+}
 async function getUserData() {
   let requestOptions = {
     method: "POST",
@@ -456,7 +470,6 @@ async function getItemsFromShop() {
     console.log(error);
   }
 }
-
 async function getItemsFromInventory() {
   const requestOptions = {
     method: "POST",
@@ -475,31 +488,6 @@ async function getItemsFromInventory() {
     console.log(error);
   }
 }
-
-async function updateUserInformation(usernameInput, passwordInput) {
-  const updatedUserInformation = {
-    newUserName: usernameInput,
-    newUserPassword: passwordInput,
-  };
-  const requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ updatedUserInformation, userLoginId }),
-  };
-  try {
-    const response = await fetch(`/user/usrPsw`, requestOptions);
-
-    if (response.status != 200) {
-      console.log("Error editing user");
-      throw new Error("Server error: " + response.status);
-    }
-    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
-    return newUserName;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function deleteUser() {
   const requestOptions = {
     method: "DELETE",
@@ -519,9 +507,6 @@ async function deleteUser() {
     console.log(error);
   }
 }
-
-//  ---------------------- Inventory equipped ----------------------
-
 async function equipItem(aItem) {
   // PUT request som tar verdien til variabel som er hvilket item som ble klikket på
   // kjør sjekk på server om den skal legges til eller ersatte gammel item utifra om item av samme typer er der fra før?
@@ -543,7 +528,6 @@ async function equipItem(aItem) {
     console.log(error);
   }
 }
-
 async function buyItem(aItem) {
   const item = { itemToBuy: aItem };
 
@@ -562,7 +546,6 @@ async function buyItem(aItem) {
     console.log(error);
   }
 }
-
 async function sellItem(aItem) {
   const item = { itemToSell: aItem };
 

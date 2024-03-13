@@ -1,4 +1,3 @@
-// import pg from "pg";
 import "dotenv/config";
 
 // Using an enviorment variable to get the db credentials

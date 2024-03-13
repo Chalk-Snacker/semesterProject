@@ -13,8 +13,11 @@ export async function loginAuthUser(req, res, next) {
 
   const credentials = Buffer.from(authHeader.split(" ")[1], "base64").toString("utf-8");
   const [nickInput, passInput] = credentials.split(":");
-
-  const hashedPassword = crypto.createHash("sha256").update(passInput).digest("hex");
+  const hash = crypto.createHash("sha256");
+  hash.update(passInput);
+  hash.update(process.env.HASH_SALT);
+  const hashedPassword = hash.digest("hex");
+  // const hashedPassword = crypto.createHash("sha256").update(passInput).digest("hex");
 
   try {
     const client = new pg.Client(dbConnectionString);
