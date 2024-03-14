@@ -1,9 +1,10 @@
 import express from "express";
-import { User } from "../modules/user.mjs";
 import DBmanager from "../modules/storageManager.mjs";
 import "dotenv/config";
 import { hashPassword } from "../middleware/hashPassword.mjs";
 import { loginAuthUser } from "../middleware/authUser.mjs";
+import { checkIfUserExists } from "../middleware/checkIfUserExists.mjs";
+import { User } from "../modules/user.mjs";
 
 const USER_API = express.Router();
 USER_API.use(express.json());
@@ -12,52 +13,34 @@ USER_API.get("/:", (req, res) => {
   // Return user object
 });
 
-// dont need next for now
-USER_API.post("/", hashPassword, async (req, res) => {
-  const userData = req.body;
+USER_API.post(
+  "/",
+  hashPassword,
+  (req, res, next) => checkIfUserExists(req, res, next, "createUser"),
+  async (req, res) => {
+    const userData = req.body;
 
-  if (userData.playerNick != "" && userData.playerEmail != "" && userData.playerPsw != "") {
-    let user = new User();
-    ///TODO: Do not save passwords.
-
-    user.nick = userData.playerNick;
-    user.email = userData.playerEmail;
-    user.pswHash = userData.playerPsw;
-
-    ///TODO: Does the user exist?
-    let exists = false;
-
-    if (!exists) {
-      //TODO: What happens if this fails?
-      user = await user.save();
-      console.log("asdf");
-      res.status(201).json(JSON.stringify(user)).end();
-    } else {
-      console.log("fdsa");
-      res.status(400).end();
-    }
-  } else {
-    res.status(400).send("Mangler data felt").end();
+    const user = new User(userData.playerNick, userData.playerEmail, userData.playerPsw);
+    await DBmanager.createUser(user);
+    res.status(201).json({ success: true, user });
   }
-});
+);
 
-USER_API.post("/login", loginAuthUser, (req, res) => {});
+USER_API.post("/login", loginAuthUser, (req, res) => {}); // get??
 
-USER_API.put("/usrPsw", hashPassword, async (req, res) => {
-  const userData = req.body;
+USER_API.put(
+  "/usrPsw",
+  hashPassword,
+  (req, res, next) => checkIfUserExists(req, res, next, "updateUser"),
+  async (req, res) => {
+    const userData = req.body;
+    const user = userData.userLoginId.userId;
+    const updatedUserNick = userData.updatedUserInformation.newUserName;
 
-  const user = userData.userLoginId.userId;
-  const updatedUserNick = userData.updatedUserInformation.newUserName;
-  const updatedUserPassword = userData.updatedUserInformation.newUserPassword;
-
-  try {
-    const userData = await DBmanager.updateUserInformation(user, updatedUserNick, updatedUserPassword);
-    res.status(200).json({ success: true, userData });
-  } catch (error) {
-    console.log("Error", error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
+    await DBmanager.updateUserInformation(user, updatedUserNick, userData.updatedUserInformation.newUserPassword);
+    res.status(200).json({ success: true });
   }
-});
+);
 
 USER_API.delete("/", async (req, res) => {
   const user = req.body;

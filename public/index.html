@@ -16,12 +16,13 @@
       <form>
       <label id="label" class="registerUserLabel">Character name</label>
       <input class="registerUser" type="text" name="username" id="textField0" />
-    </br>
       <label id="label" class="registerUserLabel">Password</label>
       <input class="registerUser" type="password" name="password" id="textField1" />
-    </br>
     <button id="loginButton">Login</button> 
     <button id="createUserButton">Create user</button>
+    <div id="errorMessageDiv">
+      <h3 id ="errorMessage"></h3>
+    </div>
   </form>
     </template>
     
@@ -31,16 +32,16 @@
       <form>
         <label id="label" class="registerUserLabel">Email</label>
         <input class="registerUser" type="email" name="email" id="textField2" />
-        </br>
         <label id="label" class="registerUserLabel">Character name</label>
         <input class="registerUser" type="text" name="username" id="textField3" />
-        </br>
         <label id="label" class="registerUserLabel">Password</label>
         <input class="registerUser" type="password" name="password" id="textField4" />
-      </br>
         <button id="submitButton">Submit</button>
+        <button id="homeButton">Home</button>
+        <div id="errorMessageDiv">
+          <h3 id ="errorMessage"></h3>
+        </div>
       </form>
-      </br>
     </template>
 
 
@@ -301,15 +302,14 @@
          <template id="settingsTemplate">
           <label id="label" class="registerUserLabel">New character name</label>
           <input class="registerUser" type="text" name="username" id="textField5" />
-          </br>
           <label id="label" class="registerUserLabel">New password</label>
           <input class="registerUser" type="password" name="password" id="textField6" />
-        </br>
           <button id="editUserButton">Save settings</button>
           <button id="deleteUserButton">Delete user</button>
-        </br>
-      </br>
-        <button id="logoutButton">Logout</button>
+          <button id="logoutButton">Logout</button>
+          <div id="errorMessageDiv">
+          <h3 id ="errorMessage"></h3>
+        </div>
          </template>
       
 

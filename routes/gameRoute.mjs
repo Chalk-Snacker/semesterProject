@@ -18,7 +18,6 @@ GAME_API.post("/profile", createShop, async (req, res, next) => {
         nick: userData.nick,
         skills: userData.skills,
       };
-      // res.json({ user });
       res.status(200).json({ success: true, message: "fetching successful", user });
     }
   } catch (error) {
@@ -62,7 +61,6 @@ GAME_API.put("/inventory", async (req, res, next) => {
   let table = req.originalUrl.split("/");
   table = captializeFirstLetter(table[2]);
   try {
-    // const userData = await DBmanager.equippedItems(user.userId, item, table);
     const userData = await DBmanager.findItem(user.userId, item, "equip", table);
     res.status(200).json({ success: true, message: "Update successful", userData });
   } catch (error) {

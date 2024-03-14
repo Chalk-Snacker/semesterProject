@@ -2,6 +2,7 @@ import pg from "pg";
 import { dbConnectionString } from "./dbConfig.mjs";
 import { lvlUp } from "./skills.mjs";
 import { inventory } from "./inventory.mjs";
+import { User } from "./user.mjs";
 // import crypto from "node:crypto";
 
 if (dbConnectionString == undefined) {
@@ -41,13 +42,13 @@ class DBManager {
   }
   async createUser(user) {
     const client = new pg.Client(this.#credentials);
+
     try {
       await client.connect();
-      //gjør sjekk på om brukernavn eller mail allerede eksisterer
 
       let output = await client.query(
-        'INSERT INTO "public"."Users"("nick", "email", "password","skills","inventory", "equipped" ) VALUES($1::Text, $2::Text, $3::Text, $4::JSONB, $5::JSONB, $6::JSONB) RETURNING id;',
-        [user.nick, user.email, user.pswHash, JSON.stringify(user.skills), JSON.stringify(user.inventory), JSON.stringify(user.equipped)]
+        'INSERT INTO "public"."Users"("nick", "email", "password","skills") VALUES($1::Text, $2::Text, $3::Text, $4::JSONB) RETURNING id;',
+        [user.nick, user.email, user.pswHash, JSON.stringify(user.skills)]
       );
       // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
       // Of special intrest is the rows and rowCount properties of this object.
@@ -73,13 +74,13 @@ class DBManager {
         'INSERT INTO "public"."Inventory"("armor", "weapon", "id", "equipped", "consumables") VALUES($1::JSONB, $2::JSONB, $3::Integer, $4::JSONB, $5::JSONB) RETURNING  *;', // add consumables and resource
         [armorSet, weaponSet, user.id, equipped, consumables]
       );
+      return user;
     } catch (error) {
       console.error(error);
       //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
       client.end(); // Always disconnect from the database.
     }
-    return user;
   }
   async getUser(idInput) {
     const client = new pg.Client(this.#credentials);
@@ -104,6 +105,7 @@ class DBManager {
 
     try {
       await client.connect();
+
       let output = await client.query('UPDATE "public"."Users" SET "nick" = $2::Text, "password" = $3::Text WHERE "id" = $1 RETURNING *;', [
         user,
         nick,

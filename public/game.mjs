@@ -198,14 +198,13 @@ async function initSettings() {
   editUserButton.addEventListener("click", async function () {
     const newUserName = document.getElementById("textField5").value;
     const newUserPassword = document.getElementById("textField6").value;
-    if (newUserName == "" || newUserPassword == "") {
-      alert("Please fill out all fields");
-      return;
-    } else {
-      await updateUserInformation(newUserName, newUserPassword);
-      switchgameplay("idleTemplate");
-      localStorage.removeItem("authToken");
-    }
+    // if (newUserName == "" || newUserPassword == "") {
+    //   alert("Please fill out all fields");
+    //   return;
+    // } else {
+    await updateUserInformation(newUserName, newUserPassword);
+    localStorage.removeItem("authToken");
+    // }
   });
   deleteUserButton.addEventListener("click", async function () {
     localStorage.removeItem("authToken");
@@ -411,6 +410,8 @@ async function updateXp(skillName, currentXp) {
   }
 }
 async function updateUserInformation(usernameInput, passwordInput) {
+  const errorMessage = document.getElementById("errorMessage");
+
   const updatedUserInformation = {
     newUserName: usernameInput,
     newUserPassword: passwordInput,
@@ -422,12 +423,15 @@ async function updateUserInformation(usernameInput, passwordInput) {
   };
   try {
     const response = await fetch(`/user/usrPsw`, requestOptions);
-
+    const data = await response.json();
     if (response.status != 200) {
-      console.log("Error editing user");
+      console.log(data.error);
+      errorMessage.innerText = data.error;
       throw new Error("Server error: " + response.status);
     }
-    let newUserName = await response.json(); // make sure to only send the username back, so we can update and display the new name
+    switchgameplay("idleTemplate");
+    localStorage.removeItem("authToken");
+    let newUserName = await response.json();
     return newUserName;
   } catch (error) {
     console.log(error);

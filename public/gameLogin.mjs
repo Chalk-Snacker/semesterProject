@@ -33,9 +33,13 @@ export function loginUser() {
       document.getElementById("textField2").value = "";
       document.getElementById("textField3").value = "";
       document.getElementById("textField4").value = "";
+
+      event.preventDefault();
+    });
+    const homeButton = document.getElementById("homeButton");
+    homeButton.addEventListener("click", function (event) {
       loadTemplates("loginTemplate");
       loginUser();
-
       event.preventDefault();
     });
 
@@ -44,14 +48,11 @@ export function loginUser() {
 }
 
 async function createUser() {
+  const errorMessage = document.getElementById("errorMessage");
   const userEmailInput = document.getElementById("textField2");
   const passwordInput = document.getElementById("textField4");
   const usernameInput = document.getElementById("textField3");
 
-  if (userEmailInput.value == "" || passwordInput.value == "" || usernameInput.value == "") {
-    alert("Please fill out all input fields");
-    return;
-  }
   const user = {
     // rename til newEmail ++ ?
     playerEmail: userEmailInput.value,
@@ -66,10 +67,15 @@ async function createUser() {
   };
   try {
     const response = await fetch("/user", requestOptions);
+    const data = await response.json();
+
     if (response.status != 201) {
-      console.log(response.status);
+      errorMessage.innerText = data.error;
       console.log("Error creating user");
-      throw new Error("Server error: " + response.status);
+      throw new Error(response.status);
+    } else {
+      loadTemplates("loginTemplate");
+      loginUser();
     }
   } catch (error) {
     console.log(error);
@@ -77,12 +83,9 @@ async function createUser() {
 }
 
 async function correctLogin() {
+  const errorMessage = document.getElementById("errorMessage");
   const usernameInput = document.getElementById("textField0");
   const passwordInput = document.getElementById("textField1");
-
-  if (!usernameInput || !passwordInput) {
-    console.error("Username or password inut elements not found");
-  }
 
   const credentials = btoa(`${usernameInput.value}:${passwordInput.value}`);
   const authHeader = `Basic ${credentials}`;
@@ -94,12 +97,12 @@ async function correctLogin() {
 
   try {
     const response = await fetch("/user/login", requestOptions);
+    let data = await response.json();
     if (response.status !== 201 && response.status !== 200) {
-      console.log("Error getting stuff!");
-      alert("Wrong username or password");
+      errorMessage.innerText = data.error;
       throw new Error("Server error: " + response.status);
     }
-    let data = await response.json();
+
     if (typeof data == "object") {
       localStorage.setItem("authToken", data.userId);
       requestOptions.headers.Authorization = `Bearer ${data.userId}`;
@@ -114,21 +117,15 @@ async function correctLogin() {
 /*
 --------------------------------------- TO DO: ---------------------------------------
 1. bytte "game" i filnavn til hva du skal kalle spillet
-2. lag middleware for auth som kan brukes til innlogging
-3. lage middleware for å lage starting items + skills?
-4. i loadTemplates, gjør en sjekk før du tømmer container i tilfelle noe går galt, så er siden blank
-5. skal kunne unequippe items?
-6. gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
+2. i loadTemplates, gjør en sjekk før du tømmer container i tilfelle noe går galt, så er siden blank
+3. gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
 
 --------------------------------------- Game fixes: ---------------------------------------
 1. husk å gjøre alt til const, og heller let om du får feilmelding
-2. make the category buttons smaller and the gameplay area bigger
-3. make the layout responsive
-4. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
-5. flytt alt html fra js inn i egne html templates og toggle de istedenfor  (fjern toggle css (er da undøvendig))
-6. gjør sjekk på om spiller er max lvl før du lvler opp
-7. equip knapp oppdaterer ikke liste;
+2. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
+3. gjør sjekk på om spiller er max lvl før du lvler opp
+4. flytt alt html fra js inn i egne html templates og toggle de istedenfor  (fjern toggle css (er da undøvendig))
+5. equip knapp oppdaterer ikke liste;
 for globals, kan heller hente verdi fra functions med return og heller redeklarere med samme navn.
-8. pass på at du ikke kan equippe annet enn armor og weapon
-9. klikke på idle gjør høyre side (reservert for animasjon) lengre
+6. pass på at du ikke kan equippe annet enn armor og weapon
 */
