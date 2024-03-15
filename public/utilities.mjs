@@ -30,3 +30,13 @@ export async function customFetch(method, body, headers, url) {
     throw error;
   }
 }
+
+let itemClicked = null;
+
+export function setItemClicked(item) {
+  itemClicked = item;
+}
+
+export function getItemClicked() {
+  return itemClicked;
+}

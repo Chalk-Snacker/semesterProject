@@ -1,7 +1,5 @@
 "use strict";
-import { customFetch, captializeFirstLetter } from "./utilities.mjs";
-
-let itemClicked = null;
+import { customFetch, captializeFirstLetter, setItemClicked, getItemClicked } from "./utilities.mjs";
 
 export async function initInventory() {
   showEquippedItems();
@@ -9,12 +7,11 @@ export async function initInventory() {
   equipButton.addEventListener("click", async function () {
     await customFetch(
       "PUT",
-      JSON.stringify({ item: itemClicked }),
+      JSON.stringify({ item: getItemClicked() }),
       { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       "/game/inventory"
     );
     showEquippedItems();
-    // etter equipped items er oppdatert, oppdater liste over equipped items
   });
   const itemCategoryButton = document.getElementsByClassName("itemCategoryButton");
   for (let i = 0; i < itemCategoryButton.length; i++) {
@@ -62,9 +59,7 @@ export async function showItems(inventoryCategory) {
   for (let i = 0; i < inventorySlots.length; i++) {
     const inventorySlot = inventorySlots[i];
     inventorySlot.addEventListener("click", function (event) {
-      itemClicked = inventorySlot.innerText.split("\n");
-      itemClicked = itemClicked[0];
-      console.log(itemClicked);
+      setItemClicked(inventorySlot.innerText.split("\n")[0]);
     });
     inventorySlot.innerText = "";
   }

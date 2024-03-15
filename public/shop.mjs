@@ -1,8 +1,6 @@
 "use strict";
-import { customFetch } from "./utilities.mjs";
+import { customFetch, getItemClicked, setItemClicked } from "./utilities.mjs";
 import { showItems } from "./inventory.mjs";
-
-let itemClicked = null;
 
 export async function initShop() {
   const userData = await customFetch(
@@ -20,7 +18,7 @@ export async function initShop() {
 
     for (let j = 0; j < itemsEquipped.length; j++) {
       const itemEquipped = itemsEquipped[itemSlots[j]][equippedItemsArr[j]];
-      if (itemEquipped && itemEquipped.name === itemClicked) {
+      if (itemEquipped && itemEquipped.name === getItemClicked()) {
         isEquipped = true;
         break;
       }
@@ -28,7 +26,7 @@ export async function initShop() {
     if (!isEquipped) {
       await customFetch(
         "DELETE",
-        JSON.stringify({ item: itemClicked }),
+        JSON.stringify({ item: getItemClicked() }),
         { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
         "/game/inventory"
       );
@@ -38,10 +36,9 @@ export async function initShop() {
 
   const buyButton = document.getElementById("buyButton");
   buyButton.addEventListener("click", async function () {
-    // buyItem(itemClicked);
     await customFetch(
       "POST",
-      JSON.stringify({ item: itemClicked }),
+      JSON.stringify({ item: getItemClicked() }),
       { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       "/game/shop"
     );
@@ -65,8 +62,7 @@ async function showItemsShop(shopCategory) {
   for (let i = 0; i < shopItemSlots.length; i++) {
     const shopItemSlot = shopItemSlots[i];
     shopItemSlot.addEventListener("click", function (event) {
-      itemClicked = shopItemSlot.innerText.split("\n");
-      itemClicked = itemClicked[0];
+      setItemClicked(shopItemSlot.innerText.split("\n")[0]);
     });
     shopItemSlot.innerText = "";
   }

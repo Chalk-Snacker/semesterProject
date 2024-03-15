@@ -35,8 +35,10 @@ GAME_API.post("/shop", async (req, res) => {
 
 GAME_API.put("/xp", async (req, res, next) => {
   const userId = req.headers.authorization.split(" ")[1];
-  const skillName = req.body.updatedSkillXp.name;
-  const updatedUserXp = req.body.updatedSkillXp.xp;
+  const skillName = req.body.name;
+  const updatedUserXp = req.body.xp;
+  // const skillName = req.body.updatedSkillXp.name;
+  // const updatedUserXp = req.body.updatedSkillXp.xp;
 
   try {
     const userData = await DBmanager.updateUserSkils(userId, skillName, updatedUserXp);

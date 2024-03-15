@@ -6,10 +6,10 @@ let newLvl,
   xpThreshHold,
   userLoginId,
   remainder,
-  // skillInterval,
   listOfSkills = null;
 let leveledUp = false; // trenger vel ikke å være global?
 export let skillInterval = null;
+
 export async function initidle() {
   const userData = await customFetch(
     "GET",
@@ -61,7 +61,13 @@ function doSkill(aSkill) {
       xpThreshHold = userData.user.skills[aSkill].xpThreshHold;
       remainder = currentXp % xpThreshHold;
 
-      const updatedData = await updateXp(aSkill, currentXp);
+      const updatedData = await customFetch(
+        "PUT",
+        JSON.stringify({ name: aSkill, xp: currentXp }),
+        { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+        "/game/xp"
+      );
+      showAnimationBar();
       newLvl = updatedData.userData[aSkill].lvl;
       skillLvl.innerText = "Lvl " + newLvl;
       xpIncrease = updatedData.userData[aSkill].xp;
@@ -117,30 +123,4 @@ function showAnimationBar() {
   progressInnerBarDiv.style.animation = "progress-animation 5s linear infinite";
   progressOuterBarDiv.style.display = "block";
   progressOuterBarDiv.style.visibility = "visible";
-}
-
-async function updateXp(skillName, currentXp) {
-  const updatedSkillXp = {
-    name: skillName,
-    xp: currentXp,
-  };
-
-  const requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("authToken")}` },
-    body: JSON.stringify({ updatedSkillXp, userLoginId }),
-  };
-  try {
-    const response = await fetch(`/game/xp`, requestOptions);
-
-    if (response.status !== 200) {
-      console.log("Error editing user");
-      throw new Error("Server error: " + response.status);
-    }
-    let newData = await response.json();
-    showAnimationBar();
-    return newData;
-  } catch (error) {
-    console.log(error);
-  }
 }

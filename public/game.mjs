@@ -1,5 +1,4 @@
 "use strict";
-// import { loadTemplates, loginUser } from "./gameLogin.mjs";
 import { customFetch } from "./utilities.mjs";
 import { initidle, skillInterval } from "./idle.mjs";
 import { initInventory } from "./inventory.mjs";
