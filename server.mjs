@@ -1,7 +1,6 @@
-import express from "express"; // Express is installed using npm
-import USER_API from "./routes/usersRoute.mjs"; // This is where we have defined the API for working with users.
+import express from "express";
+import USER_API from "./routes/usersRoute.mjs";
 import GAME_API from "./routes/gameRoute.mjs";
-// import UserGameDataLogger from "./modules/UserGameDataLogger.mjs";
 
 // Creating an instance of the server
 const server = express();

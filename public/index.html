@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My game</title>
+    <link rel="manifest" href="../manifest.json">
+
   </head>
   <body>
     <link href="styles.css" rel="stylesheet" type="text/css" />
     <!-- MAIN CONTAINER -->
     <div id="container" class="containerBackgroundOuter"></div>
 
+   
+   <!-- OFFLINE -->
+   <template id ="offlineTemplate">
+    <div id="offlineDiv">
+      <h1 id="offlineMessage">Offline</h1>
+    </div>
+   </template>
+   
     <!-- LOGIN -->
     <template id="loginTemplate" class="containerBackgroundInner">
       <form>
@@ -25,6 +35,7 @@
   </form>
     </template>
     
+  
         
     <!-- CREATE USER -->
     <template id="createUserTemplate">
@@ -156,88 +167,66 @@
               <button id="shopPotionsButton" class="itemCategoryButton">Consumables</button>
             </div>
             <div id ="shopTier1TitleDiv" class="shopTierTitle">
-              <h1>Item set 1</h1>
             </div>
-            <div id ="shopTier1Div" class="shopTierDiv"> <!-- Bronze-->
+            <div id ="shopTier1Div" class="shopTierDiv"> <!-- Starting -->
               <h1 id="shopTier1H1"></h1>
-              <!-- <p id=shopTier1P></p> -->
-              <div id="itemTier1Div0" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <h2>test h2</h2>
-                <p>test p</p>
+
+              <div id="itemTier1Div0" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier1Div1" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <!-- <h2>JAJAJJAJAJAJA</h2>
-                <p>TESTTESTSET</p> -->
+              <div id="itemTier1Div1" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier1Div2" class ="itemTierDiv"></div> <!-- helm/ shoulders/ shield++ -->
+              <div id="itemTier1Div2" class ="itemTierDiv"></div> 
               <div id="itemTier1Div3" class ="itemTierDiv"></div>
               <div id="itemTier1Div4" class ="itemTierDiv"></div>
               <div id="itemTier1Div5" class ="itemTierDiv"></div>
               <div id="itemTier1Div6" class ="itemTierDiv"></div>
             </div>
-            <div id ="shopTier2Div" class="shopTierDiv"> <!-- Iron-->
+            <div id ="shopTier2Div" class="shopTierDiv"> <!-- Bronze -->
               <h1 id="shopTier2H1"></h1>
-              <!-- <p id=shopTier2P></p> -->
-              <div id="itemTier2Div0" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <h2>test h2</h2>
-                <p>test p</p>
+              <div id="itemTier2Div0" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier2Div1" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <!-- <h2>JAJAJJAJAJAJA</h2>
-                <p>TESTTESTSET</p> -->
+              <div id="itemTier2Div1" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier2Div2" class ="itemTierDiv"></div> <!-- helm/ shoulders/ shield++ -->
+              <div id="itemTier2Div2" class ="itemTierDiv"></div> 
               <div id="itemTier2Div3" class ="itemTierDiv"></div>
               <div id="itemTier2Div4" class ="itemTierDiv"></div>
               <div id="itemTier2Div5" class ="itemTierDiv"></div>
               <div id="itemTier2Div6" class ="itemTierDiv"></div>
             </div>
-            <div id ="shopTier3Div" class="shopTierDiv"> <!-- Steel-->
+            <div id ="shopTier3Div" class="shopTierDiv"> <!-- Iron -->
               <h1 id="shopTie3H1"></h1>
               <p id=shopTier3P></p>
-              <div id="itemTier3Div0" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <h2>test h2</h2>
-                <p>test p</p>
+              <div id="itemTier3Div0" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier3Div1" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <!-- <h2>JAJAJJAJAJAJA</h2>
-                <p>TESTTESTSET</p> -->
+              <div id="itemTier3Div1" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier3Div2" class ="itemTierDiv"></div> <!-- helm/ shoulders/ shield++ -->
+              <div id="itemTier3Div2" class ="itemTierDiv"></div>
               <div id="itemTier3Div3" class ="itemTierDiv"></div>
               <div id="itemTier3Div4" class ="itemTierDiv"></div>
               <div id="itemTier3Div5" class ="itemTierDiv"></div>
               <div id="itemTier3Div6" class ="itemTierDiv"></div>
             </div>
-            <div id ="shopTier4Div" class="shopTierDiv"> <!-- Steel-->
+            <div id ="shopTier4Div" class="shopTierDiv"> <!-- Steel -->
               <h1 id="shopTie4H1"></h1>
               <p id=shopTier4P></p>
-              <div id="itemTier4Div0" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <h2>test h2</h2>
-                <p>test p</p>
+              <div id="itemTier4Div0" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier4Div1" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <!-- <h2>JAJAJJAJAJAJA</h2>
-                <p>TESTTESTSET</p> -->
+              <div id="itemTier4Div1" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier4Div2" class ="itemTierDiv"></div> <!-- helm/ shoulders/ shield++ -->
+              <div id="itemTier4Div2" class ="itemTierDiv"></div> 
               <div id="itemTier4Div3" class ="itemTierDiv"></div>
               <div id="itemTier4Div4" class ="itemTierDiv"></div>
               <div id="itemTier4Div5" class ="itemTierDiv"></div>
               <div id="itemTier4Div6" class ="itemTierDiv"></div>
             </div>
-            <div id ="shopTier5Div" class="shopTierDiv"> <!-- Steel-->
+            <div id ="shopTier5Div" class="shopTierDiv"> <!-- Legendary -->
               <h1 id="shopTier5H1"></h1>
               <p id=shopTier5P></p>
-              <div id="itemTier5Div0" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <h2>test h2</h2>
-                <p>test p</p>
+              <div id="itemTier5Div0" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier5Div1" class ="itemTierDiv"> <!-- helm/ shoulders/ shield++ -->
-                <!-- <h2>JAJAJJAJAJAJA</h2>
-                <p>TESTTESTSET</p> -->
+              <div id="itemTier5Div1" class ="itemTierDiv"> 
               </div>
-              <div id="itemTier5Div2" class ="itemTierDiv"></div> <!-- helm/ shoulders/ shield++ -->
+              <div id="itemTier5Div2" class ="itemTierDiv"></div> 
               <div id="itemTier5Div3" class ="itemTierDiv"></div>
               <div id="itemTier5Div4" class ="itemTierDiv"></div>
               <div id="itemTier5Div5" class ="itemTierDiv"></div>
@@ -284,7 +273,7 @@
          </template>        
 
          <!-- idle -->
-         <template id="idleTemplate"> <!--husk å endre css id'er til disse (idle, inventory++)-->
+         <template id="idleTemplate"> 
           <div id="idleTopDiv">
               <div id="idleTopLeftDiv">
                 <div id ="skillListDivMining" class="skillListDiv">
@@ -355,11 +344,7 @@
         </div>
          </template>
       
-
-    <script type="module">
-      import { loginUser,loadTemplates } from "./gameLogin.mjs";
-      loadTemplates('loginTemplate');
-      loginUser();
-    </script>
   </body>
+  <script type="module" src="gameLogin.mjs"></script>
+  <script src="/app.mjs"></script>
 </html>

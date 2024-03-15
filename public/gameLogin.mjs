@@ -1,6 +1,25 @@
 "use strict";
-import { loadGame } from "./game.mjs";
-import { customFetch } from "./utilities.mjs";
+loadModules();
+
+let loadGame;
+let customFetch;
+
+async function loadModules() {
+  if (navigator.onLine) {
+    try {
+      const gameModule = await import("./game.mjs");
+      const utilityModule = await import("./utilities.mjs");
+      loadGame = gameModule.loadGame;
+      customFetch = utilityModule.customFetch;
+      loadTemplates("loginTemplate");
+      loginUser();
+    } catch (error) {
+      console.error("Failed to load modules:", error);
+    }
+  } else {
+    loadTemplates("offlineTemplate");
+  }
+}
 
 export function loadTemplates(templateId) {
   let container = document.getElementById("container");
@@ -17,7 +36,7 @@ export function loginUser() {
     return;
   }
 
-  const loginButton = document.getElementById("loginButton");
+  const loginButton = document.querySelector("#loginButton");
   loginButton.addEventListener("click", function (event) {
     correctLogin();
 
