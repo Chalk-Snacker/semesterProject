@@ -6,8 +6,6 @@ import { initInventory } from "./inventory.mjs";
 import { initShop } from "./shop.mjs";
 import { initSettings } from "./settings.mjs";
 import { initBattle } from "./battle.mjs";
-
-// let skillInterval = null;
 let userLoginId = null;
 
 export async function switchgameplay(gameplayType) {
@@ -15,7 +13,6 @@ export async function switchgameplay(gameplayType) {
   const gameplayContainer = document.getElementById("gameplayContainer");
   gameplayContainer.innerHTML = "";
   gameplayContainer.appendChild(document.importNode(document.getElementById(gameplayType).content, true));
-  // clearInterval(skillInterval);
 
   const userData = await customFetch(
     "GET",
@@ -27,23 +24,18 @@ export async function switchgameplay(gameplayType) {
   username.innerText = userData.user.nick;
   switch (gameplayType) {
     case "battleTemplate":
-      // clearInterval(skillInterval);
       initBattle();
       break;
     case "idleTemplate":
-      // clearInterval(skillInterval);
       initidle();
       break;
     case "inventoryTemplate":
-      // clearInterval(skillInterval);
       initInventory();
       break;
     case "shopTemplate":
-      // clearInterval(skillInterval);
       initShop();
       break;
     case "settingsTemplate":
-      // clearInterval(skillInterval);
       initSettings();
       break;
   }
