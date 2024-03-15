@@ -6,10 +6,10 @@ let newLvl,
   xpThreshHold,
   userLoginId,
   remainder,
-  skillInterval,
+  // skillInterval,
   listOfSkills = null;
 let leveledUp = false; // trenger vel ikke å være global?
-
+export let skillInterval = null;
 export async function initidle() {
   const userData = await customFetch(
     "GET",
