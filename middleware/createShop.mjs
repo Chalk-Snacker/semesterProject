@@ -24,12 +24,10 @@ export async function createShop(req, res, next) {
           consumableSet,
         ]);
       }
-    } else {
-      // console.log("Items are already in shop");
     }
     next();
   } catch (error) {
-    // console.error("Error adding items to shop table", error);
+    console.error("Error adding items to shop table", error);
     res.status(500).json({ success: false, error: "Internal server error" });
   } finally {
     client.end();

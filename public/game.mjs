@@ -5,7 +5,6 @@ import { initInventory } from "./inventory.mjs";
 import { initShop } from "./shop.mjs";
 import { initSettings } from "./settings.mjs";
 import { initBattle } from "./battle.mjs";
-let userLoginId = null;
 
 export async function switchgameplay(gameplayType) {
   clearInterval(skillInterval);
@@ -40,9 +39,7 @@ export async function switchgameplay(gameplayType) {
   }
 }
 
-export async function loadGame(userId) {
-  userLoginId = userId;
-
+export async function loadGame() {
   const battleButton = document.getElementById("battleButton");
   const shopButton = document.getElementById("shopButton");
   const inventoryButton = document.getElementById("inventoryButton");

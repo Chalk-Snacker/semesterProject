@@ -2,14 +2,10 @@ import pg from "pg";
 import { dbConnectionString } from "./dbConfig.mjs";
 import { lvlUp } from "./skills.mjs";
 import { inventory } from "./inventory.mjs";
-import { User } from "./user.mjs";
-// import crypto from "node:crypto";
 
 if (dbConnectionString == undefined) {
   throw "You forgot the db connection string";
 }
-
-// TODO: is the structure / design of the DBManager as good as it could be?
 
 class DBManager {
   #credentials = {};
@@ -27,15 +23,9 @@ class DBManager {
     try {
       await client.connect();
       await client.query('DELETE from "public"."Users"  where id = $1;', [userId]);
-
-      // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-      // Of special intrest is the rows and rowCount properties of this object.
-
-      //TODO: Did the user get deleted?
     } catch (error) {
-      //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
-      client.end(); // Always disconnect from the database.
+      client.end();
     }
   }
   async createUser(user) {
@@ -48,11 +38,8 @@ class DBManager {
         'INSERT INTO "public"."Users"("nick", "email", "password","skills") VALUES($1::Text, $2::Text, $3::Text, $4::JSONB) RETURNING id;',
         [user.nick, user.email, user.pswHash, JSON.stringify(user.skills)]
       );
-      // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-      // Of special intrest is the rows and rowCount properties of this object.
 
       if (output.rows.length == 1) {
-        // We stored the user in the DB.
         user.id = output.rows[0].id;
       }
       output = await client.query('SELECT  COUNT(*) FROM "public"."Inventory"');
@@ -75,9 +62,8 @@ class DBManager {
       return user;
     } catch (error) {
       console.error(error);
-      //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
-      client.end(); // Always disconnect from the database.
+      client.end();
     }
   }
   async getUser(idInput) {
@@ -88,16 +74,14 @@ class DBManager {
       if (output.rows.length > 0) {
         const userData = { id: output.rows[0].id, nick: output.rows[0].nick, skills: output.rows[0].skills };
         return userData;
-        // return output.rows[0]; // return the user
       } else {
         console.log("user does not exist");
         return undefined;
       }
     } catch (error) {
       console.error(error);
-      //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
-      client.end(); // Always disconnect from the database.
+      client.end();
     }
   }
   async updateUserInformation(userId, nick, password) {
@@ -129,14 +113,13 @@ class DBManager {
 
     try {
       await client.connect();
-      // update xp on target skill
+
       let output = await client.query('UPDATE "public"."Users" SET "skills" = jsonb_set("skills", $1, $2) WHERE "id" = $3 RETURNING *;', [
-        `{${skillName}, xp}`, // $1
-        updatedUserXp, // $2
-        idInput, // $3
+        `{${skillName}, xp}`,
+        updatedUserXp,
+        idInput,
       ]);
 
-      // check if skill lvl up
       let currentXp = output.rows[0].skills[skillName].xp;
       let currentLvl = output.rows[0].skills[skillName].lvl;
       let xpThreshHold = currentLvl * 50;
@@ -158,11 +141,6 @@ class DBManager {
           idInput,
         ]);
       }
-
-      // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-      // Of special intrest is the rows and rowCount properties of this object.
-
-      //TODO Did we update the user?
       return output.rows[0].skills;
     } catch (error) {
       console.error("Error updating user skills:", error);
@@ -178,13 +156,12 @@ class DBManager {
     const client = new pg.Client(this.#credentials);
     try {
       await client.connect();
-      // retrieving all sets
+
       const allSetsQuery = `SELECT * FROM "public"."${table}";`;
       const allSetsResult = await client.query(allSetsQuery);
       const allSets = allSetsResult.rows;
 
       for (const set of allSets) {
-        // Process armor sets
         const armorSet = set.armor;
         if (armorSet) {
           const armorSetNames = Object.keys(armorSet);
@@ -212,7 +189,6 @@ class DBManager {
             }
           }
         }
-        // Process weapon sets
         const weaponSet = set.weapon;
         if (weaponSet) {
           const weaponSetNames = Object.keys(weaponSet);
@@ -277,8 +253,6 @@ class DBManager {
         `UPDATE "public"."Inventory" SET "${category}" = jsonb_set("${category}", '{"${setName}"}', "${category}"->'${setName}' || $2, true) WHERE "${category}"->>'${setName}' IS NOT NULL AND "id" = $1;`,
         [userId, JSON.stringify(item)]
       );
-
-      // Execute the update query
     } catch (error) {
       console.error("Error inserting item into inventory:", error);
     } finally {
@@ -320,15 +294,14 @@ class DBManager {
       await client.connect();
       const output = await client.query('SELECT * FROM "public"."Inventory" WHERE id =$1', [userId]);
       if (output.rows.length > 0) {
-        return output.rows[0]; // return the items
+        return output.rows[0];
       } else {
         return undefined;
       }
     } catch (error) {
       console.error(error);
-      //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
-      client.end(); // Always disconnect from the database.
+      client.end();
     }
   }
   async getItemsFromShop() {
@@ -337,15 +310,14 @@ class DBManager {
       await client.connect();
       const output = await client.query('SELECT * FROM "public"."Shop"');
       if (output.rows.length > 0) {
-        return output.rows; // return the items
+        return output.rows;
       } else {
         return undefined;
       }
     } catch (error) {
       console.error(error);
-      //TODO : Error handling?? Remember that this is a module seperate from your server
     } finally {
-      client.end(); // Always disconnect from the database.
+      client.end();
     }
   }
 }

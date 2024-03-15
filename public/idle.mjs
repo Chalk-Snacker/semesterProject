@@ -4,10 +4,9 @@ let newLvl,
   currentXp,
   oldLvl,
   xpThreshHold,
-  userLoginId,
   remainder,
   listOfSkills = null;
-let leveledUp = false; // trenger vel ikke å være global?
+let leveledUp = false;
 export let skillInterval = null;
 
 export async function initidle() {
@@ -57,7 +56,7 @@ function doSkill(aSkill) {
       currentXp = userData.user.skills[aSkill].xp;
       oldLvl = userData.user.skills[aSkill].lvl;
       currentXp += xpIncrease;
-      // regner ut resterende xp før den er oppdatert i tilfelle den lvl opp, regner vi på feil xå og thresh hold
+
       xpThreshHold = userData.user.skills[aSkill].xpThreshHold;
       remainder = currentXp % xpThreshHold;
 
@@ -71,15 +70,12 @@ function doSkill(aSkill) {
       newLvl = updatedData.userData[aSkill].lvl;
       skillLvl.innerText = "Lvl " + newLvl;
       xpIncrease = updatedData.userData[aSkill].xp;
-      xpThreshHold = updatedData.userData[aSkill].xpThreshHold; // oppdaterer xpThreshHold så kan regne ut xp i px forhold til 100% (xpThreshHold)
+      xpThreshHold = updatedData.userData[aSkill].xpThreshHold;
 
       if (oldLvl == newLvl || newLvl == null) {
-        // vi har ikke levlet og skal bare øke baren med xpIncrease
         updateSkillLvlXpBar(aSkill, leveledUp, true, xpIncrease);
       } else {
-        // leveled up
         leveledUp = true;
-        // restXp blir nulla på server i utregning før jeg får henta den ut, så hvis vi lvl opp henter jeg ut xp som er hva restXp var på server
         updateSkillLvlXpBar(aSkill, leveledUp, true, xpIncrease);
       }
     } catch (error) {

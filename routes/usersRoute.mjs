@@ -22,7 +22,7 @@ USER_API.post(
   }
 );
 
-USER_API.get("/login", loginAuthUser, (req, res) => {}); // get??
+USER_API.get("/login", loginAuthUser, (req, res) => {});
 
 USER_API.put(
   "/usrPsw",
@@ -32,17 +32,13 @@ USER_API.put(
     const userId = req.headers.authorization.split(" ")[1];
 
     const userData = req.body;
-    // const user = userData.userLoginId.userId;
-    // const updatedUserNick = userData.updatedUserInformation.newUserName.newUserName;
     const updatedUserNick = userData.newUserName;
     await DBmanager.updateUserInformation(userId, updatedUserNick, userData.newUserPassword);
-    // await DBmanager.updateUserInformation(userId, updatedUserNick, userData.updatedUserInformation.newUserPassword.newUserPassword);
     res.status(200).json({ success: true });
   }
 );
 
 USER_API.delete("/", async (req, res) => {
-  // const user = req.body;
   const userId = req.headers.authorization.split(" ")[1];
   try {
     await DBmanager.deleteUser(userId);

@@ -1,5 +1,4 @@
 import express from "express";
-import util from "util";
 import DBmanager from "../modules/storageManager.mjs";
 import { createShop } from "../middleware/createShop.mjs";
 import { captializeFirstLetter } from "../public/utilities.mjs";
@@ -37,9 +36,6 @@ GAME_API.put("/xp", async (req, res, next) => {
   const userId = req.headers.authorization.split(" ")[1];
   const skillName = req.body.name;
   const updatedUserXp = req.body.xp;
-  // const skillName = req.body.updatedSkillXp.name;
-  // const updatedUserXp = req.body.updatedSkillXp.xp;
-
   try {
     const userData = await DBmanager.updateUserSkils(userId, skillName, updatedUserXp);
     res.status(200).json({ success: true, userData });
@@ -51,9 +47,7 @@ GAME_API.put("/xp", async (req, res, next) => {
 
 GAME_API.put("/inventory", async (req, res, next) => {
   const userId = req.headers.authorization.split(" ")[1];
-  // const user = req.body.userLoginId;
   const item = req.body.item;
-  // const item = req.body.item.equipped;
   let table = req.originalUrl.split("/");
   table = captializeFirstLetter(table[2]);
   try {
@@ -91,7 +85,6 @@ GAME_API.get("/shop", async (req, res) => {
 });
 
 GAME_API.get("/inventory", async (req, res) => {
-  // const user = req.body;
   const userId = req.headers.authorization.split(" ")[1];
   try {
     const inventoryData = await DBmanager.getItemsFromInventory(userId);

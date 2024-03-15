@@ -30,9 +30,8 @@ export function loadTemplates(templateId) {
 export function loginUser() {
   const authToken = localStorage.getItem("authToken");
   if (authToken) {
-    const userId = { userId: parseInt(authToken) };
     loadTemplates("gameTemplate");
-    loadGame(userId);
+    loadGame();
     return;
   }
 
@@ -97,22 +96,9 @@ async function correctLogin() {
     if (typeof response == "object") {
       localStorage.setItem("authToken", response.userId);
       loadTemplates("gameTemplate");
-      loadGame(response);
+      loadGame();
     }
   } catch (error) {
     console.log(error);
   }
 }
-
-/*
---------------------------------------- TO DO: ---------------------------------------
-1. i loadTemplates, gjør en sjekk før du tømmer container i tilfelle noe går galt, så er siden blank
-2. gå over og fjern golbal variabler, 90% er unødvendig og trenger ikke å være global, gjorde de bare det for testing
-
---------------------------------------- Game fixes: ---------------------------------------
-1. husk å gjøre alt til const, og heller let om du får feilmelding
-2. siden det er max antall lvl i threshHold, sette en condition slik at den ikke prøver å lvl videre...
-3. gjør sjekk på om spiller er max lvl før du lvler opp
-5. equip knapp oppdaterer ikke liste;
-for globals, kan heller hente verdi fra functions med return og heller redeklarere med samme navn.
-*/
