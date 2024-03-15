@@ -9,10 +9,6 @@ import { User } from "../modules/user.mjs";
 const USER_API = express.Router();
 USER_API.use(express.json());
 
-USER_API.get("/:", (req, res) => {
-  // Return user object
-});
-
 USER_API.post(
   "/",
   hashPassword,
@@ -26,27 +22,30 @@ USER_API.post(
   }
 );
 
-USER_API.post("/login", loginAuthUser, (req, res) => {}); // get??
+USER_API.get("/login", loginAuthUser, (req, res) => {}); // get??
 
 USER_API.put(
   "/usrPsw",
   hashPassword,
   (req, res, next) => checkIfUserExists(req, res, next, "updateUser"),
   async (req, res) => {
-    const userData = req.body;
-    const user = userData.userLoginId.userId;
-    const updatedUserNick = userData.updatedUserInformation.newUserName;
+    const userId = req.headers.authorization.split(" ")[1];
 
-    await DBmanager.updateUserInformation(user, updatedUserNick, userData.updatedUserInformation.newUserPassword);
+    const userData = req.body;
+    // const user = userData.userLoginId.userId;
+    // const updatedUserNick = userData.updatedUserInformation.newUserName.newUserName;
+    const updatedUserNick = userData.newUserName;
+    await DBmanager.updateUserInformation(userId, updatedUserNick, userData.newUserPassword);
+    // await DBmanager.updateUserInformation(userId, updatedUserNick, userData.updatedUserInformation.newUserPassword.newUserPassword);
     res.status(200).json({ success: true });
   }
 );
 
 USER_API.delete("/", async (req, res) => {
-  const user = req.body;
-
+  // const user = req.body;
+  const userId = req.headers.authorization.split(" ")[1];
   try {
-    await DBmanager.deleteUser(user);
+    await DBmanager.deleteUser(userId);
     res.status(200).json({ success: true, message: " User deleted" });
   } catch (error) {
     console.log("Error", error);

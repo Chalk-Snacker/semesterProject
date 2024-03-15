@@ -11,7 +11,6 @@
     <div id="container" class="containerBackgroundOuter"></div>
 
     <!-- LOGIN -->
-<!-- bruk forms så du kan bruke enter for å logge inn  -->
     <template id="loginTemplate" class="containerBackgroundInner">
       <form>
       <label id="label" class="registerUserLabel">Character name</label>
@@ -26,8 +25,8 @@
   </form>
     </template>
     
-        <!-- CREATE USER -->
-
+        
+    <!-- CREATE USER -->
     <template id="createUserTemplate">
       <form>
         <label id="label" class="registerUserLabel">Email</label>
@@ -48,23 +47,22 @@
 
     <!-- GAME -->
     
-<template id ="gameTemplate"> <!-- style denne med iktig bakgrunn ++ -->
+<template id ="gameTemplate"> 
   <div id ="usernameDiv">
     <h1 id ="username"></h1>
   </div> 
   <div id=" gameContainer"> 
-        <button id="battleButton"></button> <!-- disse knappene må ha en klikk funksjon og loade div under (gamestates) i forhold til riktig knapp-->
-        <!-- <button id="inventoryButton" onclick="main('gameTemplate','inventoryTemplate' )">inventory</button>  -->
+        <button id="battleButton"></button> 
         <button id="shopButton"></button>
         <button id="inventoryButton"></button>
-        <!-- <button id="idleButton" onclick="main('gameTemplate','idleTemplate' )">idle</button>  -->
         <button id="idleButton"></button>
         <button id="settingsButton">Settings</button>
         <div id="gameplayContainer"></div>
     </div>   
 </template>
 
-        <!-- GAME STATES -->
+        
+<!-- GAME STATES -->
 
         <!-- battle -->
         <template id="battleTemplate">
@@ -288,7 +286,52 @@
          <!-- idle -->
          <template id="idleTemplate"> <!--husk å endre css id'er til disse (idle, inventory++)-->
           <div id="idleTopDiv">
-              <div id="idleTopLeftDiv"></div>
+              <div id="idleTopLeftDiv">
+                <div id ="skillListDivMining" class="skillListDiv">
+                  <h1 class="skillName">Mining</h1>
+                  <div id ="lvlXpContainer">
+                    <h3 id="skillLvlMining" class="skillLvl"></h3>
+                    <div id="skillXpBarOuterDiv">
+                      <div id="skillXpBarInnerDivMining"></div>
+                    </div>
+                  </div>
+                  <div id ="skillIconMining" title="Icon of a pickaxe hitting a rock"> </div>
+                  <button id="miningButton"></button>
+                </div>
+                <div id ="skillListDivCooking" class="skillListDiv">
+                  <h1 class="skillName">Cooking</h1>
+                  <div id ="lvlXpContainer">
+                    <h3 id="skillLvlCooking" class="skillLvl"></h3>
+                    <div id="skillXpBarOuterDiv">
+                      <div id="skillXpBarInnerDivCooking"></div>
+                    </div>
+                  </div>
+                  <div id ="skillIconCooking" title="Icon of a boiling pot with food"> </div>
+                  <button id="cookingButton"></button>
+                </div>
+                <div id ="skillListDivFishing" class="skillListDiv">
+                  <h1 class="skillName">Fishing</h1>
+                  <div id ="lvlXpContainer">
+                    <h3 id="skillLvlFishing" class="skillLvl"></h3>
+                    <div id="skillXpBarOuterDiv">
+                      <div id="skillXpBarInnerDivFishing"></div>
+                    </div>
+                  </div>
+                  <div id ="skillIconFishing" title="Icon of a fish swimming towards a fishing hook with a worm on it"> </div>
+                  <button id="fishingButton"></button>
+                </div>
+                <div id ="skillListDivWoodcutting" class="skillListDiv">
+                  <h1 class="skillName">Woodcutting</h1>
+                  <div id ="lvlXpContainer">
+                    <h3 id="skillLvlWoodcutting" class="skillLvl"></h3>
+                    <div id="skillXpBarOuterDiv">
+                      <div id="skillXpBarInnerDivWoodcutting"></div>
+                    </div>
+                  </div>
+                  <div id ="skillIconWoodcutting" title="Icon of a tree being chopped down"> </div>
+                  <button id="woodcuttingButton"></button>
+                </div>
+              </div>
               <div id="idleTopRightDiv">
                 <div id="progressOuterBarDiv">
                   <div id ="progressInnerBarDiv"></div>

@@ -21,12 +21,12 @@ class DBManager {
   }
 
   // ------------- USER -------------
-  async deleteUser(user) {
+  async deleteUser(userId) {
     const client = new pg.Client(this.#credentials);
 
     try {
       await client.connect();
-      const output = await client.query('DELETE from "public"."Users"  where id = $1;', [user.userId]);
+      await client.query('DELETE from "public"."Users"  where id = $1;', [userId]);
 
       // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
       // Of special intrest is the rows and rowCount properties of this object.
@@ -37,8 +37,6 @@ class DBManager {
     } finally {
       client.end(); // Always disconnect from the database.
     }
-
-    return user;
   }
   async createUser(user) {
     const client = new pg.Client(this.#credentials);
@@ -88,7 +86,9 @@ class DBManager {
       await client.connect();
       const output = await client.query('SELECT * FROM "public"."Users" WHERE "id" = $1', [idInput]);
       if (output.rows.length > 0) {
-        return output.rows[0]; // return the user
+        const userData = { id: output.rows[0].id, nick: output.rows[0].nick, skills: output.rows[0].skills };
+        return userData;
+        // return output.rows[0]; // return the user
       } else {
         console.log("user does not exist");
         return undefined;
@@ -100,20 +100,19 @@ class DBManager {
       client.end(); // Always disconnect from the database.
     }
   }
-  async updateUserInformation(user, nick, password) {
+  async updateUserInformation(userId, nick, password) {
     const client = new pg.Client(this.#credentials);
 
     try {
       await client.connect();
 
       let output = await client.query('UPDATE "public"."Users" SET "nick" = $2::Text, "password" = $3::Text WHERE "id" = $1 RETURNING *;', [
-        user,
+        userId,
         nick,
         password,
       ]);
       if (output.rows.length > 0) {
         console.log("username and password are successfully updated");
-        console.log(output.rows[0].nick);
         return output.rows[0].nick;
       }
     } catch (error) {
@@ -136,11 +135,6 @@ class DBManager {
         updatedUserXp, // $2
         idInput, // $3
       ]);
-      if (output.rows.length > 0) {
-        // console.log("user exists");
-      } else {
-        console.log("user does not exist");
-      }
 
       // check if skill lvl up
       let currentXp = output.rows[0].skills[skillName].xp;
@@ -164,7 +158,6 @@ class DBManager {
           idInput,
         ]);
       }
-      console.log("Request succeeded:", output.rows[0].skills[skillName]);
 
       // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
       // Of special intrest is the rows and rowCount properties of this object.
@@ -201,7 +194,6 @@ class DBManager {
               const item = items[itemSlot];
               if (item) {
                 if (item.name === itemName) {
-                  // console.log("Item found in armor:", item);
                   switch (action) {
                     case "buy":
                       await this.insertItemIntoInventory(userId, "armor", armorSetName, { [itemSlot]: item });
@@ -210,7 +202,9 @@ class DBManager {
                       await this.removeItemFromInventory(userId, "armor", armorSetName, itemSlot);
                       break;
                     case "equip":
-                      await this.equipItemFromInventory(userId, "equipped", itemSlot, { [itemSlot]: item });
+                      if (item.itemCategory !== "consumable") {
+                        await this.equipItemFromInventory(userId, "equipped", itemSlot, { [itemSlot]: item });
+                      }
                       break;
                   }
                 }
@@ -228,7 +222,6 @@ class DBManager {
               const item = items[itemSlot];
               if (item) {
                 if (item.name === itemName) {
-                  console.log("Item found in weapons:", item);
                   switch (action) {
                     case "buy":
                       await this.insertItemIntoInventory(userId, "weapon", weaponSetName, { [itemSlot]: item });
@@ -254,7 +247,6 @@ class DBManager {
               const item = items[itemSlot];
               if (item) {
                 if (item.name === itemName) {
-                  console.log("Item found in weapons:", item);
                   switch (action) {
                     case "buy":
                       await this.insertItemIntoInventory(userId, "consumables", consumableSetName, { [itemSlot]: item });
@@ -330,7 +322,6 @@ class DBManager {
       if (output.rows.length > 0) {
         return output.rows[0]; // return the items
       } else {
-        // console.log("No items in shop");
         return undefined;
       }
     } catch (error) {
@@ -348,7 +339,6 @@ class DBManager {
       if (output.rows.length > 0) {
         return output.rows; // return the items
       } else {
-        // console.log("No items in shop");
         return undefined;
       }
     } catch (error) {

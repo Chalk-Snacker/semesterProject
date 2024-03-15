@@ -7,19 +7,11 @@ import { captializeFirstLetter } from "../public/utilities.mjs";
 const GAME_API = express.Router();
 GAME_API.use(express.json());
 
-GAME_API.post("/profile", createShop, async (req, res, next) => {
-  const user = req.body;
-
+GAME_API.get("/profile", createShop, async (req, res, next) => {
+  const userId = req.headers.authorization.split(" ")[1];
   try {
-    const userData = await DBmanager.getUser(user.userId);
-    if (userData != undefined) {
-      let user = {
-        id: userData.id,
-        nick: userData.nick,
-        skills: userData.skills,
-      };
-      res.status(200).json({ success: true, message: "fetching successful", user });
-    }
+    const user = await DBmanager.getUser(userId);
+    res.status(200).json({ success: true, message: "fetching successful", user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: "Internal server error" });
@@ -27,13 +19,13 @@ GAME_API.post("/profile", createShop, async (req, res, next) => {
 });
 
 GAME_API.post("/shop", async (req, res) => {
-  const user = req.body.userLoginId;
-  const item = req.body.item.itemToBuy;
+  const userId = req.headers.authorization.split(" ")[1];
+  const item = req.body.item;
   let table = req.originalUrl.split("/");
   table = captializeFirstLetter(table[2]);
 
   try {
-    const userData = await DBmanager.findItem(user.userId, item, "buy", table);
+    const userData = await DBmanager.findItem(userId, item, "buy", table);
     res.status(200).json({ success: true, message: "Purchase of item successful", userData });
   } catch (error) {
     console.log("Error", error);
@@ -42,12 +34,12 @@ GAME_API.post("/shop", async (req, res) => {
 });
 
 GAME_API.put("/xp", async (req, res, next) => {
-  const user = req.body.userLoginId;
+  const userId = req.headers.authorization.split(" ")[1];
   const skillName = req.body.updatedSkillXp.name;
   const updatedUserXp = req.body.updatedSkillXp.xp;
 
   try {
-    const userData = await DBmanager.updateUserSkils(user.userId, skillName, updatedUserXp);
+    const userData = await DBmanager.updateUserSkils(userId, skillName, updatedUserXp);
     res.status(200).json({ success: true, userData });
   } catch (error) {
     console.log("Error", error);
@@ -56,12 +48,14 @@ GAME_API.put("/xp", async (req, res, next) => {
 });
 
 GAME_API.put("/inventory", async (req, res, next) => {
-  const user = req.body.userLoginId;
-  const item = req.body.item.equipped;
+  const userId = req.headers.authorization.split(" ")[1];
+  // const user = req.body.userLoginId;
+  const item = req.body.item;
+  // const item = req.body.item.equipped;
   let table = req.originalUrl.split("/");
   table = captializeFirstLetter(table[2]);
   try {
-    const userData = await DBmanager.findItem(user.userId, item, "equip", table);
+    const userData = await DBmanager.findItem(userId, item, "equip", table);
     res.status(200).json({ success: true, message: "Update successful", userData });
   } catch (error) {
     console.log("Error", error);
@@ -70,14 +64,14 @@ GAME_API.put("/inventory", async (req, res, next) => {
 });
 
 GAME_API.delete("/inventory", async (req, res) => {
-  const user = req.body.userLoginId;
-  const item = req.body.item.itemToSell;
+  const userId = req.headers.authorization.split(" ")[1];
+  const item = req.body.item;
   let table = req.originalUrl.split("/");
   table = captializeFirstLetter(table[2]);
 
   try {
-    const userData = await DBmanager.findItem(user.userId, item, "sell", table);
-    res.status(204).json({ success: true, message: "Deletion successful", userData });
+    await DBmanager.findItem(userId, item, "sell", table);
+    res.status(200).json({ success: true, message: "Deletion successful" });
   } catch (error) {
     console.log("Error", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
@@ -94,10 +88,11 @@ GAME_API.get("/shop", async (req, res) => {
   }
 });
 
-GAME_API.post("/inventory", async (req, res) => {
-  const user = req.body;
+GAME_API.get("/inventory", async (req, res) => {
+  // const user = req.body;
+  const userId = req.headers.authorization.split(" ")[1];
   try {
-    const inventoryData = await DBmanager.getItemsFromInventory(user.userId);
+    const inventoryData = await DBmanager.getItemsFromInventory(userId);
     res.status(200).json({ success: true, message: "Retrival successful", inventoryData });
   } catch (error) {
     console.log("Error", error);

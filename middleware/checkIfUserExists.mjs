@@ -11,8 +11,8 @@ export async function checkIfUserExists(req, res, next, path) {
     username = userData.playerNick;
     password = userData.playerPsw;
   } else if (path === "updateUser") {
-    username = userData.updatedUserInformation.newUserName;
-    password = userData.updatedUserInformation.newUserPassword;
+    username = userData.newUserName;
+    password = userData.newUserPassword;
   } else {
     return res.status(500).json({ success: false, error: "Invalid path" });
   }
